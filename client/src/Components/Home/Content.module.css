@@ -1,0 +1,156 @@
+.head_container, .mid_container, .key_container {
+    min-height:90vh;
+    width: 100%;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    align-content: center;
+}
+
+.head_container {
+    margin-top: 50px;
+    border-bottom: 1px solid #ccc;
+}
+
+.h1 {
+    font-size: 48px;
+}
+
+.key_container {
+    min-height: 10vh;
+}
+
+.content_heading {
+    font-size: 42px;
+    text-align: center;
+    margin: 15px auto;
+    padding-top: 20px;
+    width: 100%;
+    display: inline-block;
+    position: relative;
+}
+
+.content_heading:before {
+    content: "";
+    position: absolute;
+    width: 10%;
+    height: 2px;
+    bottom: 0;
+    left: 45%;
+    border-bottom: 2px solid #3f51b5;
+}
+
+.inlinecontainer, .midinlinecontainer, .bottominlinecontainer {
+    width: 80%;
+    margin: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    padding: 50px 0;
+}
+
+.midinlinecontainer {
+    justify-content: space-around;
+}
+
+.bottominlinecontainer {
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.imgcontainer {
+    max-width: 45%;
+}
+
+.headimg {
+    animation: updown 8s infinite;
+}
+
+.imgcontainer img {
+    max-width: 90%;
+    max-height: 90%; 
+}
+
+.adv_container {
+    display: flex;
+    flex-basis: 33.33%;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 25px;
+    padding:10px 15px;
+}
+
+.adv_content {
+    margin-left: 10px;
+}
+
+.bold {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.normal {
+    font-size: 18px;
+    font-weight: 400;
+    color:#777
+}
+
+.icon {
+    color: #3f51b5;
+    min-width: 40px;
+    text-align: center;
+}
+
+.heading {
+    flex-basis: 50%;
+}
+.subheading {
+    color: #777;
+    font-size: 20px;
+}
+.block {
+    display: block;
+    overflow: hidden;
+}
+.mt_5 {
+    margin-top: 10px;
+}
+@media (max-width: 780px) {
+    .head_container, .adv_container, .pub_container, .ref_container {
+        background-image: none;
+    }
+    .heading {
+        flex-basis: 100%;
+    }
+    .imgcontainer {
+        display: none;
+    }
+    .adv_container {
+        flex-basis: 100%;
+        justify-content: flex-start;
+    }
+    .inlinecontainer, .midinlinecontainer, .bottominlinecontainer {
+        width: 100%;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+    .content_heading:before {
+        width: 20%;
+        left:40%
+    }
+}
+
+@keyframes updown {
+    0% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(1.875rem);    
+    }
+    75% {
+        transform: translateY(-1.875rem);
+    }
+}

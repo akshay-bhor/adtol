@@ -1,0 +1,22 @@
+.brand_name {
+    font-size: 20px;
+}
+
+.mitems {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-left: auto;
+}
+
+@media(max-width:780px) {
+    .mitems {
+        display: none;
+    }
+}
+
+.mitems .mitem {
+    padding: 5px 10px;
+    font-size: 16px;
+}

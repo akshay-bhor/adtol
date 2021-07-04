@@ -1,0 +1,6 @@
+<div class="alert alert-danger">
+    <%= error %>
+    <% if(error.data) { %>
+        <div class="small"><%= error.data[0].msg %></div>
+    <% } %>
+</div>

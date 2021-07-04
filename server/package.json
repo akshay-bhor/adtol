@@ -1,0 +1,35 @@
+{
+  "name": "adtol-back",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "Akshay Bhor",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "base62": "^2.0.1",
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-validator": "^6.9.2",
+    "geoip-country": "^4.0.56",
+    "google-auth-library": "^7.0.4",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.2.5",
+    "node-cron": "^3.0.0",
+    "nodemailer": "^6.4.18",
+    "psl": "^1.8.0",
+    "razorpay": "^2.0.6",
+    "sequelize": "^6.5.0",
+    "ua-parser-js": "^0.7.26"
+  }
+}

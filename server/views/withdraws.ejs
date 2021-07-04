@@ -1,0 +1,258 @@
+<%- include('includes/head.ejs') %>
+
+<div class="jumbotron">
+    <div class="container-md">
+      <% if(error) { %> <%- include('includes/err.ejs') %> <% } %>
+   
+        <div class="row" style="align-items: flex-end">
+          <div class="col">
+            <label for="wd_id">Withdraw ID</label>
+            <input
+              type="text"
+              id="wd_id"
+              name="wd_id"
+              class="form-control"
+              placeholder="Withdraw ID"
+              required
+            />
+          </div>
+
+          <div class="col">
+            <label for="sdate">Start Date</label>
+            <input
+              type="date"
+              id="sdate"
+              name="sdate"
+              class="form-control"
+              required
+            />
+          </div>
+
+          <div class="col">
+            <label for="edate">End Date</label>
+            <input
+              type="date"
+              id="edate"
+              name="edate"
+              class="form-control"
+              required
+            />
+          </div>
+  
+          <div class="col">
+            <label for="sort">Filter</label>
+            <select name="sort" id="sort" class="form-control">
+              <option value="0">All</option>
+              <option value="1">Approved</option>
+              <option value="2">Pending</option>
+              <option value="3">Rejected</option>
+            </select>
+          </div>
+  
+          <div class="col">
+            <input
+              type="submit"
+              name="search"
+              id="search"
+              value="Search"
+              onclick="sForm()"
+              class="btn btn-primary btn-block"
+            />
+          </div>
+        </div>
+  
+      <!-- Users List -->
+      <div class="d-block mt-5" id="wd_list"></div>
+    </div>
+  </div>
+
+  <script>
+    let page = 1;
+    let isloading = false;
+    let wd_id = null;
+    let sdate = '2021-01-01';
+    let edate = new Date().toISOString().slice(0, 10);
+    let sort;
+  
+  /**
+   * ON Input Enter
+   * */
+      $("#wd_id").keyup(function(e) {
+      if(e.keyCode === 13) {
+          e.preventDefault();
+          // Click Submit Btn
+          $("#search").click();
+      } 
+      });
+  
+      function sForm() {
+          wd_id = $("#wd_id").val();
+          page = 1;
+          getWdList();
+      }
+  
+      function goPage() {
+          wd_id = $("#wd_id").val();
+          page = $('#cpage').val();
+          getWdList();
+      }
+  
+  
+    $(document).ready(() => {
+        $('#sdate').val(sdate);
+        $('#edate').val(edate);
+        getWdList();
+    });
+  
+    const getWdList = () => {
+      if (isloading) return;
+      
+      sort = $("#sort").val();
+      sdate = $('#sdate').val();
+      edate = $('#edate').val();
+  
+      isloading = true;
+      $("#wd_list").html("Fetching...");
+  
+      $.ajax({
+        url: "/admin/withdraws",
+        type: "post",
+        data: {
+          wd_id: wd_id,
+          sdate: sdate,
+          edate: edate,
+          sort: sort,
+          page: page,
+        },
+        dataType: "json",
+        success: function (data) {
+          isloading = false;
+          siteDataView(data.result, data.total);
+        },
+        error: function (jqXHR, exception) {
+          isloading = false;
+          var err = jscriptErr(jqXHR.status, exception);
+          alert(err);
+        },
+      });
+    };
+  
+    function siteDataView(data, total) {
+      let res;
+  
+      //PAGINATION
+      var pages = Math.ceil(total / 50);
+  
+      res = `
+          <div class="row justify-content-between" style="align-items: flex-end">
+              <div class="col-md-3 font-weight-bold" style="align-self:flex-start">
+                  ${total} Total
+              </div>    
+              <div class="col-md-3 d-flex justify-content-end">
+                  <select class="form-control" id="cpage">
+      `;
+  
+      for (let i = 1; i <= pages; i++) {
+        if (i == page)
+          res += '<option value="' + i + '" selected>' + i + "</option>";
+        else res += '<option value="' + i + '">' + i + "</option>";
+      }
+  
+      res += `
+                  </select>
+                  <button class="btn btn-primary" onclick="goPage()">Go</buttom>        
+              </div>
+          </div>
+      `;
+  
+      res += `<div class="wd_list-container mt-5">`;
+  
+      $.each(data, (k, d) => {
+        let adult = '';
+        if(d.adult == 'Adult') adult = `<span class="badge badge-danger">${d.adult}</span>`; 
+        else adult = `<span class="badge badge-info">${d.adult}</span>`;
+
+          res += `
+              <div class="list-group-item d-block mb-4" style="overflow:hidden" id="pay-${d.id}">
+                  <div class="d-block" style="overflow:hidden">
+                      <div class="font-weight-bold float-left mr-3">${d.user}<br>
+                          <span class="font-weight-bold text-secondary">
+                            MTX: <span class="font-weight-normal">${d.mtx}</span>
+                          </span>
+                      </div>
+                      <div class="font-weight-bold float-left mr-3">Processor<br>
+                        <span class="text-secondary">${d.processor}</span>
+                      </div>
+          `;
+  
+          let status = '<span class="badge badge-success">Approved</span>';
+          if(d.status == 2) {
+              status = '<span class="badge badge-warning">Pending</span>';
+          }
+          if(d.status == 3) {
+              status = '<span class="badge badge-danger">Rejected</span>';
+          }
+          let date = timeConverter(d.time_unix);
+          res += `
+                      <div class="float-right ml-3">
+                          <span class="font-weight-bold">Date</span><br>${date}
+                      </div>
+                      <div class="float-right ml-3">
+                          ${status} <br>
+                      </div>
+                      <div class="float-right ml-3">
+                        <span class="font-weight-bold">Fee</span><br>${d.fee}%
+                      </div>
+                      <div class="float-right ml-5">
+                        <span class="font-weight-bold">Amount</span><br>$${d.amount.toFixed(2)}
+                      </div>
+                      <div class="float-right ml-5">
+                        <span class="font-weight-bold">Payable</span><br>$${d.payable.toFixed(2)}
+                      </div>
+                  </div>
+                  
+              </div>
+          `;
+      });
+  
+      res += `</div>`;
+  
+      $("#wd_list").html(res);
+    }
+  
+    function jscriptErr(status, exception) {
+      var msg = "";
+      if (status === 0) {
+        msg = "Not connect.\n Verify Network.";
+      } else if (status == 404) {
+        msg = "Requested page not found. [404]";
+      } else if (status == 500) {
+        msg = "Internal Server Error [500].";
+      } else if (exception === "parsererror") {
+        msg = "Requested JSON parse failed.";
+      } else if (exception === "timeout") {
+        msg = "Time out error.";
+      } else if (exception === "abort") {
+        msg = "Ajax request aborted.";
+      } else {
+        msg = "Uncaught Error.\n" + jqXHR.responseText;
+      }
+      return msg;
+    }
+
+    function timeConverter(UNIX_timestamp){
+        var a = new Date(UNIX_timestamp * 1000);
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var year = a.getFullYear();
+        var month = months[a.getMonth()];
+        var date = a.getDate();
+        var hour = a.getHours();
+        var min = a.getMinutes();
+        var sec = a.getSeconds();
+        var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+        return time;
+    }
+
+  </script>
+
+<%- include('includes/end.ejs') %>

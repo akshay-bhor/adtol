@@ -1,0 +1,255 @@
+<%- include('includes/head.ejs') %>
+
+<div class="jumbotron">
+    <div class="container-md">
+      <% if(error) { %> <%- include('includes/err.ejs') %> <% } %>
+   
+        <div class="row" style="align-items: flex-end">
+          <div class="col">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              name="uname"
+              class="form-control"
+              required
+            />
+          </div>
+
+          <div class="col">
+            <label for="site">Website</label>
+            <input
+              type="text"
+              id="site"
+              name="site"
+              class="form-control"
+              required
+            />
+          </div>
+  
+          <div class="col">
+            <label for="sort">Sort</label>
+            <select name="sort" id="sort" class="form-control">
+              <option value="1">Recent</option>
+              <option value="2">Pending</option>
+              <option value="3">Rejected</option>
+            </select>
+          </div>
+  
+          <div class="col">
+            <input
+              type="submit"
+              name="search"
+              id="search"
+              value="Search"
+              onclick="sForm()"
+              class="btn btn-primary btn-block"
+            />
+          </div>
+        </div>
+  
+      <!-- Users List -->
+      <div class="d-block mt-5" id="site-list"></div>
+    </div>
+  </div>
+
+  <script>
+    let page = 1;
+    let isloading = false;
+    let user = null;
+    let site = null;
+    let sort;
+  
+  /**
+   * ON Input Enter
+   * */
+      $("#username").keyup(function(e) {
+      if(e.keyCode === 13) {
+          e.preventDefault();
+          // Click Submit Btn
+          $("#search").click();
+      } 
+      });
+  
+      function sForm() {
+          user = $("#username").val();
+          site = $('#site').val();
+          page = 1;
+          getSiteList();
+      }
+  
+      function goPage() {
+          user = $("#username").val();
+          page = $('#cpage').val();
+          site = $('#site').val();
+          getSiteList();
+      }
+  
+  
+    $(document).ready(() => {
+      getSiteList();
+    });
+  
+    const getSiteList = () => {
+      if (isloading) return;
+      
+      sort = $("#sort").val();
+  
+      isloading = true;
+      $("#site-list").html("Fetching...");
+  
+      $.ajax({
+        url: "/admin/sites",
+        type: "post",
+        data: {
+          user: user,
+          site: site,
+          sort: sort,
+          page: page,
+        },
+        dataType: "json",
+        success: function (data) {
+          isloading = false;
+          siteDataView(data.result, data.total);
+        },
+        error: function (jqXHR, exception) {
+          isloading = false;
+          var err = jscriptErr(jqXHR.status, exception);
+          alert(err);
+        },
+      });
+    };
+  
+    function siteDataView(data, total) {
+      let res;
+  
+      //PAGINATION
+      var pages = Math.ceil(total / 50);
+  
+      res = `
+          <div class="row justify-content-between" style="align-items: flex-end">
+              <div class="col-md-3 font-weight-bold" style="align-self:flex-start">
+                  ${total} Total
+              </div>    
+              <div class="col-md-3 d-flex justify-content-end">
+                  <select class="form-control" id="cpage">
+      `;
+  
+      for (let i = 1; i <= pages; i++) {
+        if (i == page)
+          res += '<option value="' + i + '" selected>' + i + "</option>";
+        else res += '<option value="' + i + '">' + i + "</option>";
+      }
+  
+      res += `
+                  </select>
+                  <button class="btn btn-primary" onclick="goPage()">Go</buttom>        
+              </div>
+          </div>
+      `;
+  
+      res += `<div class="site-list-container mt-5">`;
+  
+      $.each(data, (k, d) => {
+        let adult = '';
+        if(d.adult == 'Adult') adult = `<span class="badge badge-danger">${d.adult}</span>`; 
+        else adult = `<span class="badge badge-info">${d.adult}</span>`;
+
+          res += `
+              <div class="list-group-item d-block mb-4" style="overflow:hidden" id="site-${d.id}">
+                  <div class="d-block" style="overflow:hidden">
+                      <div class="font-weight-bold float-left mr-3"><a href="http://${d.domain}" target="_blank">${d.domain}</a> 
+                          ${adult}<br>
+                          <span class="small font-weight-bold text-secondary">${d.category}</span>
+                      </div>
+                      <div class="float-left mr-3 text-center">
+                          <span class="font-weight-bold">Views</span> <br>   
+                          <span class="">${d.views}</span>
+                      </div>
+                      <div class="float-left mr-3">
+                          <span class="font-weight-bold">Clicks</span> <br>   
+                          <span class="">${d.clicks}</span>
+                      </div>
+                      <div class="float-left mr-3">
+                          <span class="font-weight-bold">Pops</span> <br>   
+                          <span class="">${d.pops}</span>
+                      </div>
+          `;
+  
+          let status = '<span class="badge badge-success">Active</span>';
+          if(d.status == 'Rejected') {
+              status = '<span class="badge badge-danger">Rejected</span>';
+          }
+          if(d.status == 'Pending') {
+              status = '<span class="badge badge-warning">Pending</span>';
+          }
+  
+          res += `
+                      <div class="float-right ml-3">
+                          ${status} <br>   
+                          <span role="button" class="text-success" onclick="cstatus(${d.id}, 1)">Approve</span>
+                          <span role="button" class="text-warning" onclick="cstatus(${d.id}, 2)">Pending</span>
+                          <span role="button" class="text-danger" onclick="cstatus(${d.id}, 3)">Reject</span>
+                      </div>
+                      <div class="float-right ml-3">
+                          <span class="font-weight-bold">Earned</span><br>$${d.earned}
+                      </div>
+                  </div>
+                  
+              </div>
+          `;
+      });
+  
+      res += `</div>`;
+  
+      $("#site-list").html(res);
+    }
+  
+    function cstatus(id, status) {
+      let confirmation = confirm('Are you sure?');
+  
+      if(!confirmation || isloading) return;
+      isloading = true
+  
+      $.ajax({
+        method: 'post',
+        url: '/admin/sites/set-status',
+        dataType: 'json',
+        data: {
+            id: id,
+            status: status
+        },
+        success: function(d) {
+          isloading = false;
+          getSiteList();
+        },
+        error: function (jqXHR, exception) {
+          isloading = false;
+          var err = jscriptErr(jqXHR.status, exception);
+          alert(err);
+        },
+      });
+    }
+  
+    function jscriptErr(status, exception) {
+      var msg = "";
+      if (status === 0) {
+        msg = "Not connect.\n Verify Network.";
+      } else if (status == 404) {
+        msg = "Requested page not found. [404]";
+      } else if (status == 500) {
+        msg = "Internal Server Error [500].";
+      } else if (exception === "parsererror") {
+        msg = "Requested JSON parse failed.";
+      } else if (exception === "timeout") {
+        msg = "Time out error.";
+      } else if (exception === "abort") {
+        msg = "Ajax request aborted.";
+      } else {
+        msg = "Uncaught Error.\n" + jqXHR.responseText;
+      }
+      return msg;
+    }
+  </script>
+
+<%- include('includes/end.ejs') %>

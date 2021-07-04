@@ -1,0 +1,24 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    align-items: flex-start;
+    align-content: center;
+    justify-content: space-between;
+}
+
+.iblock {
+    display: inline-block;
+    margin: 20px 10px;
+}
+
+.paperBlockContainer {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: center;
+    margin-top: 15px;
+}

@@ -1,0 +1,116 @@
+<%- include('includes/head.ejs') %>
+
+<div class="jumbotron">
+  <div class="container-md">
+    <% if(error) { %> <%- include('includes/err.ejs') %> <% } %>
+
+    <form method="post" id="notifyForm">
+      <label for="to" class="font-weight-bold"
+        >Email: (comma seperate for multiple)</label
+      >
+      <input
+        type="text"
+        name="to"
+        id="to"
+        class="form-control"
+        value="<%= mail %>"
+        required
+      />
+      <div class="mt-3">
+        <div class="form-check-inline">
+          <label class="form-check-label">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="all"
+              name="all"
+              value="1"
+            />Send to All?
+          </label>
+        </div>
+      </div>
+      <div class="mt-3">
+        <label for="subject">Subject:</label>
+        <input type="text"
+          class="form-control"
+          id="subject"
+          name="subject"
+          id="subject"
+          required />
+      </div>
+      <div class="mt-3">
+        <label for="msg">Msg:</label>
+        <textarea
+          class="form-control"
+          rows="5"
+          id="msg"
+          name="msg"
+          id="msg"
+          required
+        ></textarea>
+      </div>
+      <input
+        type="submit"
+        value="Send"
+        name="send"
+        class="btn btn-block btn-primary mt-3"
+      />
+    </form>
+  </div>
+</div>
+
+<script>
+  let isloading = false;
+
+  $("#all").change((e) => {
+    if (e.target.checked) $("#to").attr("disabled", true);
+    else $("#to").attr("disabled", false);
+  });
+
+  $("#notifyForm").submit(function(e) {
+    e.preventDefault();
+    if (isloading) return;
+    console.log(e);
+    isloading = true;
+
+    let formData = $(this).serialize();
+
+    $.ajax({
+      url: "/admin/notify",
+      type: 'POST',
+      data: formData,
+      dataType: 'json',
+      success: function (d) {
+        isloading = false;
+        alert(d);
+      },
+      error: function (jqXHR, exception) {
+        isloading = false;
+        var err = jscriptErr(jqXHR.status, exception);
+        alert(err);
+      },
+    });
+  });
+
+  function jscriptErr(status, exception) {
+    var msg = "";
+    if (status === 0) {
+      msg = "Not connect.\n Verify Network.";
+    } else if (status == 404) {
+      msg = "Requested page not found. [404]";
+    } else if (status == 500) {
+      msg = "Internal Server Error [500].";
+    } else if (exception === "parsererror") {
+      msg = "Requested JSON parse failed.";
+    } else if (exception === "timeout") {
+      msg = "Time out error.";
+    } else if (exception === "abort") {
+      msg = "Ajax request aborted.";
+    } else {
+      msg = "Uncaught Error.\n" + jqXHR.responseText;
+    }
+    return msg;
+  }
+</script>
+
+<%- include('includes/end.ejs') %>

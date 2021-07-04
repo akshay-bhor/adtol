@@ -1,0 +1,83 @@
+.mainContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 50px;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-content: flex-start;
+    margin: 15px 0 10px auto;
+    padding: 10px;
+    width: calc(100% - 260px);
+    min-height: 100vh;
+}
+
+.loader {
+    width: 100%;
+}
+
+.cellClass {
+    display: flex;
+    flex-direction: column;
+    justify-content: center!important;
+    line-height: unset!important;
+    overflow: visible;
+}
+
+.chipContainer {
+    max-height: 40px;
+    margin-top: 8px;
+    position: relative;
+}
+
+.chipContainer .menuOptions {
+    visibility: hidden;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 0;
+    background-color: #fff;
+    border-radius: 8px;
+    opacity: 0;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition:opacity 0.3s linear;
+}
+
+.chipContainer:hover .menuOptions {
+    visibility: visible;
+    opacity: 1;
+}
+
+.chipContainer .menuOptions span {
+    padding: 5px 20px;
+    cursor: pointer;
+}
+
+.chipContainer .menuOptions span:hover {
+    background-color: #eee;
+}
+
+.budgetContainer .editIcon {
+    visibility: hidden;
+}
+
+.budgetContainer:hover .editIcon {
+    visibility: visible;
+}
+
+.fullWidthForm {
+    width: 100%;
+    text-align: center;
+}
+
+.hidden {
+    visibility: hidden;
+}

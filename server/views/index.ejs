@@ -1,0 +1,48 @@
+<%- include('includes/head.ejs') %>
+
+<div class="jumbotron">
+    <div class="container-lg">
+
+        <div class="card mb-2 pl-3 pr-3">
+            <a class="d-block font-weight-bold mb-3 mt-3" href="./users">Users</a>
+        </div>
+
+        <div class="card mb-2 pl-3 pr-3">
+            <a class="d-block font-weight-bold mb-3 mt-3" href="./sites">Sites</a>
+        </div>
+
+        <div class="card mb-2 pl-3 pr-3">
+            <a class="d-block font-weight-bold mb-3 mt-3" href="./campaigns">Campaigns</a>
+        </div>
+
+        <div class="card mb-2 pl-3 pr-3">
+            <a class="d-block font-weight-bold mb-3 mt-3" href="./payments">Payments</a>
+        </div>
+
+        <div class="card mb-2 pl-3 pr-3">
+            <a class="d-block font-weight-bold mb-3 mt-3" href="./withdraws">Withdraws</a>
+        </div>
+
+        <div class="card mb-2 pl-3 pr-3">
+            <div class="d-block font-weight-bold mb-3 mt-3" role="button" data-target="#demo" data-toggle="collapse">Settings</div>
+            <div class="collapse pt-2 pb-2 border border-left-0 border-right-0 border-bottom-0 border-primary pl-3" id="demo">
+                <a href="./site-data" class="d-block">Site data (Cats, OS, Browsers)</a>
+                <a href="./rates" class="d-block">Rates & Limits</a>
+            </div>
+        </div>
+
+        <div class="card mb-2 pl-3 pr-3">
+            <a class="d-block font-weight-bold mb-3 mt-3" href="./keys">Security Keys</a>
+        </div>
+
+        <div class="card mb-2 pl-3 pr-3">
+            <a class="d-block font-weight-bold mb-3 mt-3" href="./notify">Notify</a>
+        </div>
+
+        <% if(error) { %>
+            <%- include('includes/err.ejs') %>
+        <%  } %>
+    </div>
+</div>
+
+<%- include('includes/end.ejs') %>
