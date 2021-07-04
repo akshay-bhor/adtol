@@ -1,0 +1,26 @@
+version: '3.8'
+services: 
+    client: 
+        stdin_open: true
+        build: 
+            context: ./client
+        volumes: 
+            - /client/node_modules
+            - ./client:/client
+        ports: 
+            - "3000:3000"
+    server:
+        build: 
+            context: ./server
+        volumes: 
+            - /server/node_modules
+            - ./server:/server
+        ports: 
+            - "4000:4000"
+        environment: 
+            - DB_NAME=adtol
+            - DB_USER=root
+            - DB_PASS=jm*R4$o#2
+            - DB_HOST=192.168.0.1
+            - DB_DIALECT=mysql
+            - DB_PORT=3306

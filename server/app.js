@@ -50,7 +50,7 @@ else {
             'Access-Control-Allow-Methods',
             'GET, POST, DELETE, OPTIONS'
         );
-        res.setHeader('Access-Control-Allow_headers', 'Content-Type, Origin, X-Requested-With, Authorization, Accept');
+        res.setHeader('Access-Control-Allow_headers', 'Content-Type, Authorization');
         next();
     });
 

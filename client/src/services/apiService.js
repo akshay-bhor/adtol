@@ -9,7 +9,7 @@ let cancelToken = [];
 let source = [];
 
 const conn = axios.create({
-  baseURL: `http://localhost:4000`,
+  baseURL: ``,
   timeout: 10000,
 });
 
