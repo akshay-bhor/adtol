@@ -141,7 +141,7 @@ exports.loginHelper = async (req) => {
             } 
         });
 
-        if(user) {
+        if(user && user.dataValues.pass !== null) {
             // Check if pass correct
             let storedPass = user.dataValues.pass;
             let passCorrect = await bcrypt.compare(pass, storedPass);

@@ -12,7 +12,8 @@ exports.genKeyPair = () => {
         privateKeyEncoding: {
             type: 'pkcs8', // public key cryptography standard 8
             format: 'pem',
-            // cipher: 'aes-256-cbc' 
+            cipher: 'aes-256-cbc' ,
+            passphrase: process.env.AES_KEY
             /**  
              * Advanced encryption standard with 256 bit key size 128 bit block size in cipher block chaining mode
              * add passphrase also if want to encrypt key

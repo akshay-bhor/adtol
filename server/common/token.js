@@ -23,7 +23,7 @@ module.exports = class Token {
             }
         }
         //Issue token
-        const token = jwt.sign(payload, PRIV_KEY, {algorithm: 'RS256'}, {
+        const token = jwt.sign(payload, {key: PRIV_KEY, passphrase: process.env.AES_KEY}, {algorithm: 'RS256'}, {
             expiresIn: exp
         });
         return token
