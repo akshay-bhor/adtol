@@ -21,3 +21,12 @@ services:
             - "4000:4000"
         env_file: 
             - ./server/.env
+    nginx:
+        build: 
+            context: ./nginx
+        depends_on: 
+            - client
+            - server
+        restart: always
+        ports: 
+            - "5000:80"
