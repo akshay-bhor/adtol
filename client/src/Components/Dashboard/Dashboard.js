@@ -15,6 +15,7 @@ import WebsiteList from "./Websites/WebsiteList";
 import EditWebsite from "./Websites/EditWebsite";
 import AddWebsite from "./Websites/AddWebsite";
 import AdCode from "./AdCode/AdCode";
+import Referrals from "./Referrals/Referrals";
 
 const Dashboard = () => {
   const gChartLoaded = useSelector((state) => state.script.g_charts);
@@ -64,6 +65,7 @@ const Dashboard = () => {
             <Route path="/dashboard/websites/add" component={AddWebsite} />
             <Route path="/dashboard/websites/edit/:id" component={EditWebsite} />
             <Route path="/dashboard/get-adcode" component={AdCode} />
+            <Route path="/dashboard/referrals" component={Referrals} />
           </Switch>
         </div>
       </div>

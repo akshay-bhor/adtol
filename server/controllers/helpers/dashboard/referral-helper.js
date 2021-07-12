@@ -4,7 +4,7 @@ const sequelize = require('../../../utils/db');
 const { QueryTypes, Op } = require('sequelize');
 const base62 = require('base62');
 
-exports.referrelsHelper = async (req) => {
+exports.referralsHelper = async (req) => {
     if(!req.userInfo) {
         const err = new Error('Not Allowed!');
         err.statusCode = 401;
@@ -19,7 +19,7 @@ exports.referrelsHelper = async (req) => {
         // Get earned, balance
         const ures = await User.findOne({ where: { id: userid }, attributes: ['ref_earnings', 'pub_balance'] });
         const ref_earnings = ures.dataValues.ref_earnings;
-        const balance = ures.dataValues.pub_balanced;
+        const balance = ures.dataValues.pub_balance;
 
         // Get referred users
         const rures = await sequelize.query('SELECT COUNT(id) as refs FROM users WHERE ref_by = ?', {

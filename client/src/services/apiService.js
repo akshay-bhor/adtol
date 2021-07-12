@@ -93,3 +93,5 @@ export const addWebsite = (data) => conn.post('/api/dashboard/websites/add', dat
 export const editWebsite = (data) => conn.post('/api/dashboard/websites/edit/' + data.id, data.data);
 
 export const getAdcode = (data) => conn.post('/api/dashboard/websites/get-adcode', data);
+
+export const getReferralStats = () => conn.get('/api/dashboard/referrals');
