@@ -51,14 +51,14 @@ export const fetchWebsites = () => {
 
 export const updateWebsite = (data) => {
   return async (dispatch) => {
-    dispatch(_websitePostRequest(editWebsite, data));
+    await dispatch(_websitePostRequest(editWebsite, data));
     dispatch(_websiteGetRequest(getWebsitesList));
   }
 }
 
 export const createWebsite = (data) => {
   return async (dispatch) => {
-    dispatch(_websitePostRequest(addWebsite, data));
+    await dispatch(_websitePostRequest(addWebsite, data));
     dispatch(_websiteGetRequest(getWebsitesList));
   }
 }

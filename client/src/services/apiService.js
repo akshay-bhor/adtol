@@ -95,3 +95,7 @@ export const editWebsite = (data) => conn.post('/api/dashboard/websites/edit/' +
 export const getAdcode = (data) => conn.post('/api/dashboard/websites/get-adcode', data);
 
 export const getReferralStats = () => conn.get('/api/dashboard/referrals');
+
+export const getPaymentHistory = () => conn.get('/api/dashboard/billing/payment-history');
+
+export const getWithdrawHistory = () => conn.get('/api/dashboard/billing/withdraw-history');
