@@ -99,3 +99,8 @@ export const getReferralStats = () => conn.get('/api/dashboard/referrals');
 export const getPaymentHistory = () => conn.get('/api/dashboard/billing/payment-history');
 
 export const getWithdrawHistory = () => conn.get('/api/dashboard/billing/withdraw-history');
+
+export const createWithdraw = (data) => conn.post('/api/dashboard/billing/withdraw', data);
+
+export const getBillingFormData = () => conn.get('/api/dashboard/billing/formdata');
+

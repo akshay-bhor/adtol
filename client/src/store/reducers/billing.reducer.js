@@ -9,6 +9,7 @@ const billingSlice = createSlice({
     paymentsData: [],
     withdrawData: [],
     error: null,
+    formData: null
   },
   reducers: {
     setLoading(state, action) {
@@ -32,6 +33,9 @@ const billingSlice = createSlice({
     setFetchedWithdraws(state, action) {
       state.fetchedWithdraw = action.payload;
     },
+    setFormData(state, action) {
+      state.formData = action.payload;
+    }
   },
 });
 

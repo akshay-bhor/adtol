@@ -157,6 +157,8 @@ exports.withdrawHistoryHelper = async (req) => {
                 tmp.processor = 'Paypal';
             else if(data.processor == 3)
                 tmp.processor = 'Payoneer';
+            else if(data.processor == 4)
+                tmp.processor = 'System';
             else    
                 tmp.processor = 'NA';
             tmp.time = data.time_unix;

@@ -1,5 +1,14 @@
-import { Tabs, Tab, Paper, makeStyles, Box, Chip } from "@material-ui/core";
-import { useEffect, useState } from "react";
+import {
+  Tabs,
+  Tab,
+  Paper,
+  makeStyles,
+  Box,
+  Chip,
+  Grid,
+  Typography
+} from "@material-ui/core";
+import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../../Dashboard.module.css";
 import { DataGrid } from "@material-ui/data-grid";
@@ -10,6 +19,8 @@ import {
 } from "../../../../store/actions/billing.action";
 import { billingActions } from "../../../../store/reducers/billing.reducer";
 import * as luxon from "luxon";
+import { Icon } from "@material-ui/core";
+import { Link } from "react-router-dom";
 const DateTime = luxon.DateTime;
 
 const useStyles = makeStyles((theme) => ({
@@ -41,13 +52,43 @@ const useStyles = makeStyles((theme) => ({
     flexBasis: "100%",
   },
   container: {
-    flexGrow: "1",
+    display: "block",
+    width: "100%",
     padding: "15px",
     borderRadius: "10px",
+  },
+  tabContainer: {
+    padding: '0',
+    paddingLeft: '10px'
+  },
+  topContainer: {
+    marginBottom: "20px",
+  },
+  billingBox: {
+    height: "150px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "column",
+    color: theme.palette.primary.main,
+    cursor: "pointer",
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "none",
+    },
+  },
+  billingIcon: {
+    fontSize: "28px",
+    marginBottom: "10px",
   },
   tableContainer: {
     marginTop: "10px",
     marginBottom: "10px",
+    display: "block",
+    width: "100%",
+    backgroundColor: "#fff",
+    boxShadow: '0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)',
+    borderRadius: '10px'
   },
 }));
 
@@ -181,7 +222,9 @@ const BillingDashboard = () => {
       );
     }
     if (params.colDef.field == "time") {
-      return DateTime.fromSeconds(params.value).toLocaleString(DateTime.DATETIME_SHORT);
+      return DateTime.fromSeconds(params.value).toLocaleString(
+        DateTime.DATETIME_SHORT
+      );
     }
   };
 
@@ -206,18 +249,44 @@ const BillingDashboard = () => {
   }
 
   return (
-    <Paper className={muiStyles.container}>
-      <Tabs
-        value={tabValue}
-        onChange={(_, nval) => {
-          setTabValue((_) => nval);
-        }}
-        indicatorColor="primary"
-        textColor="primary"
+    <Fragment>
+      <Paper
+        className={[muiStyles.container, muiStyles.topContainer].join(" ")}
       >
-        <Tab label="Payment History" {...tabProps(0)} />
-        <Tab label="Withdraw History" {...tabProps(1)} />
-      </Tabs>
+        <Grid container>
+          <Grid item xs={12} sm={6}>
+            <Link to={'/dashboard/billing/payment'} className={muiStyles.billingBox}>
+              <Icon className={muiStyles.billingIcon}>payments</Icon>
+              <Typography variant="h6">Add money into your account</Typography>
+            </Link>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Link to={'/dashboard/billing/withdraw'} className={muiStyles.billingBox}>
+              <Icon className={muiStyles.billingIcon}>
+                account_balance_wallet
+              </Icon>
+              <Typography variant="h6">
+                Cash out money from your account
+              </Typography>
+            </Link>
+          </Grid>
+        </Grid>
+      </Paper>
+
+      <Paper className={[muiStyles.container, muiStyles.tabContainer].join(' ')}>
+        <Tabs
+          value={tabValue}
+          onChange={(_, nval) => {
+            setTabValue((_) => nval);
+          }}
+          indicatorColor="primary"
+          textColor="primary"
+        >
+          <Tab label="Payment History" {...tabProps(0)} />
+          <Tab label="Withdraw History" {...tabProps(1)} />
+        </Tabs>
+      </Paper>
+
       <Box component="div" className={muiStyles.tableContainer}>
         <Tabpanel value={tabValue} index={0}>
           <DataGrid
@@ -238,7 +307,7 @@ const BillingDashboard = () => {
           ></DataGrid>
         </Tabpanel>
       </Box>
-    </Paper>
+    </Fragment>
   );
 };
 
