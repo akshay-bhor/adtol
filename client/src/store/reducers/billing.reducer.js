@@ -9,7 +9,8 @@ const billingSlice = createSlice({
     paymentsData: [],
     withdrawData: [],
     error: null,
-    formData: null
+    formData: null,
+    modalOpen: false,
   },
   reducers: {
     setLoading(state, action) {
@@ -35,6 +36,9 @@ const billingSlice = createSlice({
     },
     setFormData(state, action) {
       state.formData = action.payload;
+    },
+    setModalOpen(state, action){
+      state.modalOpen = action.payload;
     }
   },
 });

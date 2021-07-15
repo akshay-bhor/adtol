@@ -183,7 +183,7 @@ const BillingDashboard = () => {
                 status == "Approved"
                   ? muiStyles.success
                   : status == "Pending"
-                  ? muiStyles.info
+                  ? muiStyles.warning
                   : muiStyles.error
               }
             />
@@ -200,7 +200,7 @@ const BillingDashboard = () => {
                 status == "captured"
                   ? muiStyles.success
                   : status == "created"
-                  ? muiStyles.info
+                  ? muiStyles.warning
                   : muiStyles.error
               }
             />

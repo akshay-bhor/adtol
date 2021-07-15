@@ -15,6 +15,7 @@ import * as yup from "yup";
 import { MySelectField, MyTextField } from "../../../FormUtils/FormUtils";
 import { Box, Button, Grid, makeStyles, MenuItem } from "@material-ui/core";
 import { Icon } from "@material-ui/core";
+import Modal from "../../../UI/Modal";
 
 const useStyles = makeStyles({
   block: {
@@ -31,21 +32,19 @@ const useStyles = makeStyles({
     color: "#666",
   },
   btnContainer: {
-    marginTop: '10px'
-  },
-  confirmBtnContainer: {
+    marginTop: "10px",
     display: "flex",
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
   },
   gridLeft: {
     color: "#666",
     textAlign: "left",
-    fontSize: '120%',
+    fontSize: "120%",
     paddingBottom: "10px",
   },
   gridRight: {
     fontWeight: "600",
-    fontSize: '125%',
+    fontSize: "125%",
     textAlign: "right",
     paddingBottom: "10px",
   },
@@ -70,7 +69,7 @@ const Withdraw = () => {
   const loading = useSelector((state) => state.billing.loading);
   const err = useSelector((state) => state.billing.error);
   const formData = useSelector((state) => state.billing.formData);
-  const [view, setView] = useState("withdraw");
+  const modalOpen = useSelector((state) => state.billing.modalOpen);
   const [withdrawData, setWithdrawData] = useState();
   const dispatch = useDispatch();
   const muiStyles = useStyles();
@@ -86,12 +85,12 @@ const Withdraw = () => {
     };
   }, []);
 
-  const handleViewChange = (view) => {
-    setView(() => view);
+  const handleModalToggle = (toggle) => {
+    dispatch(billingActions.setModalOpen(toggle));
   };
 
   const submitForm = () => {
-      dispatch(makeWithdraw(withdrawData));
+    dispatch(makeWithdraw(withdrawData));
   };
 
   // Create validation schema
@@ -118,103 +117,92 @@ const Withdraw = () => {
       )}
       {!loading && !err && formData !== null && (
         <PaperBlock
-          heading={view === "withdraw" ? "Withdraw Funds" : "Review"}
+          heading={"Withdraw Funds"}
           fullWidth={true}
           headingCenter={true}
         >
-          {view === "withdraw" && (
-            <Formik
-              initialValues={{
-                amt: formData.min_withdraw,
-                processor: 2,
-              }}
-              validationSchema={validationSchema}
-              onSubmit={(values) => {
-                setWithdrawData(() => values);
-                handleViewChange("review");
-              }}
-            >
-              <Form className={styles.fullWidthForm}>
-                <MyTextField
-                  name="amt"
-                  type="number"
-                  className={muiStyles.block}
-                  label="Amount"
-                />
+          <Formik
+            initialValues={{
+              amt: formData.min_withdraw,
+              processor: 2,
+            }}
+            validationSchema={validationSchema}
+            onSubmit={(values) => {
+              setWithdrawData(() => values);
+              handleModalToggle(true);
+            }}
+          >
+            <Form className={styles.fullWidthForm}>
+              <MyTextField
+                name="amt"
+                type="number"
+                className={muiStyles.block}
+                label="Amount"
+              />
 
-                <MySelectField
-                  name="processor"
-                  label="Processor"
-                  className={muiStyles.block}
-                >
-                  {processors.map((processor) => (
-                    <MenuItem key={processor.value} value={processor.value}>
-                      {processor.title}
-                    </MenuItem>
-                  ))}
-                </MySelectField>
+              <MySelectField
+                name="processor"
+                label="Processor"
+                className={muiStyles.block}
+              >
+                {processors.map((processor) => (
+                  <MenuItem key={processor.value} value={processor.value}>
+                    {processor.title}
+                  </MenuItem>
+                ))}
+              </MySelectField>
 
-                <Box
-                  component="div"
-                  className={[muiStyles.block, muiStyles.info].join(" ")}
-                >
-                  <Icon>info</Icon>&nbsp;Make sure you have added your
-                  respective withdraw account details to prevent rejection.
-                </Box>
+              <Box
+                component="div"
+                className={[muiStyles.block, muiStyles.info].join(" ")}
+              >
+                <Icon>info</Icon>&nbsp;Make sure you have added your respective
+                withdraw account details to prevent rejection.
+              </Box>
 
-                <Button
-                  variant="contained"
-                  type="submit"
-                  color="primary"
-                  disabled={loading}
-                  className={muiStyles.block}
-                >
-                  Review
-                </Button>
-              </Form>
-            </Formik>
-          )}
-
-          {view === "review" && (
-            <Grid container className={muiStyles.block}>
-              <Grid item xs={6} className={muiStyles.gridLeft}>
-                Amount
-              </Grid>
-              <Grid item xs={6} className={muiStyles.gridRight}>
-                ${withdrawData.amt}
-              </Grid>
-              <Grid item xs={6} className={muiStyles.gridLeft}>
-                Processor
-              </Grid>
-              <Grid item xs={6} className={muiStyles.gridRight}>
-                {processors[(withdrawData.processor - 1)].title}
-              </Grid>
-              <Grid item xs={6} className={muiStyles.btnContainer}>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  disabled={loading}
-                  onClick={() => setView("withdraw")}
-                  startIcon={<Icon>keyboard_backspace</Icon>}
-                >
-                  Go Back
-                </Button>
-              </Grid>
-              <Grid item xs={6} className={[muiStyles.btnContainer, muiStyles.confirmBtnContainer].join(' ')}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  disabled={loading}
-                  onClick={submitForm}
-                >
-                  {loading ? "Please Wait..." : "Confirm"}
-                </Button>
-              </Grid>
-            </Grid>
-          )}
+              <Button
+                variant="contained"
+                type="submit"
+                color="primary"
+                disabled={loading}
+                className={muiStyles.block}
+              >
+                Review
+              </Button>
+            </Form>
+          </Formik>
         </PaperBlock>
       )}
       {err && <ShowError />}
+
+      {modalOpen && (
+        <Modal title="Review" onClose={() => handleModalToggle(false)}>
+          <Grid container>
+            <Grid item xs={6} className={muiStyles.gridLeft}>
+              Amount
+            </Grid>
+            <Grid item xs={6} className={muiStyles.gridRight}>
+              ${withdrawData.amt}
+            </Grid>
+            <Grid item xs={6} className={muiStyles.gridLeft}>
+              Processor
+            </Grid>
+            <Grid item xs={6} className={muiStyles.gridRight}>
+              {processors[withdrawData.processor - 1].title}
+            </Grid>
+            <Grid item xs={12} className={muiStyles.btnContainer}>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={loading}
+                onClick={submitForm}
+              >
+                {loading ? "Please Wait..." : "Confirm"}
+              </Button>
+            </Grid>
+          </Grid>
+        </Modal>
+      )}
     </Fragment>
   );
 };

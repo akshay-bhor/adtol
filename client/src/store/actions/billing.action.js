@@ -50,6 +50,8 @@ const _billingPostRequest = (sendRequest, data, which) => {
       
       if(which === 'withdraw') {
         dispatch(billingActions.setFetchedWithdraws(false));
+        dispatch(billingActions.setModalOpen(false));
+        dispatch(fetchFormData());
       }
 
       dispatch(uiActions.showSnack({severity: 'success', message: "Request completed successfully"}))
