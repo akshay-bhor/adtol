@@ -6,7 +6,8 @@ const scriptSlice = createSlice({
         recaptcha: false,
         one_tap: false,
         gsi: false,
-        g_charts: false
+        g_charts: false,
+        rzr_pay: false
     },
     reducers: {
         loadScripts(state, action) {

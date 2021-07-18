@@ -1,10 +1,10 @@
 import { Formik, Form } from "formik";
-import { useEffect, Fragment, useState } from "react";
+import { useEffect, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   abortBillingRequest,
-  fetchFormData,
-  makeWithdraw,
+  convertPubBalance,
+  fetchFormData
 } from "../../../../store/actions/billing.action";
 import { billingActions } from "../../../../store/reducers/billing.reducer";
 import Loading from "../../../UI/Loading";
@@ -13,8 +13,8 @@ import PaperBlock from "../../Common/PaperBlock";
 import styles from "../../Dashboard.module.css";
 import * as yup from "yup";
 import { MySelectField, MyTextField } from "../../../FormUtils/FormUtils";
-import { Box, Button, makeStyles, MenuItem } from "@material-ui/core";
-import { Icon } from "@material-ui/core";
+import { Button, makeStyles, MenuItem } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 import BillingConfirmModal from "../BillingConfirmModal";
 
 const useStyles = makeStyles({
@@ -35,31 +35,40 @@ const useStyles = makeStyles({
     marginTop: "10px",
     display: "flex",
     justifyContent: "flex-start",
-  }
+  },
+  gridLeft: {
+    color: "#666",
+    textAlign: "left",
+    fontSize: "120%",
+    paddingBottom: "10px",
+  },
+  gridRight: {
+    fontWeight: "600",
+    fontSize: "125%",
+    textAlign: "right",
+    paddingBottom: "10px",
+  },
 });
 
 const processors = [
   {
-    title: "Bank",
+    title: "Payment Gateway",
     value: 1,
   },
   {
-    title: "Paypal",
+    title: "Convert Publisher Balance",
     value: 2,
-  },
-  {
-    title: "Payoneer",
-    value: 3,
   },
 ];
 
-const Withdraw = () => {
+const Deposit = () => {
   const loading = useSelector((state) => state.billing.loading);
   const err = useSelector((state) => state.billing.error);
   const formData = useSelector((state) => state.billing.formData);
   const modalOpen = useSelector((state) => state.billing.modalOpen);
-  const [withdrawFormData, setWithdrawFormData] = useState();
+  const payFormData = useSelector((state) => state.billing.payFormData);
   const dispatch = useDispatch();
+  const history = useHistory();
   const muiStyles = useStyles();
   let validationSchema;
 
@@ -77,8 +86,14 @@ const Withdraw = () => {
     dispatch(billingActions.setModalOpen(toggle));
   };
 
+  const handleSubmit = (values) => {
+    dispatch(billingActions.setPayFormData(values));
+    if (values.processor === 2) handleModalToggle(true);
+    if (values.processor === 1) history.push("/dashboard/billing/payment");
+  };
+
   const submitForm = () => {
-    dispatch(makeWithdraw(withdrawFormData));
+    dispatch(convertPubBalance(payFormData));
   };
 
   // Create validation schema
@@ -88,10 +103,9 @@ const Withdraw = () => {
         .number()
         .required("Amount is required")
         .min(
-          formData.min_withdraw,
-          `Min withdraw amount is ${formData.min_withdraw}`
-        )
-        .max(formData.pub_bal, `Max withdraw amount is ${formData.pub_bal}`),
+          formData.min_deposit,
+          `Min deposit amount is ${formData.min_deposit}`
+        ),
       processor: yup.string().required("Processor is required"),
     });
   }
@@ -104,20 +118,15 @@ const Withdraw = () => {
         </div>
       )}
       {!loading && !err && formData !== null && (
-        <PaperBlock
-          heading={"Withdraw Funds"}
-          fullWidth={true}
-          headingCenter={true}
-        >
+        <PaperBlock heading={"Add Funds"} fullWidth={true} headingCenter={true}>
           <Formik
             initialValues={{
-              amt: formData.min_withdraw,
-              processor: 2,
+              amt: formData.min_deposit,
+              processor: 1,
             }}
             validationSchema={validationSchema}
             onSubmit={(values) => {
-              setWithdrawFormData(() => values);
-              handleModalToggle(true);
+              handleSubmit(values);
             }}
           >
             <Form className={styles.fullWidthForm}>
@@ -140,14 +149,6 @@ const Withdraw = () => {
                 ))}
               </MySelectField>
 
-              <Box
-                component="div"
-                className={[muiStyles.block, muiStyles.info].join(" ")}
-              >
-                <Icon>info</Icon>&nbsp;Make sure you have added your respective
-                withdraw account details to prevent rejection.
-              </Box>
-
               <Button
                 variant="contained"
                 type="submit"
@@ -165,15 +166,15 @@ const Withdraw = () => {
 
       {modalOpen && (
         <BillingConfirmModal
-          formData={withdrawFormData}
+          formData={payFormData}
           processors={processors}
           submitForm={submitForm}
-          loading={loading}
           handleModalToggle={handleModalToggle}
+          loading={loading}
         />
       )}
     </Fragment>
   );
 };
 
-export default Withdraw;
+export default Deposit;

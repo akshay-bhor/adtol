@@ -104,3 +104,9 @@ export const createWithdraw = (data) => conn.post('/api/dashboard/billing/withdr
 
 export const getBillingFormData = () => conn.get('/api/dashboard/billing/formdata');
 
+export const convertPubBalanceApi = (data) => conn.post('/api/dashboard/billing/convert-pub-balance', data);
+
+export const createOrderApi = (data) => conn.post('/api/dashboard/payment/create-order', data);
+
+export const verifyPaymentApi = (data) => conn.post('/api/dashboard/payment/verify-payment', data);
+

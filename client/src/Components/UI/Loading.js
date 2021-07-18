@@ -1,6 +1,7 @@
+import { Typography } from "@material-ui/core";
 import { CircularProgress } from "@material-ui/core";
 
-const Loading = () => {
+const Loading = (props) => {
   return (
     <div
       style={{
@@ -9,6 +10,7 @@ const Loading = () => {
       }}
     >
       <CircularProgress />
+      <Typography component="h6">{props.msg ? props.msg:'Please Wait...'}</Typography>
     </div>
   );
 };

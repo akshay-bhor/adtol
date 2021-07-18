@@ -8,9 +8,15 @@ const billingSlice = createSlice({
     fetchedWithdraw: false,
     paymentsData: [],
     withdrawData: [],
+    payFormData: null,
     error: null,
     formData: null,
     modalOpen: false,
+    paymentState: {
+      orderData: null,
+      loading: false,
+      success: null,
+    }
   },
   reducers: {
     setLoading(state, action) {
@@ -21,6 +27,9 @@ const billingSlice = createSlice({
     },
     setWithdrawData(state, action) {
       state.withdrawData = action.payload;
+    },
+    setPayFormData(state, action) {
+      state.payFormData = action.payload;
     },
     setError(state, action) {
       state.error = action.payload;
@@ -39,6 +48,15 @@ const billingSlice = createSlice({
     },
     setModalOpen(state, action){
       state.modalOpen = action.payload;
+    },
+    setOrderData(state, action) {
+      state.paymentState.orderData = action.payload;
+    },
+    setPaymentLoading(state, action) {
+      state.paymentState.loading = action.payload;
+    },
+    setPaymentSuccess(state, action) {
+      state.paymentState.success = action.payload;
     }
   },
 });

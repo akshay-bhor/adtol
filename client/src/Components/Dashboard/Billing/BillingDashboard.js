@@ -10,14 +10,14 @@ import {
 } from "@material-ui/core";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import styles from "../../Dashboard.module.css";
+import styles from "../Dashboard.module.css";
 import { DataGrid } from "@material-ui/data-grid";
 import {
   abortBillingRequest,
   fetchPayments,
   fetchWithdraw,
-} from "../../../../store/actions/billing.action";
-import { billingActions } from "../../../../store/reducers/billing.reducer";
+} from "../../../store/actions/billing.action";
+import { billingActions } from "../../../store/reducers/billing.reducer";
 import * as luxon from "luxon";
 import { Icon } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -222,8 +222,8 @@ const BillingDashboard = () => {
       );
     }
     if (params.colDef.field == "time") {
-      return DateTime.fromSeconds(params.value).toLocaleString(
-        DateTime.DATETIME_SHORT
+      return DateTime.fromSeconds(params.value, { zone: 'utc' }).toLocaleString(
+        {...DateTime.DATETIME_SHORT, hour12: true}
       );
     }
   };
@@ -255,7 +255,7 @@ const BillingDashboard = () => {
       >
         <Grid container>
           <Grid item xs={12} sm={6}>
-            <Link to={'/dashboard/billing/payment'} className={muiStyles.billingBox}>
+            <Link to={'/dashboard/billing/deposit'} className={muiStyles.billingBox}>
               <Icon className={muiStyles.billingIcon}>payments</Icon>
               <Typography variant="h6">Add money into your account</Typography>
             </Link>
@@ -295,6 +295,9 @@ const BillingDashboard = () => {
             rows={payRows}
             rowHeight={80}
             columns={payCols}
+            pageSize={25}
+            rowsPerPageOptions={[10, 25, 50]}
+            pagination
           ></DataGrid>
         </Tabpanel>
         <Tabpanel value={tabValue} index={1}>
@@ -304,6 +307,9 @@ const BillingDashboard = () => {
             rows={wdRows}
             rowHeight={80}
             columns={wdCols}
+            pageSize={25}
+            rowsPerPageOptions={[10, 25, 50]}
+            pagination
           ></DataGrid>
         </Tabpanel>
       </Box>
