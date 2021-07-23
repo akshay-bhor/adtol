@@ -1,7 +1,8 @@
 const { Sequelize } = require("sequelize");
+let sequelize;
 
 try {
-  const sequelize = new Sequelize(
+  sequelize = new Sequelize(
     process.env.DB_NAME,
     process.env.DB_USER,
     process.env.DB_PASS,
