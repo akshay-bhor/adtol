@@ -8,8 +8,8 @@
 /out-tsc
 # /common/id_rsa_pub.pem
 # /common/id_rsa_priv.pem
-/controllers/ads/test.js
-/cron/cron.log
+# /controllers/ads/test.js
+# /cron/cron.log
 # Only exists if Bazel was run
 /bazel-out
 

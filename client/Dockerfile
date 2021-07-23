@@ -2,9 +2,9 @@ FROM node:alpine as build
 
 WORKDIR "/client"
 
-COPY ./package.json/ ./
+COPY ./package.json .
 
-COPY ./yarn.lock/ ./
+#COPY ./yarn.lock .
 
 RUN yarn install
 
