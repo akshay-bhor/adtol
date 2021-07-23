@@ -19,7 +19,7 @@ if(cluster.isMaster) {
     //     console.log(`Forked worker ${i}`);
     // }
     cluster.fork();
-    console.log(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB_HOST, process.env.DB_PORT);
+
     // Check if any worker comes online
     cluster.on('online', (worker) => {
         console.log(`Worker ${worker.process.pid} is online`);
