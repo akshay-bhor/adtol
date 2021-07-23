@@ -17,7 +17,7 @@ if(cluster.isMaster) {
     //     cluster.fork();
     //     console.log(`Forked worker ${i}`);
     // }
-    cluster.fork(); console.log(process.env.NODE_ENV); console.log(process.env.DB_HOST);
+    cluster.fork();
 
     // Check if any worker comes online
     cluster.on('online', (worker) => {
@@ -27,7 +27,7 @@ if(cluster.isMaster) {
     // Check if worker died and fork a new one
     cluster.on('exit', (worker) => {
         console.log(`Worker ${worker.process.pid} died`);
-        cluster.fork();
+        // cluster.fork();
         console.log('Forking new worker');
     });
 }

@@ -10,11 +10,6 @@ RUN npm install
 
 COPY . .
 
-# set app config option
-ENV PORT=4000
-ENV DB_DIALECT=mysql
-ENV DB_PORT=3306
-
 # app secret vars
 ARG HASH_SECRET
 ARG PAY_KEY_ID
@@ -33,8 +28,11 @@ ARG DB_NAME
 ARG DB_USER
 ARG DB_PASS
 ARG DB_HOST
-ARG DB_DIALECT
-ARG DB_PORT
+
+# set app config option
+ENV PORT=4000
+ENV DB_DIALECT=mysql
+ENV DB_PORT=3306
 
 ENV DB_NAME $DB_NAME
 ENV DB_USER $DB_USER
