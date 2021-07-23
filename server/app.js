@@ -8,6 +8,7 @@ const tasks = require('./cron/cron-jobs');
 const app = express();
 const cluster = require('cluster');
 const { createEmailTransport } = require('./common/emailTransporter');
+let retryCount = 0;
 
 if(cluster.isMaster) {
     console.log(`Master Process: ${process.pid} is running`);
@@ -18,16 +19,19 @@ if(cluster.isMaster) {
     //     console.log(`Forked worker ${i}`);
     // }
     cluster.fork();
-
+    console.log(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB_HOST, process.env.DB_PORT);
     // Check if any worker comes online
     cluster.on('online', (worker) => {
-        console.log(`Worker ${worker.process.pid} is online`);
+        console.log(`Worker ${worker.process.pid} is online, retry count - ` + retryCount);
     });
 
     // Check if worker died and fork a new one
     cluster.on('exit', (worker) => {
         console.log(`Worker ${worker.process.pid} died`);
-        // cluster.fork();
+        if(retryCount < 5) {
+            cluster.fork();
+            retryCount++;
+        }
         console.log('Forking new worker');
     });
 }

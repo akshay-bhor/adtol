@@ -94,6 +94,7 @@ exports.loadSettings = async () => {
     });
     App_Settings.web_settings = { ...tmp };
   } catch (err) {
+    console.log(err);
     console.log("Failed to load common web settings");
   }
 };
