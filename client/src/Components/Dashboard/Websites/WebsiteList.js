@@ -199,7 +199,7 @@ const WebsiteList = () => {
               </Button>
             </Link>
           </Box>
-          <PaperBlock heading="Websites" fullWidth="true">
+          <PaperBlock heading={'Websites'} fullWidth={true}>
             <div style={{ flexGrow: 1 }}>
               <DataGrid
                 autoHeight

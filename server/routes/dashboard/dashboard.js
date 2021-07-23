@@ -10,7 +10,7 @@ const publisherController = require('../../controllers/dashboard/publisher');
 const websitesController = require('../../controllers/dashboard/websites');
 
 const reportController = require('../../controllers/dashboard/reports');
-const referrelController = require('../../controllers/dashboard/referrels');
+const referralController = require('../../controllers/dashboard/referrals');
 
 const billingController = require('../../controllers/dashboard/billing');
 const paymentController = require('../../controllers/dashboard/payments');
@@ -31,7 +31,7 @@ router.post('/websites/edit/:webid', isAuth, websitesController.editWebsite);
 router.post('/websites/get-adcode', isAuth, websitesController.getAdcode);
 router.get('/websites/formdata', websitesController.formdata);
 
-router.get('/referrels', isAuth, referrelController.referrels);
+router.get('/referrals', isAuth, referralController.referrals);
 
 router.get('/billing/payment-history', isAuth, billingController.payHistory);
 router.get('/billing/withdraw-history', isAuth, billingController.withdrawHistory);

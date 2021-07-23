@@ -3,6 +3,7 @@ const { QueryTypes } = require('sequelize');
 const { App_Settings } = require('../../../common/settings');
 const { createUniquePaymentId } = require('../../../common/util');
 const Payments = require('../../../models/payments');
+const Settings = require('../../../models/settings');
 const User = require('../../../models/users');
 const Withdraw = require('../../../models/withdraw');
 const sequelize = require('../../../utils/db');
@@ -14,17 +15,17 @@ exports.payHistoryHelper = async(req) => {
         throw err;
     }
 
-    if(req.query.p)
-        await check('p').trim().escape().isInt().withMessage('Invalid Page!').run(req);
+    // if(req.query.p)
+    //     await check('p').trim().escape().isInt().withMessage('Invalid Page!').run(req);
 
     try {
-        const errs = validationResult(req);
-        if(!errs.isEmpty()) {
-            const err = new Error('Validation Failed!');
-            err.statusCode = 422;
-            err.data = errs.array();
-            throw err;
-        }
+        // const errs = validationResult(req);
+        // if(!errs.isEmpty()) {
+        //     const err = new Error('Validation Failed!');
+        //     err.statusCode = 422;
+        //     err.data = errs.array();
+        //     throw err;
+        // }
 
 
         /**
@@ -37,20 +38,25 @@ exports.payHistoryHelper = async(req) => {
         const userid = req.userInfo.id;
 
         // Page
-        let page = 1;
-        if(req.query.p)
-            page = req.query.p;
+        // let page = 1;
+        // if(req.query.p)
+        //     page = req.query.p;
 
         // Per page Limit
-        const limit = 20;
+        // const limit = 20;
 
         // offset
-        const offset = (page - 1) * limit;
+        // const offset = (page - 1) * limit;
 
         // Fetch
-        const payments = await sequelize.query('SELECT mtx, rzr_order_id, amount, currency, status, processor, time_unix FROM payments WHERE uid = ? ORDER BY id DESC LIMIT ? OFFSET ?', {
+        // const payments = await sequelize.query('SELECT mtx, rzr_order_id, amount, currency, status, processor, time_unix FROM payments WHERE uid = ? ORDER BY id DESC LIMIT ? OFFSET ?', {
+        //     type: QueryTypes.SELECT,
+        //     replacements: [userid, limit, offset],
+        //     mapToModel: Payments
+        // });
+        const payments = await sequelize.query('SELECT mtx, rzr_order_id, amount, currency, status, processor, time_unix FROM payments WHERE uid = ? ORDER BY id DESC', {
             type: QueryTypes.SELECT,
-            replacements: [userid, limit, offset],
+            replacements: [userid],
             mapToModel: Payments
         });
 
@@ -73,15 +79,6 @@ exports.payHistoryHelper = async(req) => {
             payData.push(tmp);
         });
 
-        // Check if response empty from db
-        if(payData.length == 0) {
-            const err = new Error('No Data Available!');
-            err.statusCode = 404;
-            throw err;
-        }
-
-        payData = {...payData};
-
         // Return
         return {
             data: payData
@@ -101,36 +98,41 @@ exports.withdrawHistoryHelper = async (req) => {
         throw err;
     }
 
-    if(req.query.p)
-        await check('p').trim().escape().isInt().withMessage('Invalid Page!').run(req);
+    // if(req.query.p)
+    //     await check('p').trim().escape().isInt().withMessage('Invalid Page!').run(req);
 
     try {
-        const errs = validationResult(req);
-        if(!errs.isEmpty()) {
-            const err = new Error('Validation Failed!');
-            err.statusCode = 422;
-            err.data = errs.array();
-            throw err;
-        }
+        // const errs = validationResult(req);
+        // if(!errs.isEmpty()) {
+        //     const err = new Error('Validation Failed!');
+        //     err.statusCode = 422;
+        //     err.data = errs.array();
+        //     throw err;
+        // }
 
         // Userid
         const userid = req.userInfo.id;
 
         // Page
-        let page = 1;
-        if(req.query.p)
-            page = req.query.p;
+        // let page = 1;
+        // if(req.query.p)
+        //     page = req.query.p;
 
         // Per page limit
-        const limit = 20;
+        // const limit = 20;
 
         // offset
-        const offset = (page - 1) * limit;
+        // const offset = (page - 1) * limit;
 
         // Fetch
-        const withdraws = await sequelize.query('SELECT mtx, amount, currency, fee, status, processor, time_unix FROM withdraws WHERE uid = ? ORDER BY id DESC limit ? OFFSET ?', {
+        // const withdraws = await sequelize.query('SELECT mtx, amount, currency, fee, status, processor, time_unix FROM withdraws WHERE uid = ? ORDER BY id DESC limit ? OFFSET ?', {
+        //     type: QueryTypes.SELECT,
+        //     replacements: [userid, limit, offset],
+        //     mapToModel: Withdraw
+        // });
+        const withdraws = await sequelize.query('SELECT mtx, amount, currency, fee, status, processor, time_unix FROM withdraws WHERE uid = ? ORDER BY id DESC', {
             type: QueryTypes.SELECT,
-            replacements: [userid, limit, offset],
+            replacements: [userid],
             mapToModel: Withdraw
         });
         
@@ -151,23 +153,18 @@ exports.withdrawHistoryHelper = async (req) => {
 
             if(data.processor == 1)
                 tmp.processor = 'Bank';
-            if(data.processor == 2)
+            else if(data.processor == 2)
                 tmp.processor = 'Paypal';
-            if(data.processor == 3)
+            else if(data.processor == 3)
                 tmp.processor = 'Payoneer';
+            else if(data.processor == 4)
+                tmp.processor = 'System';
+            else    
+                tmp.processor = 'NA';
             tmp.time = data.time_unix;
 
             wdData.push(tmp);
         });
-
-        // Check if response empty from db
-        if(wdData.length == 0) {
-            const err = new Error('No Data Available!');
-            err.statusCode = 404;
-            throw err;
-        }
-
-        wdData = {...wdData};
 
         // Return
         return {
@@ -198,14 +195,22 @@ exports.formDataHelper = async (req) => {
         
         const pub_bal = bal.dataValues.pub_balance;
 
+        // Find settings
+        let web_settings = await Settings.findAll();
+        let tmp;
+        web_settings.forEach(data => {
+            tmp = {...data.dataValues}
+        });
+        web_settings = {...tmp};
+
         // Min deposit
-        const min_deposit = App_Settings.web_settings.min_deposit;
+        const min_deposit = web_settings.min_deposit;
 
         // Min withdrawal
-        const min_withdraw = App_Settings.web_settings.min_withdraw;
+        const min_withdraw = web_settings.min_withdraw;
 
         // Withdraw fee
-        const withdraw_fee = App_Settings.web_settings.withdraw_fee;
+        const withdraw_fee = web_settings.withdraw_fee;
 
         // Return
         return {

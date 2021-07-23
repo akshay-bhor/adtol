@@ -85,8 +85,8 @@ export const SidenavMenuItems = [
     },
     {
         id: 40,
-        title: 'Referrels',
-        url: '/dashboard/referrels',
+        title: 'Referrals',
+        url: '/dashboard/referrals',
         icon: 'person_add',
         nested: false,
         divider: true

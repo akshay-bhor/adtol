@@ -7,14 +7,16 @@ export const scripts = {
   RECAPTCHA: "recaptcha",
   GSI: "gsi",
   ONETAP: "one_tap",
-  GCHARTS: "g_charts"
+  GCHARTS: "g_charts",
+  RZRPAY: "rzr_pay"
 };
 
 export const scriptSrc = {
   RECAPTCHA: `https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`,
   ONETAP: `https://accounts.google.com/gsi/client`,
   GSI: `https://apis.google.com/js/platform.js`,
-  GCHARTS: `https://www.gstatic.com/charts/loader.js`
+  GCHARTS: `https://www.gstatic.com/charts/loader.js`,
+  RZRPAY: `https://checkout.razorpay.com/v1/checkout.js`,
 };
 
 export const loadScript = (id, url) => {
