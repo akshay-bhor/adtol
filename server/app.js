@@ -22,7 +22,7 @@ if(cluster.isMaster) {
     console.log(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, process.env.DB_HOST, process.env.DB_PORT);
     // Check if any worker comes online
     cluster.on('online', (worker) => {
-        console.log(`Worker ${worker.process.pid} is online, retry count - ` + retryCount);
+        console.log(`Worker ${worker.process.pid} is online`);
     });
 
     // Check if worker died and fork a new one
@@ -30,9 +30,9 @@ if(cluster.isMaster) {
         console.log(`Worker ${worker.process.pid} died`);
         if(retryCount < 5) {
             cluster.fork();
+            console.log('Forking new worker, retry count - ' + retryCount);
             retryCount++;
         }
-        console.log('Forking new worker');
     });
 }
 else {
