@@ -61,7 +61,7 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./client/
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./client
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
     
@@ -78,7 +78,7 @@ jobs:
         docker build --build-arg NODE_ENV="development" --build-arg ORIGIN="dev.eviltech.net" --build-arg DB_NAME="${{ secrets.DB_NAME_DEV }}" --build-arg DB_USER="${{ secrets.DB_USER_DEV }}" --build-arg DB_PASS="${{ secrets.DB_PASS_DEV }}" --build-arg DB_HOST="${{ secrets.DB_HOST_DEV }}" \
         --build-arg PAY_KEY_SECRET="${{ secrets.PAY_KEY_SECRET_DEV }}" --build-arg EMAIL_USER="${{ secrets.EMAIL_USER_DEV }}" --build-arg EMAIL_PASS="${{ secrets.EMAIL_PASS_DEV }}" --build-arg AES_KEY="${{ secrets.AES_KEY_DEV }}" --build-arg HASH_SECRET="${{ secrets.HASH_SECRET_DEV }}" \
         --build-arg RECAPTCHA_SECRET="${{ secrets.RECAPTCHA_SECRET_DEV }}" --build-arg GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID_DEV }}" --build-arg GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET_DEV }}" --build-arg PAY_KEY_ID="${{ secrets.PAY_KEY_ID_DEV }}" \
-        -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./server/
+        -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./server
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
