@@ -17,7 +17,7 @@ if(cluster.isMaster) {
     //     cluster.fork();
     //     console.log(`Forked worker ${i}`);
     // }
-    cluster.fork();
+    cluster.fork(); console.log(process.env.NODE_ENV); console.log(process.env.DB_HOST);
 
     // Check if any worker comes online
     cluster.on('online', (worker) => {
