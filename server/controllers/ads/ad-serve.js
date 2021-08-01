@@ -147,7 +147,7 @@ exports.adServe = async (req, res, next) => {
             linkData.type = 'serve';
             linkData.time_unix = Math.floor(new Date().getTime() / 1000) + 600; // Valid for 10 minutes
 
-            const link = 'http://' + req.get('host') + '/api/ads/pcs/click?tk=' + encryptAES(JSON.stringify(linkData));
+            const link = 'http://' + process.env.ORIGIN + '/api/ads/pcs/click?tk=' + encryptAES(JSON.stringify(linkData));
 
             // Get domain from url
             parsed = psl.parse(result[bestAdIndex].url);

@@ -201,7 +201,7 @@ exports.publisherHelper = async(req) => {
     }
 }
 
-findBy = (arr, s, key) => {
+const findBy = (arr, s, key) => {
     for(let i = 0;i < arr.length;i++) {
         if(arr[i][key] == s) {
             return arr[i];

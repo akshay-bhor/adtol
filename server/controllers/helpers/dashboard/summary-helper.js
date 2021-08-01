@@ -28,7 +28,7 @@ exports.summaryHelper = async(req) => {
 
         const queries = [
             { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as earned, day_unix FROM summary_device WHERE pub_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
-            { "name": "countrystats", "query": "SELECT views as cviews, clicks as cclicks, pops as cpops, cost as cearned, country, day_unix FROM summary_country WHERE pub_uid = "+ userid +" AND day_unix = "+ today_unix +" ORDER BY cost DESC LIMIT 5" },
+            { "name": "countrystats", "query": "SELECT views as cviews, clicks as cclicks, pops as cpops, cost as cearned, country FROM summary_country WHERE pub_uid = "+ userid +" AND day_unix = "+ today_unix +" ORDER BY cost DESC LIMIT 5" },
             { "name": "adunits", "query": "SELECT SUM(pub_cpc) as adearned, ad_type, day_unix FROM clicks WHERE pub_uid = "+ userid +" AND day_unix >= "+ yesterday_unix +" GROUP BY ad_type, day_unix" },
             
             { "name": "user", "query": "SELECT pub_balance, ad_balance FROM users WHERE id = "+ userid +"" },
@@ -105,9 +105,7 @@ exports.summaryHelper = async(req) => {
         }
 
         // Performance
-        let { views } = findBy(pubRes, today_unix, 'day_unix');
-        let { pops } = findBy(pubRes, today_unix, 'day_unix');
-        let { clicks } = findBy(pubRes, today_unix, 'day_unix');
+        let { views, pops, clicks } = findBy(pubRes, today_unix, 'day_unix');
         let cpc = 'NA';
         if(clicks != 0) cpc = (todayEarned / clicks).toFixed(2);
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import PaperBlock from "./PaperBlock";
 
@@ -18,22 +18,29 @@ const flattenData = (data) => {
 
 const GeoChart = (props) => {
   const gChartLoaded = useSelector((state) => state.script.g_charts);
+  const geo_chart = useRef();
 
   const loadChart = useCallback(() => {
     // Flatten data
     const cdata = flattenData(props.data);
+    
+    // If non-empty reponse from api
+    if(cdata.length > 0) {
+      let data = window.google.visualization.arrayToDataTable([
+          props.cols,
+          ...cdata
+        ]);
 
-    let data = window.google.visualization.arrayToDataTable([
-        props.cols,
-        ...cdata
-      ]);
+      let options = {};
 
-    let options = {};
+      let chart = new window.google.visualization.GeoChart(geo_chart.current);
 
-    let chart = new window.google.visualization.GeoChart(document.getElementById('geo_chart'));
-
-    chart.draw(data, options);
-  }, [props.data]);
+      chart.draw(data, options);
+    }
+    else {
+      if(geo_chart.current) geo_chart.current.innerText = 'No Data Available!';
+    }
+  }, [props.data, geo_chart]);
 
   useEffect(() => {
     if (gChartLoaded) {
@@ -47,7 +54,7 @@ const GeoChart = (props) => {
 
   return (
     <PaperBlock heading="By Country">
-      <div id="geo_chart" style={chartContent}></div>
+      <div id="geo_chart" ref={geo_chart} style={chartContent}></div>
     </PaperBlock>
   );
 };
