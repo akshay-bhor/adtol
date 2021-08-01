@@ -31,7 +31,7 @@ const mapRows = (data) => {
             clicks: data[key].clicks,
             pops: data[key].pops,
             earned: '$'+data[key].earned.toFixed(2),
-            ctr: data[key].ctr+'%'
+            ctr: data[key].ctr ? data[key].ctr+'%': 'NA'
         }
     ));
 }

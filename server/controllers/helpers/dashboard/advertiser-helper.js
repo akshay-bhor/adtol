@@ -22,9 +22,9 @@ exports.advertiserHelper = async(req) => {
         const week_before_unix = (today_unix - (60*60*24*7)); 
 
         const queries = [
-            { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as cost, day_unix FROM summary_device WHERE ad_uid=" + userid +" AND day_unix >= "+ week_before_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
-            { "name": "countrystats", "query": "SELECT SUM(views) as cviews, SUM(clicks) as cclicks, SUM(pops) as cpops, SUM(cost) as cspent, country FROM summary_country WHERE ad_uid = "+ userid +" AND day_unix >= "+ week_before_unix +" GROUP BY country" },
-            { "name": "campstats", "query": "SELECT SUM(views) as cmviews, SUM(pops) as cmpops, SUM(clicks) as cmclicks, SUM(cost) as cmspent, campaign as campaign_id from summary_device WHERE ad_uid = "+ userid +" AND day_unix >= "+ week_before_unix +" GROUP BY campaign" },
+            { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(ad_cost) as cost, day_unix FROM summary_device WHERE ad_uid=" + userid +" AND day_unix >= "+ week_before_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
+            { "name": "countrystats", "query": "SELECT SUM(views) as cviews, SUM(clicks) as cclicks, SUM(pops) as cpops, SUM(ad_cost) as cspent, country FROM summary_country WHERE ad_uid = "+ userid +" AND day_unix >= "+ week_before_unix +" GROUP BY country" },
+            { "name": "campstats", "query": "SELECT SUM(views) as cmviews, SUM(pops) as cmpops, SUM(clicks) as cmclicks, SUM(ad_cost) as cmspent, campaign as campaign_id from summary_device WHERE ad_uid = "+ userid +" AND day_unix >= "+ week_before_unix +" GROUP BY campaign" },
 
             { "name": "campaigns", "query": "SELECT id, campaign_title FROM campaigns WHERE uid = "+ userid +" AND status = 1" }
         ];
@@ -97,7 +97,7 @@ exports.advertiserHelper = async(req) => {
 
             let { cmviews, cmclicks, cmpops, cmspent } = findBy(campRes, campaign_id, 'campaign_id');
             let ctr = Math.round((cmclicks / cmviews) * 10000) / 100;
-            let tspent = cmspent;
+            let tspent = Math.floor(cmspent * 100) / 100;
 
             byCampaign[campaign_id] = {
                 title: data.campaign_title,
