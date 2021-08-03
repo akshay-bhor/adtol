@@ -22,9 +22,9 @@ exports.publisherHelper = async(req) => {
         const week_before_unix = (today_unix - (60*60*24*7)); 
 
         const queries = [
-            { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(pub_cost) as cost, day_unix FROM summary_device WHERE pub_uid=" + userid +" AND day_unix >= "+ week_before_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
-            { "name": "countrystats", "query": "SELECT SUM(views) as cviews, SUM(clicks) as cclicks, SUM(pops) as cpops, SUM(pub_cost) as cearned, country FROM summary_country WHERE pub_uid = "+ userid +" AND day_unix >= "+ week_before_unix +" GROUP BY country" },
-            { "name": "webstats", "query": "SELECT SUM(views) as wviews, SUM(pops) as wpops, SUM(clicks) as wclicks, SUM(pub_cost) as wearned, website as site_id from summary_device WHERE pub_uid = "+ userid +" AND day_unix >= "+ week_before_unix +" GROUP BY website" },
+            { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as cost, day_unix FROM summary_device WHERE pub_uid=" + userid +" AND day_unix >= "+ week_before_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
+            { "name": "countrystats", "query": "SELECT SUM(views) as cviews, SUM(clicks) as cclicks, SUM(pops) as cpops, SUM(cost) as cearned, country FROM summary_country WHERE pub_uid = "+ userid +" AND day_unix >= "+ week_before_unix +" GROUP BY country" },
+            { "name": "webstats", "query": "SELECT SUM(views) as wviews, SUM(pops) as wpops, SUM(clicks) as wclicks, SUM(cost) as wearned, website as site_id from summary_device WHERE pub_uid = "+ userid +" AND day_unix >= "+ week_before_unix +" GROUP BY website" },
 
             { "name": "websites", "query": "SELECT id, domain FROM pub_sites WHERE uid = "+ userid +" AND status = 1" }
         ];

@@ -27,15 +27,15 @@ exports.summaryHelper = async(req) => {
         let past_two_weeks_unix = today_unix - two_weeks;
 
         const queries = [
-            { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(pub_cost) as earned, day_unix FROM summary_device WHERE pub_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
-            { "name": "countrystats", "query": "SELECT views as cviews, clicks as cclicks, pops as cpops, pub_cost as cearned, country FROM summary_country WHERE pub_uid = "+ userid +" AND day_unix = "+ today_unix +" ORDER BY pub_cost DESC LIMIT 5" },
+            { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as earned, day_unix FROM summary_device WHERE pub_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
+            { "name": "countrystats", "query": "SELECT views as cviews, clicks as cclicks, pops as cpops, cost as cearned, country FROM summary_country WHERE pub_uid = "+ userid +" AND day_unix = "+ today_unix +" ORDER BY cost DESC LIMIT 5" },
             { "name": "adunits", "query": "SELECT SUM(pub_cpc) as adearned, ad_type, day_unix FROM clicks WHERE pub_uid = "+ userid +" AND day_unix >= "+ yesterday_unix +" GROUP BY ad_type, day_unix" },
             
             { "name": "user", "query": "SELECT pub_balance, ad_balance FROM users WHERE id = "+ userid +"" },
 
             
-            { "name": "stats", "query": "SELECT SUM(views) as ad_views, SUM(clicks) as ad_clicks, SUM(pops) as ad_pops, SUM(ad_cost) as spent, day_unix FROM summary_device WHERE ad_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
-            { "name": "countrystats", "query": "SELECT views as cviews, clicks as cclicks, pops as cpops, ad_cost as cspent, country, day_unix FROM summary_country WHERE ad_uid = "+ userid +" AND day_unix = "+ today_unix +" ORDER BY ad_cost DESC LIMIT 5" },
+            { "name": "stats", "query": "SELECT SUM(views) as ad_views, SUM(clicks) as ad_clicks, SUM(pops) as ad_pops, SUM(cost) as spent, day_unix FROM summary_device WHERE ad_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
+            { "name": "countrystats", "query": "SELECT views as cviews, clicks as cclicks, pops as cpops, cost as cspent, country, day_unix FROM summary_country WHERE ad_uid = "+ userid +" AND day_unix = "+ today_unix +" ORDER BY cost DESC LIMIT 5" },
             { "name": "adunits", "query": "SELECT SUM(ad_cpc) as adspent, ad_type, day_unix FROM clicks WHERE ad_uid = "+ userid +" AND day_unix >= "+ yesterday_unix +" GROUP BY ad_type, day_unix" },
         ];
 
