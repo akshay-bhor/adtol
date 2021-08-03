@@ -45,12 +45,7 @@ const Summary_Country = sequelize.define('summary_country', {
         allowNull: false,
         defaultValue: 0
     },
-    ad_cost: {
-        type: DataTypes.FLOAT(15, 5),
-        allowNull: false,
-        defaultValue: 0
-    },
-    pub_cost: {
+    cost: {
         type: DataTypes.FLOAT(15, 5),
         allowNull: false,
         defaultValue: 0
