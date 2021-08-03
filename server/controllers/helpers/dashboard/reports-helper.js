@@ -94,57 +94,39 @@ exports.reportsHelper = async (req) => {
         let cond;
         if(reportType == 'advertiser') {
             if(campId != 0)
-                cond = 'ad_uid = '+ userid +' AND day_unix >= '+ tunix +' AND campaign_id = '+ campId;
+                cond = 'ad_uid = '+ userid +' AND day_unix >= '+ tunix +' AND campaign = '+ campId;
             else
                 cond = 'ad_uid = '+ userid +' AND day_unix >= '+ tunix;
         }
         if(reportType == 'publisher') {
             if(webId != 0)
-                cond = 'pub_uid = '+ userid +' AND day_unix >= '+ tunix +' AND site_id = '+ webId;
+                cond = 'pub_uid = '+ userid +' AND day_unix >= '+ tunix +' AND website = '+ webId;
             else
                 cond = 'pub_uid = '+ userid +' AND day_unix >= '+ tunix;
         }
-        // cpc col
-        let col;
-        if(reportType == 'advertiser') col = 'ad_cpc';
-        if(reportType == 'publisher') col = 'pub_cpc';
 
         const queries = [
-            { "name": "views", "query": "SELECT COUNT(id) as views, day_unix FROM views WHERE "+ cond +" GROUP BY day_unix ORDER BY day_unix DESC" },
-            { "name": "clicks", "query": "SELECT COUNT(id) as clicks, SUM("+ col +") as ccost, day_unix FROM clicks WHERE "+ cond +" GROUP BY day_unix ORDER BY day_unix DESC" },
-            { "name": "pops", "query": "SELECT COUNT(id) as pops, SUM("+ col +") as pcost, day_unix FROM pops WHERE "+ cond +" GROUP BY day_unix ORDER BY day_unix DESC" },
+            { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as cost, day_unix FROM summary_device WHERE "+ cond +" GROUP BY day_unix ORDER BY day_unix DESC" },
 
-            { "name": "countryviews", "query": "SELECT COUNT(id) as cviews, country FROM views WHERE "+ cond +" GROUP BY country" },
-            { "name": "countryclicks", "query": "SELECT COUNT(id) as cclicks, SUM("+ col +") as cccost, country FROM clicks WHERE "+ cond +" GROUP BY country" },
-            { "name": "countrypops", "query": "SELECT COUNT(id) as cpops, SUM("+ col +") as cpcost, country FROM pops WHERE "+ cond +" GROUP BY country" },
+            { "name": "countrystats", "query": "SELECT SUM(views) as cviews, SUM(clicks) as cclicks, SUM(pops) as cpops, SUM(cost) as ccost, country FROM summary_country WHERE "+ cond +" GROUP BY country" },
 
-            { "name": "deviceviews", "query": "SELECT COUNT(id) as dviews, device FROM views WHERE "+ cond +" GROUP BY device" },
-            { "name": "deviceclicks", "query": "SELECT COUNT(id) as dclicks, SUM("+ col +") as dccost, device FROM clicks WHERE "+ cond +" GROUP BY device" },
-            { "name": "devicepops", "query": "SELECT COUNT(id) as dpops, SUM("+ col +") as dpcost, device FROM pops WHERE "+ cond +" GROUP BY device" },
+            { "name": "devicestats", "query": "SELECT SUM(views) as dviews, SUM(clicks) as dclicks, SUM(pops) as dpops, SUM(cost) as ccost, device FROM summary_device WHERE "+ cond +" GROUP BY device" },
 
-            { "name": "osviews", "query": "SELECT COUNT(id) as osviews, os FROM views WHERE "+ cond +" GROUP BY os" },
-            { "name": "osclicks", "query": "SELECT COUNT(id) as osclicks, SUM("+ col +") as osccost, os FROM clicks WHERE "+ cond +" GROUP BY os" },
-            { "name": "ospops", "query": "SELECT COUNT(id) as ospops, SUM("+ col +") as ospcost, os FROM pops WHERE "+ cond +" GROUP BY os" },
+            { "name": "osstats", "query": "SELECT SUM(views) as osviews, SUM(clicks) as osclicks, SUM(pops) as ospops, SUM(cost) as oscost, os FROM summary_os WHERE "+ cond +" GROUP BY os" },
 
-            { "name": "bviews", "query": "SELECT COUNT(id) as bviews, browser FROM views WHERE "+ cond +" GROUP BY browser" },
-            { "name": "bclicks", "query": "SELECT COUNT(id) as bclicks, SUM("+ col +") as bccost, browser FROM clicks WHERE "+ cond +" GROUP BY browser" },
-            { "name": "bpops", "query": "SELECT COUNT(id) as bpops, SUM("+ col +") as bpcost, browser FROM pops WHERE "+ cond +" GROUP BY browser" },
+            { "name": "browserstats", "query": "SELECT SUM(views) as vviews, SUM(clicks) as bclicks, SUM(pops) as bpops, SUM(cost) as bcost, browser FROM summary_browser WHERE "+ cond +" GROUP BY browser" },
         ];
 
         // Append to query array according to report type
         if(reportType == 'advertiser') {
             queries.push(
-                { "name": "campviews", "query": "SELECT COUNT(id) as cmviews, campaign_id FROM views WHERE "+ cond +" GROUP BY campaign_id" },
-                { "name": "campclicks", "query": "SELECT COUNT(id) as cmclicks, SUM("+ col +") as cmccost, campaign_id FROM clicks WHERE "+ cond +" GROUP BY campaign_id" },
-                { "name": "camppops", "query": "SELECT COUNT(id) as cmpops, SUM("+ col +") as cmpcost, campaign_id FROM pops WHERE "+ cond +" GROUP BY campaign_id" },
-                { "name": "campaigns", "query": "SELECT id, campaign_title FROM campaigns WHERE uid = "+ userid +" AND status = 1" }
+                { "name": "campstats", "query": "SELECT SUM(views) as cmviews, SUM(pops) as cmpops, SUM(clicks) as cmclicks, SUM(cost) as cmcost, campaign as campaign_id from summary_device WHERE "+ cond +" GROUP BY campaign" },
+                { "name": "campaigns", "query": "SELECT id, campaign_title FROM campaigns WHERE uid = "+ userid +" AND status = 1" },
             );
         }
         if(reportType == 'publisher') {
             queries.push(
-                { "name": "webviews", "query": "SELECT COUNT(id) as wviews, site_id FROM views WHERE "+ cond +" GROUP BY site_id" },
-                { "name": "webclicks", "query": "SELECT COUNT(id) as wclicks, SUM("+ col +") as wccost, site_id FROM clicks WHERE "+ cond +" GROUP BY site_id" },
-                { "name": "webpops", "query": "SELECT COUNT(id) as wpops, SUM("+ col +") as wpcost, site_id FROM pops WHERE "+ cond +" GROUP BY site_id" },
+                { "name": "webstats", "query": "SELECT SUM(views) as wviews, SUM(pops) as wpops, SUM(clicks) as wclicks, SUM(cost) as wcost, website as site_id from summary_device WHERE "+ cond +" GROUP BY website" },
                 { "name": "websites", "query": "SELECT id, domain FROM pub_sites WHERE uid = "+ userid +" AND status = 1" }
             );
         }
@@ -152,27 +134,13 @@ exports.reportsHelper = async (req) => {
 
 
         const result = await executeAllQueries(queries);
-        const viewRes = result[0];
-        const clickRes = result[1]; 
-        const popRes = result[2];
-        const countryViews = result[3];
-        const countryClicks = result[4];
-        const countryPops = result[5];
-        const devViews = result[6]; 
-        const devClicks = result[7];
-        const devPops = result[8];
-        const osViews = result[9];
-        const osClicks = result[10];
-        const osPops = result[11];
-        const bViews = result[12];
-        const bClicks = result[13];
-        const bPops = result[14]; 
-
-        
-        const eleViews = result[15];
-        const eleClicks = result[16];
-        const elePops = result[17];
-        const elements = result[18];
+        const statRes = result[0];
+        const countryRes = result[1];
+        const deviceRes = result[2];
+        const osRes = result[3];
+        const browserRes = result[4];
+        const eleRes = result[5];
+        const elements = result[6];
 
         // Views clicks
         const views_clicks = {};
@@ -194,23 +162,21 @@ exports.reportsHelper = async (req) => {
             day_duration = 60;
         }
         let ci = 0;
-        let cj = 0;
-        let ck = 0;
         for(let i = 0;i < day_duration;i++) {
 
             let minus_unix = 0;
             if(i != 0) minus_unix = (60*60*24*i);
 
-            if(clickRes[ci] && clickRes[ci].day_unix == (today_unix - minus_unix)) {
-                let date = new Date((clickRes[ci].day_unix * 1000)).toISOString();
+            if(statRes[ci] && statRes[ci].day_unix == (today_unix - minus_unix)) {
+                let date = new Date((statRes[ci].day_unix * 1000)).toISOString();
                 date = date.slice(0, 10); 
 
                 if(!views_clicks[date]) views_clicks[date] = {};
 
-                views_clicks[date].clicks = clickRes[ci].clicks; 
-                views_clicks[date].cost = (clickRes[ci].ccost + (views_clicks[date].cost || 0));
-                if(!views_clicks[date].views) views_clicks[date].views = 0;
-                if(!views_clicks[date].pops) views_clicks[date].pops = 0;
+                views_clicks[date].clicks = statRes[ci].clicks || 0; 
+                views_clicks[date].cost = statRes[ci].cost || 0;
+                views_clicks[date].views = statRes[ci].views || 0;
+                views_clicks[date].pops = statRes[ci].pops || 0;
                 ci++;
             }
             else {
@@ -219,56 +185,10 @@ exports.reportsHelper = async (req) => {
 
                 if(!views_clicks[date]) views_clicks[date] = {};
 
-                views_clicks[date].clicks = 0;
-                views_clicks[date].cost += 0;
-                if(!views_clicks[date].views) views_clicks[date].views = 0;
-                if(!views_clicks[date].pops) views_clicks[date].pops = 0;
-            }
-            if(viewRes[cj] && viewRes[cj].day_unix == (today_unix - minus_unix)) {
-                let date = new Date((viewRes[cj].day_unix * 1000)).toISOString();
-                date = date.slice(0, 10);
-
-                if(!views_clicks[date]) views_clicks[date] = {};
-
-                views_clicks[date].views = viewRes[cj].views;
-                if(!views_clicks[date].clicks) views_clicks[date].clicks = 0;
-                if(!views_clicks[date].pops) views_clicks[date].pops = 0;
-                if(!views_clicks[date].cost) views_clicks[date].cost = 0;
-                cj++;
-            }
-            else {
-                let date = new Date((today_unix - minus_unix) * 1000).toISOString();
-                date = date.slice(0, 10);
-
-                if(!views_clicks[date]) views_clicks[date] = {};
-
+                views_clicks[date].clicks = 0; 
+                views_clicks[date].cost = 0;
                 views_clicks[date].views = 0;
-                if(!views_clicks[date].clicks) views_clicks[date].clicks = 0;
-                if(!views_clicks[date].pops) views_clicks[date].pops = 0;
-                if(!views_clicks[date].cost) views_clicks[date].cost = 0;
-            }
-            if(popRes[ck] && popRes[ck].day_unix == (today_unix - minus_unix)) {
-                let date = new Date((popRes[ck].day_unix * 1000)).toISOString();
-                date = date.slice(0, 10);
-
-                if(!views_clicks[date]) views_clicks[date] = {};
-
-                views_clicks[date].pops = popRes[ck].pops;
-                views_clicks[date].cost = (popRes[ck].pcost + (views_clicks[date].cost || 0));
-                if(!views_clicks[date].clicks) views_clicks[date].clicks = 0;
-                if(!views_clicks[date].views) views_clicks[date].views = 0;
-                ck++;
-            }
-            else {
-                let date = new Date((today_unix - minus_unix) * 1000).toISOString();
-                date = date.slice(0, 10);
-
-                if(!views_clicks[date]) views_clicks[date] = {};
-
                 views_clicks[date].pops = 0;
-                views_clicks[date].cost += 0;
-                if(!views_clicks[date].clicks) views_clicks[date].clicks = 0;
-                if(!views_clicks[date].views) views_clicks[date].views = 0;
             }
         }
 
@@ -276,54 +196,17 @@ exports.reportsHelper = async (req) => {
         i = 0;
         const byCountry = {};
         while(true) {
-            if(!countryClicks[i] && !countryViews[i] && !countryPops[i]) break;
+            if(!countryRes[i]) break;
 
-            if(countryClicks[i]) {
-                let code = countryClicks[i].country;
-                let cname = App_Settings.countries[code][1];
+            let code = countryRes[i].country;
+            let cname = App_Settings.countries[code][1];
 
-                if(!byCountry[cname]) byCountry[cname] = {};
+            if(!byCountry[cname]) byCountry[cname] = {};
 
-                byCountry[cname].clicks = countryClicks[i].cclicks;
-                if(!byCountry[cname].cost)
-                    byCountry[cname].cost = countryClicks[i].cccost;
-                else    
-                    byCountry[cname].cost += countryClicks[i].cccost;
-                if(!byCountry[cname].views)
-                    byCountry[cname].views = 0;
-                if(!byCountry[cname].pops)
-                    byCountry[cname].pops = 0;
-            }
-            if(countryViews[i]) {
-                let code = countryViews[i].country;
-                let cname = App_Settings.countries[code][1];
-
-                if(!byCountry[cname]) byCountry[cname] = {};
-
-                byCountry[cname].views = countryViews[i].cviews;
-                if(!byCountry[cname].cost)
-                    byCountry[cname].cost = 0;
-                if(!byCountry[cname].pops)
-                    byCountry[cname].pops = 0;
-                if(!byCountry[cname].clicks)
-                    byCountry[cname].clicks = 0;
-            }
-            if(countryPops[i]) {
-                let code = countryPops[i].country;
-                let cname = App_Settings.countries[code][1];
-
-                if(!byCountry[cname]) byCountry[cname] = {};
-
-                byCountry[cname].pops = countryPops[i].cpops;
-                if(!byCountry[cname].cost)
-                    byCountry[cname].cost = countryPops[i].cpcost;
-                else    
-                    byCountry[cname].cost += countryPops[i].cpcost;
-                if(!byCountry[cname].views)
-                    byCountry[cname].views = 0;
-                if(!byCountry[cname].clicks)
-                    byCountry[cname].clicks = 0;
-            }
+            byCountry[cname].clicks = countryRes[i].cclicks || 0;
+            byCountry[cname].cost = countryRes[i].ccost || 0;
+            byCountry[cname].views = countryRes[i].cviews || 0;
+            byCountry[cname].pops = countryRes[i].cpops || 0;
 
             i++;
         }
@@ -335,12 +218,10 @@ exports.reportsHelper = async (req) => {
             elements.forEach(data => {
                 let campaign_id = data.id;
 
-                let { cmviews } = findBy(eleViews, campaign_id, 'campaign_id');
-                let { cmclicks, cmccost } = findBy(eleClicks, campaign_id, 'campaign_id');
-                let { cmpops, cmpcost } = findBy(elePops, campaign_id, 'campaign_id');
+                let { cmviews, cmclicks, cmcost, cmpops } = findBy(eleRes, campaign_id, 'campaign_id');
 
                 let ctr = Math.round((cmclicks / cmviews) * 10000) / 100 || 0;
-                let tcost = (cmccost + cmpcost);
+                let tcost = cmcost.toFixed(2);
 
                 byElements[campaign_id] = {
                     title: data.campaign_title,
@@ -356,12 +237,10 @@ exports.reportsHelper = async (req) => {
             elements.forEach(data => {
                 let site_id = data.id;
 
-                let { wviews } = findBy(eleViews, site_id, 'site_id');
-                let { wclicks, wccost } = findBy(eleClicks, site_id, 'site_id');
-                let { wpops, wpcost } = findBy(elePops, site_id, 'site_id');
+                let { wviews, wclicks, wcost, wpops } = findBy(eleRes, site_id, 'site_id');
 
                 let ctr = Math.round((wclicks / wviews) * 10000) / 100 || 0;
-                let tcost = (wccost + wpcost);
+                let tcost = wcost.toFixed(2);
 
                 byElements[site_id] = {
                     domain: data.domain,
@@ -381,12 +260,10 @@ exports.reportsHelper = async (req) => {
         for(key in device_list) {
             let device_name = device_list[key];
             
-            let { dviews } = findBy(devViews, key, 'device');
-            let { dclicks, dccost } = findBy(devClicks, key, 'device');
-            let { dpops, dpcost } = findBy(devPops, key, 'device');
+            let { dviews, dclicks, dcost, dpops } = findBy(deviceRes, key, 'device');
 
             let ctr = Math.round((dclicks / dviews) * 10000) / 100 || 0;
-            let tcost = (dccost + dpcost);
+            let tcost = dcost.toFixed(2);
 
             byDevice[device_name] = {
                 views: dviews,
@@ -403,12 +280,10 @@ exports.reportsHelper = async (req) => {
         for(let key in os_list) {
             let os_name = os_list[key][0] + ' ' + os_list[key][1];
             
-            let { osviews } = findBy(osViews, key, 'os');
-            let { osclicks, osccost } = findBy(osClicks, key, 'os');
-            let { ospops, ospcost } = findBy(osPops, key, 'os');
+            let { osviews, osclicks, oscost, ospops } = findBy(osRes, key, 'os');
 
             let ctr = Math.round((osclicks / osviews) * 10000) / 100 || 0;
-            let tcost = (osccost + ospcost);
+            let tcost = oscost.toFixed(2);
 
             byOs[os_name] = {
                 views: osviews,
@@ -425,12 +300,10 @@ exports.reportsHelper = async (req) => {
         for(let key in browser_list) {
             let browser_name = browser_list[key];
             
-            let { bviews } = findBy(bViews, key, 'browser');
-            let { bclicks, bccost } = findBy(bClicks, key, 'browser');
-            let { bpops, bpcost } = findBy(bPops, key, 'browser');
+            let { bviews, bclicks, bcost, bpops } = findBy(browserRes, key, 'browser');
 
             let ctr = Math.round((bclicks / bviews) * 10000) / 100 || 0;
-            let tcost = (bccost + bpcost);
+            let tcost = bcost.toFixed(2);
 
             byBrowser[browser_name] = {
                 views: bviews,
@@ -466,10 +339,10 @@ const findBy = (arr, s, key) => {
     }
 
     return {
-        cmviews: 0, cmpops: 0, cmpcost: 0, cmclicks: 0, cmccost: 0,
-        wviews: 0, wpops: 0, wpcost: 0, wclicks: 0, wccost: 0,
-        dviews: 0, dpops: 0, dpcost: 0, dclicks: 0, dccost: 0,
-        osviews: 0, ospops:0, ospcost: 0, osclicks: 0, osccost: 0,
-        bviews: 0, bpops:0, bpcost: 0, bclicks: 0, bccost: 0
+        cmviews: 0, cmpops: 0, cmcost: 0, cmclicks: 0,
+        wviews: 0, wpops: 0, wcost: 0, wclicks: 0,
+        dviews: 0, dpops: 0, dcost: 0, dclicks: 0,
+        osviews: 0, ospops:0, oscost: 0, osclicks: 0,
+        bviews: 0, bpops:0, bcost: 0, bclicks: 0,
     }
 }
