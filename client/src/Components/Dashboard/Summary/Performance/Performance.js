@@ -1,6 +1,6 @@
 import { Typography } from "@material-ui/core"
 import styles from './Performance.module.css';
-import {makeFriendly} from '../../../../util/make-friendly';
+import {makeFriendly} from '../../../../util/common';
 import PaperBlock from "../../Common/PaperBlock";
 
 const Performance = (props) => {
@@ -40,7 +40,7 @@ const Performance = (props) => {
                         CPC
                     </Typography>
                     <Typography variant="h4" display="block">
-                        ${props.data.cpc}
+                        {typeof props.data.cpc === "number" ? '$'+props.data.cpc : props.data.cpc }
                     </Typography>
                 </div>
 

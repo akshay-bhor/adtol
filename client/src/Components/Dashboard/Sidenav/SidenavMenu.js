@@ -8,18 +8,24 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { Fragment, useState } from "react";
-import { Link } from "react-router-dom";
-import { SidenavMenuItems } from "./SidenavMenuItemsList";
+import { NavLink } from "react-router-dom";
+import { SidenavMenuItems } from "../../../constants/common";
 import List from "@material-ui/core/List";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   nested: {
     paddingLeft: "30px",
   },
   subNested: {
     paddingLeft: "60px",
   },
-});
+  active: {
+    color: theme.palette.primary.main,
+      '& .material-icons': {
+        color: theme.palette.primary.main
+      }
+  }
+}));
 
 const SidenavMenu = () => {
   const muiStyles = useStyles();
@@ -42,9 +48,10 @@ const SidenavMenu = () => {
       {SidenavMenuItems.map((item) => {
         return (
           <div key={item.id}>
-            <Link
+            <NavLink exact
               to={item.url}
               onClick={item.disabled ? preventRouting : null}
+              activeClassName={muiStyles.active}
             >
               <ListItem
                 button
@@ -57,20 +64,24 @@ const SidenavMenu = () => {
                 <ListItemText primary={item.title} />
                 {item.child ? expand : null}
               </ListItem>
-            </Link>
+            </NavLink>
             {item.child && (
               <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   {item.childs.map((child) => {
                     return (
-                      <Link to={child.url} key={child.id}>
+                      <NavLink exact
+                        to={child.url} 
+                        key={child.id} 
+                        activeClassName={muiStyles.active}
+                      >
                         <ListItem button className={muiStyles.subNested}>
                           <ListItemIcon>
                             <Icon>{child.icon}</Icon>
                           </ListItemIcon>
                           <ListItemText primary={child.title} />
                         </ListItem>
-                      </Link>
+                      </NavLink>
                     );
                   })}
                 </List>
