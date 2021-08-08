@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import PaperBlock from "./PaperBlock";
 
@@ -18,6 +18,7 @@ const flattenData = (data) => {
 
 const ViewClicksChart = (props) => {
   const gChartLoaded = useSelector((state) => state.script.g_charts);
+  const chartRef = useRef();
 
   const loadChart = useCallback(() => {
     // Flatten data
@@ -48,7 +49,7 @@ const ViewClicksChart = (props) => {
       },
     };
 
-    let materialChart = new window.google.charts.Line(document.getElementById('ad_view_clicks_chart'));
+    let materialChart = new window.google.charts.Line(chartRef.current);
     materialChart.draw(data, chartOptions);
   }, [props.data]);
 
@@ -61,7 +62,7 @@ const ViewClicksChart = (props) => {
 
   return (
     <PaperBlock heading="By Date">
-      <div id="ad_view_clicks_chart" style={chartContent}></div>
+      <div ref={chartRef} id="ad_view_clicks_chart" style={chartContent}></div>
     </PaperBlock>
   );
 };

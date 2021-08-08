@@ -5,7 +5,6 @@ const scriptSlice = createSlice({
     initialState: {
         recaptcha: false,
         one_tap: false,
-        gsi: false,
         g_charts: false,
         rzr_pay: false
     },
