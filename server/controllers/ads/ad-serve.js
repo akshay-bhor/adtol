@@ -185,7 +185,7 @@ exports.adServe = async (req, res, next) => {
         });
         res.end();
 
-        adKeyArr.forEach(async (bestAdIndex) => { 
+        for(const bestAdIndex of adKeyArr) {
             try {
                 // Check if website valid then count view
                 if(webValid == 1) {
@@ -237,11 +237,37 @@ exports.adServe = async (req, res, next) => {
                         type: QueryTypes.UPDATE,
                         replacements: [pub_uid, site_id]
                     });
+
+                    /**
+                     * Update stats
+                     */
+                    const statRes = await Promise.all([
+                        executeUpdateQuery('summary_device', today_unix, 'device', dCode, campaign_id, site_id, ad_uid, pub_uid),
+                        executeUpdateQuery('summary_country', today_unix, 'country', cCode, campaign_id, site_id, ad_uid, pub_uid),
+                        executeUpdateQuery('summary_browser', today_unix, 'browser', bCode, campaign_id, site_id, ad_uid, pub_uid),
+                        executeUpdateQuery('summary_os', today_unix, 'os', oCode, campaign_id, site_id, ad_uid, pub_uid),
+                    ]);
+
+                    /**
+                     * Check affected rows else create new record
+                     */
+                    if(statRes[0][1] < 1) {
+                        executeInsertQuery('summary_device', today_unix, 'device', dCode, campaign_id, site_id, ad_uid, pub_uid);
+                    }
+                    if(statRes[1][1] < 1) {
+                        executeInsertQuery('summary_country', today_unix, 'country', cCode, campaign_id, site_id, ad_uid, pub_uid);
+                    }
+                    if(statRes[2][1] < 1) {
+                        executeInsertQuery('summary_browser', today_unix, 'browser', bCode, campaign_id, site_id, ad_uid, pub_uid);
+                    }
+                    if(statRes[3][1] < 1) {
+                        executeInsertQuery('summary_os', today_unix, 'os', oCode, campaign_id, site_id, ad_uid, pub_uid);
+                    }
                 }
             } catch(err) {
                 console.log(err);
             }
-        });
+        }
         
     } catch(err) {
         if(!err.statusCode)
@@ -250,3 +276,33 @@ exports.adServe = async (req, res, next) => {
     }
 }
 
+/**
+ * @returns {Promise} 
+ * @resolve {Array} [empty, affected rows]
+ * Used in Ad serving and process
+ */
+const executeUpdateQuery = async (table, day_unix, col, value, campaign, website, ad_uid, pub_uid) => {
+    const incCount = 1;
+    return await sequelize.query(`UPDATE ${table} SET views = views + ${incCount} WHERE day_unix = ? AND ${col} = ? AND (campaign = ? OR website = ?) AND (ad_uid = ? OR pub_uid = ?)`, {
+        type: QueryTypes.UPDATE,
+        replacements: [day_unix, value, campaign, website, ad_uid, pub_uid]
+    });
+}
+
+/**
+ * @returns {True}
+ * Used in Ad serving and process
+ * Inserts data in summary tables
+ */
+const executeInsertQuery = async (table, day_unix, col, value, campaign, website, ad_uid, pub_uid) => {
+    const viewCount = 1;
+    sequelize.query(`INSERT INTO ${table} (ad_uid, ${col}, campaign, views, day_unix) VALUES(?, ?, ?, ?, ?)`, {
+        type: QueryTypes.INSERT,
+        replacements: [ad_uid, value, campaign, viewCount, day_unix]
+    });
+    sequelize.query(`INSERT INTO ${table} (pub_uid, ${col}, website, views, day_unix) VALUES(?, ?, ?, ?, ?)`, {
+        type: QueryTypes.INSERT,
+        replacements: [pub_uid, value, website, viewCount, day_unix]
+    });
+    return true;
+}

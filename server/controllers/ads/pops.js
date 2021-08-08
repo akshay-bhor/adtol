@@ -136,6 +136,9 @@ exports.processPop = async (req, res, next) => {
         
         // Insert Data
         let pub_uid = pubData.dataValues.uid;
+        const ad_uid = adData.ad_uid;
+        const campaign_id = adData.campaign_id;
+        const site_id = pubData.dataValues.id;
         if(!pubValidPop) pub_uid = 0;
         const ad_url = adData.url;
         const ad_url_tiny = tinify(ad_url);
@@ -145,10 +148,10 @@ exports.processPop = async (req, res, next) => {
 
         if(adValidPop) {
             const pInsert = await Pops.create({
-                campaign_id: adData.campaign_id,
+                campaign_id,
                 ad_id: adData.ad_id,
-                site_id: pubData.dataValues.id,
-                ad_uid: adData.ad_uid,
+                site_id,
+                ad_uid,
                 pub_uid,
                 ad_url,
                 ad_url_tiny,
@@ -188,17 +191,27 @@ exports.processPop = async (req, res, next) => {
         try {
             await sequelize.query('UPDATE campaigns SET today_budget_rem = today_budget_rem - ?, spent = spent + ?, pops = pops + 1 WHERE id = ?', {
                 type: QueryTypes.UPDATE,
-                replacements: [ad_cpc, ad_cpc, adData.campaign_id],
+                replacements: [ad_cpc, ad_cpc, campaign_id],
                 mapToModel: Campaigns,
                 transaction: ts
             });
 
             await sequelize.query('UPDATE users SET ad_spending = ad_spending + ?, ad_pops = ad_pops + 1 WHERE id = ?', {
                 type: QueryTypes.UPDATE,
-                replacements: [ad_cpc, adData.ad_uid],
+                replacements: [ad_cpc, ad_uid],
                 mapToModel: User,
                 transaction: ts
             });
+
+            /**
+            * Update Ad stats
+            */
+            const adStatRes = await Promise.all([
+                executeAdUpdateQuery('summary_device', day_unix, 'device', dCode, campaign_id, ad_uid, ad_cpc),
+                executeAdUpdateQuery('summary_country', day_unix, 'country', cCode, campaign_id, ad_uid, ad_cpc),
+                executeAdUpdateQuery('summary_browser', day_unix, 'browser', bCode, campaign_id, ad_uid, ad_cpc),
+                executeAdUpdateQuery('summary_os', day_unix, 'os', oCode, campaign_id, ad_uid, ad_cpc),
+            ]);
 
             await ts.commit();
         } catch (err) {
@@ -215,13 +228,23 @@ exports.processPop = async (req, res, next) => {
             try {
                 await sequelize.query('UPDATE pub_sites SET earned = earned + ?, pops = pops + 1 WHERE id = ?', {
                     type: QueryTypes.UPDATE,
-                    replacements: [pub_cpc, pubData.dataValues.id]
+                    replacements: [pub_cpc, site_id]
                 });
 
                 await sequelize.query('UPDATE users SET pub_earnings = pub_earnings + ?, pub_balance = pub_balance + ?, pub_pops = pub_pops + 1 WHERE id = ?', {
                     type: QueryTypes.UPDATE,
                     replacements: [pub_cpc, pub_cpc, pub_uid]
                 });
+
+                /**
+                * Update pub stats
+                */
+                const pubStatRes = await Promise.all([
+                    executePubUpdateQuery('summary_device', day_unix, 'device', dCode, site_id, pub_uid, pub_cpc),
+                    executePubUpdateQuery('summary_country', day_unix, 'country', cCode, site_id, pub_uid, pub_cpc),
+                    executePubUpdateQuery('summary_browser', day_unix, 'browser', bCode, site_id, pub_uid, pub_cpc),
+                    executePubUpdateQuery('summary_os', day_unix, 'os', oCode, site_id, pub_uid, pub_cpc),
+                ]);
 
                 await ts.commit();
             } catch (err) {
@@ -235,4 +258,25 @@ exports.processPop = async (req, res, next) => {
             err.statusCode = 500;
         next(err);
     } 
+}
+
+/**
+ * @returns {Promise} 
+ * @resolve {Array} [empty, affected rows]
+ * Used in Ad serving and process
+ */
+const executeAdUpdateQuery = async (table, day_unix, col, value, campaign, ad_uid, cpc) => {
+    const incCount = 1;
+    return await sequelize.query(`UPDATE ${table} SET clicks = clicks + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND campaign = ? AND ad_uid = ?`, {
+        type: QueryTypes.UPDATE,
+        replacements: [cpc, day_unix, value, campaign, ad_uid]
+    });
+}
+
+const executePubUpdateQuery = async (table, day_unix, col, value, website, pub_uid, cpc) => {
+    const incCount = 1;
+    return await sequelize.query(`UPDATE ${table} SET clicks = clicks + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND website = ? AND pub_uid = ?`, {
+        type: QueryTypes.UPDATE,
+        replacements: [cpc, day_unix, value, website, pub_uid]
+    });
 }
