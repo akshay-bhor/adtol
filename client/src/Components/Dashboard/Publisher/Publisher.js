@@ -12,15 +12,7 @@ import ShowError from "../../UI/ShowError";
 import ViewClicksChart from "../Common/ViewClicksChart";
 import GeoChart from "../Common/GeoChart";
 import PaperBlock from "../Common/PaperBlock";
-
-const websitesCol = [
-    { field: 'website', headerName: 'Website', flex: 1 },
-    { field: 'views', headerName: 'Views', flex: 1 },
-    { field: 'clicks', headerName: 'Clicks', flex: 1 },
-    { field: 'pops', headerName: 'Pops', flex: 1 },
-    { field: 'earned', headerName: 'Earned', flex: 1 },
-    { field: 'ctr', headerName: 'CTR', flex: 1 },
-];
+import { websitesCols } from "../../../constants/common";
 
 const mapRows = (data) => {
     return Object.keys(data).map(key => (
@@ -54,7 +46,7 @@ const Publisher = () => {
   }, [dispatch]);
 
   if(!isLoading && !err) {
-      cols = websitesCol;
+      cols = websitesCols;
       rows = mapRows(data.by_websites)
   }
 

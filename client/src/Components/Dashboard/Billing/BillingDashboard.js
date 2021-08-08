@@ -21,6 +21,7 @@ import { billingActions } from "../../../store/reducers/billing.reducer";
 import * as luxon from "luxon";
 import { Icon } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import { paymentCols, withdrawCols } from "../../../constants/common";
 const DateTime = luxon.DateTime;
 
 const useStyles = makeStyles((theme) => ({
@@ -91,26 +92,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px'
   },
 }));
-
-const paymentCols = [
-  { field: "payment_id", headerName: "Payment ID", flex: 0.8 },
-  { field: "order_id", headerName: "Order ID", flex: 1 },
-  { field: "amount", headerName: "Amount", flex: 0.8 },
-  { field: "currency", headerName: "Currency", flex: 0.5 },
-  { field: "status", headerName: "Status", flex: 0.6 },
-  { field: "processor", headerName: "Processor", flex: 0.6 },
-  { field: "time", headerName: "Time", flex: 0.8 },
-];
-
-const withdrawCols = [
-  { field: "payment_id", headerName: "Payment ID", flex: 0.8 },
-  { field: "amount", headerName: "Amount", flex: 0.8 },
-  { field: "fee", headerName: "Fee", flex: 0.8 },
-  { field: "currency", headerName: "Currency", flex: 0.5 },
-  { field: "status", headerName: "Status", flex: 0.6 },
-  { field: "processor", headerName: "Processor", flex: 0.6 },
-  { field: "time", headerName: "Time", flex: 0.8 },
-];
 
 const mapRows = (data) => {
   return Object.keys(data).map((key) => {

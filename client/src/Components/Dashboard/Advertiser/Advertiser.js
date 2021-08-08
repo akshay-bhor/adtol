@@ -12,15 +12,7 @@ import ShowError from "../../UI/ShowError";
 import ViewClicksChart from "../Common/ViewClicksChart";
 import GeoChart from "../Common/GeoChart";
 import PaperBlock from "../Common/PaperBlock";
-
-const campaignCols = [
-    { field: 'name', headerName: 'Name', flex: 1 },
-    { field: 'views', headerName: 'Views', flex: 1 },
-    { field: 'clicks', headerName: 'Clicks', flex: 1 },
-    { field: 'pops', headerName: 'Pops', flex: 1 },
-    { field: 'spent', headerName: 'Spent', flex: 1 },
-    { field: 'ctr', headerName: 'CTR', flex: 1 },
-];
+import { campaignCols } from "../../../constants/common";
 
 const mapRows = (data) => {
     return Object.keys(data).map(key => (

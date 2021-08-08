@@ -7,7 +7,7 @@ import Performance from "./Performance/Performance";
 import styles from '../Dashboard.module.css';
 import { abortSummaryRequest, fetchSummaryData } from "../../../store/actions/summary.action";
 import CountryTable from "./CountryTable/CountryTable";
-import { summaryCountryColumnsAd, summaryCountryColumnsPub } from "./summaryCountryColumns";
+import { summaryCountryColumnsAd, summaryCountryColumnsPub } from "../../../constants/common";
 import classes from './Summary.module.css';
 import { Button } from "@material-ui/core";
 import ShowError from "../../UI/ShowError";
@@ -24,15 +24,16 @@ const mapRows = (colName, propData) => {
             spent = '$'+data[key].spent;
         const views = data[key].views;
         const clicks = data[key].clicks;
+        const pops = data[key].pops;
         const country = key;
 
         if(colName === 'Earned')
             return {
-                id, country, earned, views, clicks
+                id, country, earned, views, clicks, pops
             }  
         else
             return {
-                id, country, spent, views, clicks
+                id, country, spent, views, clicks, pops
             }    
     });
 

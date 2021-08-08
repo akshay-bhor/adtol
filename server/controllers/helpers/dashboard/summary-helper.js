@@ -122,7 +122,8 @@ exports.summaryHelper = async(req) => {
             countryStats[cname] = {
                 "earned": c.cearned.toFixed(2),
                 "views": c.cviews,
-                "clicks": c.cclicks
+                "clicks": c.cclicks,
+                "pops": c.cpops
             };
         });
 
