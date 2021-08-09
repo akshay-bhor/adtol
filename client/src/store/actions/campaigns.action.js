@@ -15,6 +15,7 @@ const _campaignGetRequest = (sendRequest) => {
           }
     
           dispatch(campaignActions.setLoading(false));
+          dispatch(campaignActions.setFetched(true));
         } catch (err) { 
           dispatch(campaignActions.setError(err));
           dispatch(campaignActions.setLoading(false));

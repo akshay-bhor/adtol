@@ -61,7 +61,7 @@ exports.campaignsHelper = async(req) => {
             tcampaigns.push(campData);
         });
 
-        const campaignData = {...tcampaigns};
+        const campaignData = tcampaigns;
 
         // Return
         return {

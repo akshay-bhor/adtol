@@ -33,7 +33,7 @@ const ViewClicksChart = (props) => {
 
     let chartOptions = {
       chart: {
-        title: "Last 7 days",
+        title: props.title ? props.title : "Last 7 days",
       },
       series: {
         // Gives each series an axis name that matches the Y-axis below.
@@ -61,7 +61,7 @@ const ViewClicksChart = (props) => {
   }, [gChartLoaded, loadChart]);
 
   return (
-    <PaperBlock heading="By Date">
+    <PaperBlock heading="By Date" fullWidth={props.fullWidth ? true : false}>
       <div ref={chartRef} id="ad_view_clicks_chart" style={chartContent}></div>
     </PaperBlock>
   );

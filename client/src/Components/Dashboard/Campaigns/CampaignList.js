@@ -51,8 +51,7 @@ const campaignCols = [
 ];
 
 const mapRows = (data) => {
-  return Object.keys(data).map((key) => {
-    let item = data[key];
+  return data.map((item) => {
     return {
       id: item.id,
       campaign: item.name,
@@ -72,6 +71,7 @@ const CampaignList = () => {
   const muiStyles = useStyles();
   const data = useSelector((state) => state.campaign.data);
   const loading = useSelector((state) => state.campaign.loading);
+  const fetched = useSelector((state) => state.campaign.fetched);
   const err = useSelector((state) => state.campaign.error);
   const dispatch = useDispatch();
   const [modal, setModal] = useState({ open: false, data: {} });
@@ -79,7 +79,7 @@ const CampaignList = () => {
   let rows = [];
 
   useEffect(() => {
-    dispatch(fetchCampaignsList());
+    if (data.data.length === 0 && !fetched) dispatch(fetchCampaignsList());
 
     return () => {
       abortCampaignRequest();

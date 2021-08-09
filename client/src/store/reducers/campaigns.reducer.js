@@ -3,10 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 const campaignSlice = createSlice({
     name: 'campaign',
     initialState: {
-        loading: true,
-        data: {},
+        loading: false,
+        data: {
+            data: [],
+            max_budget: null
+        },
         success: null,
-        error: null
+        error: null, 
+        fetched: false
     },
     reducers: {
         setData(state, action) {
@@ -20,7 +24,13 @@ const campaignSlice = createSlice({
         },
         setSuccess(state, action) {
           state.success = action.payload
-        }
+        },
+        setFetched(state, action) {
+          state.fetched = action.payload;
+        },
+        clearError(state) {
+          state.error = null;
+        },
     }
 });
 

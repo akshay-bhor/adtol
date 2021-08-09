@@ -20,6 +20,7 @@ import BillingDashboard from "./Billing/BillingDashboard";
 import Withdraw from "./Billing/Withdraw/Withdraw";
 import Deposit from "./Billing/Deposit/Deposit";
 import Payment from "./Billing/Deposit/Payment";
+import Reports from "./Reports/Reports";
 
 const Dashboard = () => {
   const gChartLoaded = useSelector((state) => state.script.g_charts);
@@ -74,6 +75,7 @@ const Dashboard = () => {
             <Route path="/dashboard/billing/withdraw" component={Withdraw} />
             <Route path="/dashboard/billing/deposit" component={Deposit} />
             <Route path="/dashboard/billing/payment" component={Payment} />
+            <Route path="/dashboard/reports/:id" component={Reports} />
           </Switch>
         </div>
       </div>

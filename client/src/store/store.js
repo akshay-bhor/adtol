@@ -11,6 +11,7 @@ import publisherSlice from './reducers/publisher.reducer';
 import websiteSlice from './reducers/websites.reducer';
 import referralSlice from './reducers/referrals.reducer';
 import billingSlice from './reducers/billing.reducer';
+import reportSlice from './reducers/reports.reducer';
 
 const store = configureStore({
     reducer: { 
@@ -25,7 +26,8 @@ const store = configureStore({
         campaign: campaignsSlice.reducer,
         website: websiteSlice.reducer,
         referral: referralSlice.reducer,
-        billing: billingSlice.reducer
+        billing: billingSlice.reducer,
+        report: reportSlice.reducer
      }
 });
 

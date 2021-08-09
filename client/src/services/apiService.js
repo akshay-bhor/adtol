@@ -110,3 +110,6 @@ export const createOrderApi = (data) => conn.post('/api/dashboard/payment/create
 
 export const verifyPaymentApi = (data) => conn.post('/api/dashboard/payment/verify-payment', data);
 
+export const getAdvertiserReports = (data) => conn.post('/api/dashboard/reports/advertiser', data);
+
+export const getPublisherReports = (data) => conn.post('/api/dashboard/reports/publisher', data);

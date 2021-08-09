@@ -52,6 +52,29 @@ export const withdrawCols = [
   { field: "time", headerName: "Time", flex: 0.8 },
 ];
 
+export const reportDurationSelection = [
+  {
+    name: "Today",
+    id: 1,
+  },
+  {
+    name: "This Week",
+    id: 2,
+  },
+  {
+    name: "Last 2 Weeks",
+    id: 3,
+  },
+  {
+    name: "This Month",
+    id: 4,
+  },
+  {
+    name: "Last 2 Months",
+    id: 5,
+  },
+];
+
 export const SidenavMenuItems = [
   {
     id: 31,

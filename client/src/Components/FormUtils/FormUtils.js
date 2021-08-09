@@ -18,7 +18,7 @@ export const MyTextField = ({ label, type, className, ...props }) => {
   );
 };
 
-export const MySelectField = ({ label, className, ...props }) => {
+export const MySelectField = ({ label, size, className, ...props }) => {
   const [field, meta] = useField(props);
   const errorText = meta.error && meta.touched ? meta.error : "";
 
@@ -31,6 +31,7 @@ export const MySelectField = ({ label, className, ...props }) => {
       helperText={errorText}
       error={!!errorText}
       variant="outlined"
+      size={size ? size : 'medium'}
     >
       {props.children}
     </TextField>
