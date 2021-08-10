@@ -20,6 +20,10 @@ code {
   overflow: hidden;
 }
 
+.mt-15 {
+  margin-top: 15px;
+}
+
 .pointer {
   cursor: pointer
 }

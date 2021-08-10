@@ -60,7 +60,7 @@ const mapRows = (data) => {
       views: item.views,
       clicks: item.clicks,
       pops: item.pops,
-      cpc: "$" + item.cpc.toFixed(2),
+      cpc: "$" + parseFloat(item.cpc).toFixed(2),
       budget: "$" + item.budget + ", rem:" + "$" + item.budget_rem,
       manage: "Manage",
     };

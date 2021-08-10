@@ -9,6 +9,7 @@ const chartContent = {
 };
 
 const flattenData = (data) => {
+  if(typeof data !== 'object') return [];
   return Object.keys(data).map((key) => [
     key,
     data[key].clicks,
@@ -46,7 +47,6 @@ const GeoChart = (props) => {
     if (gChartLoaded) {
         window.google.charts.load('current', {
             'packages':['geochart'],
-            'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
           });
         window.google.charts.setOnLoadCallback(loadChart);
     }

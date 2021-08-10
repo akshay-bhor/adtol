@@ -259,7 +259,8 @@ exports.summaryHelper = async(req) => {
             ad_countryStats[cname] = {
                 "spent": c.cspent.toFixed(2),
                 "views": c.cviews,
-                "clicks": c.cclicks
+                "clicks": c.cclicks,
+                "pops": c.cpops
             };
         });
 

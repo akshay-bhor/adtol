@@ -18,11 +18,11 @@ const mapRows = (data) => {
     return Object.keys(data).map(key => (
         {
             id: key,
-            name: data[key].title,
+            campaign: data[key].title,
             views: data[key].views,
             clicks: data[key].clicks,
             pops: data[key].pops,
-            spent: '$'+data[key].spent.toFixed(2),
+            spent: '$'+ parseFloat(data[key].spent).toFixed(2),
             ctr: data[key].ctr ? data[key].ctr+'%': 'NA'
         }
     ));
@@ -46,7 +46,7 @@ const Advertiser = () => {
   }, [dispatch]);
 
   if(!isLoading && !err) {
-      cols = campaignCols;
+      cols = campaignCols();
       rows = mapRows(data.by_campaign)
   }
 

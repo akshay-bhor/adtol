@@ -9,6 +9,7 @@ const chartContent = {
 };
 
 const flattenData = (data) => {
+  if(typeof data !== 'object') return null;
   return Object.keys(data).map((key) => [
     key,
     data[key].views,
@@ -23,6 +24,9 @@ const ViewClicksChart = (props) => {
   const loadChart = useCallback(() => {
     // Flatten data
     const cdata = flattenData(props.data);
+
+    // Check empty
+    if(cdata === null) return;
 
     let data = new window.google.visualization.DataTable();
     data.addColumn("string");

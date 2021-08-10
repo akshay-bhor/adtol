@@ -22,7 +22,7 @@ const mapRows = (data) => {
             views: data[key].views,
             clicks: data[key].clicks,
             pops: data[key].pops,
-            earned: '$'+data[key].earned.toFixed(2),
+            earned: '$'+ parseFloat(data[key].earned).toFixed(2),
             ctr: data[key].ctr ? data[key].ctr+'%': 'NA'
         }
     ));
@@ -46,7 +46,7 @@ const Publisher = () => {
   }, [dispatch]);
 
   if(!isLoading && !err) {
-      cols = websitesCols;
+      cols = websitesCols();
       rows = mapRows(data.by_websites)
   }
 

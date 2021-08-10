@@ -20,14 +20,6 @@ import ReportsContainer from "./ReportsContainer";
 
 let title = "Advertiser Reports";
 
-/**
- * Initial form values
- */
-let initialValues = {
-  duration: 2,
-  campaign: 0,
-};
-
 const Reports = () => {
   const params = useParams();
   const campData = useSelector((state) => state.campaign.data);
@@ -105,20 +97,8 @@ const Reports = () => {
   /**
    * Initial form values
    */
-  if (params.id === "publisher") {
-    title = "Publisher Reports";
-    initialValues = {
-      duration: 2,
-      website: 0,
-    };
-  }
-  if (params.id === "advertiser") {
-    title = "Advertiser Reports";
-    initialValues = {
-      duration: 2,
-      campaign: 0,
-    };
-  }
+  if (params.id === "publisher") title = "Publisher Reports";
+  if (params.id === "advertiser") title = "Advertiser Reports";
 
   return (
     <Fragment>
@@ -131,7 +111,6 @@ const Reports = () => {
         <ReportsContainer
           title={title}
           selectionOption={selectionOption}
-          initialValues={initialValues}
           path={params.id}
         />
       )}

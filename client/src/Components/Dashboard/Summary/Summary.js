@@ -7,7 +7,7 @@ import Performance from "./Performance/Performance";
 import styles from '../Dashboard.module.css';
 import { abortSummaryRequest, fetchSummaryData } from "../../../store/actions/summary.action";
 import CountryTable from "./CountryTable/CountryTable";
-import { summaryCountryColumnsAd, summaryCountryColumnsPub } from "../../../constants/common";
+import { countryColumnsAd, countryColumnsPub } from "../../../constants/common";
 import classes from './Summary.module.css';
 import { Button } from "@material-ui/core";
 import ShowError from "../../UI/ShowError";
@@ -15,9 +15,9 @@ import ShowError from "../../UI/ShowError";
 const mapRows = (colName, propData) => {
     let data = colName === 'Earned' ? propData.pub_countries:propData.ad_countries;
     
-    const rows = Object.keys(data).map(key => {
+    const rows = Object.keys(data).map((key, index) => {
         let earned, spent;
-        const id = ''+Math.random();
+        const id = index;
         if(colName === 'Earned')
             earned = '$'+data[key].earned;
         else
@@ -26,14 +26,22 @@ const mapRows = (colName, propData) => {
         const clicks = data[key].clicks;
         const pops = data[key].pops;
         const country = key;
+        let ctr = data[key].ctr ? data[key].ctr + "%" : "NA";
+
+        // Calculate CTR
+        if(ctr === 'NA') {
+            if(clicks !== 0) {
+            ctr = "$" + (views / clicks).toFixed(2);
+            }
+        }
 
         if(colName === 'Earned')
             return {
-                id, country, earned, views, clicks, pops
+                id, country, earned, views, clicks, pops, ctr
             }  
         else
             return {
-                id, country, spent, views, clicks, pops
+                id, country, spent, views, clicks, pops, ctr
             }    
     });
 
@@ -70,7 +78,7 @@ const Summary = () => {
                     <div className={classes.btnContainer}>
                         <Button color="primary" className={'fright pointer'} onClick={
                             () => {
-                                setSelected(s => s == 1 ? 2 : 1);
+                                setSelected(s => s === 1 ? 2 : 1);
                             }
                         }>{selected == 1 ? 'Advertiser':'Publisher'}</Button>
                     </div>
@@ -78,13 +86,13 @@ const Summary = () => {
                     <Estimates data={data.pub_estimates} balance={data.pub_balance} />
                     <Performance data={data.pub_performance} />
                     <AdUnits data={data.pub_ad_units} />
-                    <CountryTable data={data.pub_countries} rows={pubRows} columns={summaryCountryColumnsPub} /></Fragment>}
+                    <CountryTable data={data.pub_countries} rows={pubRows} columns={countryColumnsPub()} /></Fragment>}
 
                     {selected !== 1 && <Fragment>
                     <Estimates data={data.ad_estimates} balance={data.ad_balance} />
                     <Performance data={data.ad_performance} />
                     <AdUnits data={data.ad_ad_units} />
-                    <CountryTable data={data.ad_countries} rows={adRows} columns={summaryCountryColumnsAd} /></Fragment>}
+                    <CountryTable data={data.ad_countries} rows={adRows} columns={countryColumnsAd()} /></Fragment>}
                 
                 </Fragment>}
                 {err && <ShowError />}

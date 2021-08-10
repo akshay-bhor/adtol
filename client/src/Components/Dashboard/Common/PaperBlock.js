@@ -27,9 +27,9 @@ const PaperBlock = (props) => {
 
     return (
         <Paper elevation={2} className={[muiStyles.container, props.fullWidth ? muiStyles.fullWidth : ''].join(' ')}>
-            <Typography variant="h5" component="h3" className={props.headingCenter ? "text-center":null}>{props.heading}</Typography>
-            <Typography variant="subtitle2" display="block">{props.subheading}</Typography>
-            <div className={styles.paperBlockContainer}>
+            {props.heading && <Typography variant="h5" component="h3" className={props.headingCenter ? "text-center":null}>{props.heading}</Typography>}
+            {props.subheading && <Typography variant="subtitle2" display="block">{props.subheading}</Typography>}
+            <div className={[styles.paperBlockContainer, props.heading ? 'mt-15':null].join(' ')}>
                 {props.children}
             </div>
         </Paper>

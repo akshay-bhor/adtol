@@ -1,21 +1,4 @@
-export const summaryCountryColumnsPub = [
-  { field: "country", headerName: "Country", flex: 1 },
-  { field: "views", headerName: "Views", flex: 1 },
-  { field: "clicks", headerName: "Clicks", flex: 1 },
-  { field: "pops", headerName: "Pops", flex: 1 },
-  { field: "earned", headerName: "earned", flex: 1 },
-];
-
-export const summaryCountryColumnsAd = [
-  { field: "country", headerName: "Country", flex: 1 },
-  { field: "views", headerName: "Views", flex: 1 },
-  { field: "clicks", headerName: "Clicks", flex: 1 },
-  { field: "pops", headerName: "Pops", flex: 1 },
-  { field: "spent", headerName: "Spent", flex: 1 },
-];
-
-export const campaignCols = [
-  { field: "name", headerName: "Name", flex: 1 },
+const columnsSchema = [
   { field: "views", headerName: "Views", flex: 1 },
   { field: "clicks", headerName: "Clicks", flex: 1 },
   { field: "pops", headerName: "Pops", flex: 1 },
@@ -23,14 +6,129 @@ export const campaignCols = [
   { field: "ctr", headerName: "CTR", flex: 1 },
 ];
 
-export const websitesCols = [
-  { field: "website", headerName: "Website", flex: 1 },
+export const countryColumnsPub = () => {
+  const res = columnsSchema.filter(item => item.field !== 'spent');
+  res.unshift(
+    { field: "country", headerName: "Country", flex: 1 }
+  );
+  res.push(
+    { field: "earned", headerName: "Earned", flex: 1 }
+  );
+
+  return res;
+};
+
+export const countryColumnsAd = () => {
+  const res = columnsSchema.slice();
+  res.unshift(
+    { field: "country", headerName: "Country", flex: 1 },
+  );
+
+  return res;
+}
+
+export const dateColumnsAd = () => {
+  const res = columnsSchema.slice();
+  res.unshift(
+    { field: "date", headerName: "Date", flex: 1 },
+  );
+
+  return res;
+}
+
+export const dateColumnsPub = () => {
+  const res = columnsSchema.filter(item => item.field !== 'spent');
+  res.unshift(
+    { field: "date", headerName: "Date", flex: 1 },
+  );
+  res.push(
+    { field: "earned", headerName: "Earned", flex: 1 },
+  );
+
+  return res;
+}
+
+export const deviceColumnsAd = () => {
+  const res = columnsSchema.slice();
+  res.unshift(
+    { field: "device", headerName: "Device", flex: 1 },
+  );
+
+  return res;
+}
+
+export const deviceColumnsPub = () => {
+  const res = columnsSchema.filter(item => item.field !== 'spent');
+  res.unshift(
+    { field: "device", headerName: "Device", flex: 1 },
+  );
+  res.push(
+    { field: "earned", headerName: "Earned", flex: 1 },
+  );
+
+  return res;
+}
+
+export const osColumnsAd = () => {
+  const res = columnsSchema.slice();
+  res.unshift(
+    { field: "os", headerName: "OS", flex: 1 },
+  );
+
+  return res;
+}
+
+export const osColumnsPub = () => {
+  const res = columnsSchema.filter(item => item.field !== 'spent');
+  res.unshift(
+    { field: "os", headerName: "OS", flex: 1 },
+  )
+  res.push(
+    { field: "earned", headerName: "Earned", flex: 1 },
+  );
+
+  return res;
+}
+
+export const browserColumnsAd = () => {
+  const res = columnsSchema.slice();
+  res.unshift(
+    { field: "browser", headerName: "Browser", flex: 1 },
+  );
+
+  return res;
+}
+
+export const browserColumnsPub = () => {
+  const res = columnsSchema.filter(item => item.field !== 'spent');
+  res.unshift(
+    { field: "browser", headerName: "Browser", flex: 1 },
+  )
+  res.push(
+    { field: "earned", headerName: "Earned", flex: 1 },
+  );
+
+  return res;
+}
+
+export const campaignCols = () => ([
+  { field: "campaign", headerName: "Campaign", flex: 1 },
   { field: "views", headerName: "Views", flex: 1 },
   { field: "clicks", headerName: "Clicks", flex: 1 },
   { field: "pops", headerName: "Pops", flex: 1 },
-  { field: "earned", headerName: "Earned", flex: 1 },
   { field: "ctr", headerName: "CTR", flex: 1 },
-];
+  { field: "spent", headerName: "Spent", flex: 1 },
+]);
+
+export const websitesCols = () => {
+  const res = campaignCols().filter((item) => item.field !== 'campaign' && item.field !== 'spent');
+
+  return [
+    { field: "website", headerName: "Website", flex: 1 },
+    ...res,
+    { field: "earned", headerName: "Earned", flex: 1 }
+  ]
+}
 
 export const paymentCols = [
   { field: "payment_id", headerName: "Payment ID", flex: 0.8 },
@@ -51,6 +149,24 @@ export const withdrawCols = [
   { field: "processor", headerName: "Processor", flex: 0.6 },
   { field: "time", headerName: "Time", flex: 0.8 },
 ];
+
+export const breakdownByListAd = () => ([
+  { key: 1, name: 'Day' },
+  { key: 2, name: 'Country' },
+  { key: 3, name: 'Device' },
+  { key: 4, name: 'OS' },
+  { key: 5, name: 'Browser' },
+  { key: 6, name: 'Campaign' }
+]);
+
+export const breakdownByListPub = () => {
+  const res = breakdownByListAd().filter((item) => item.key !== 6);
+
+  return [
+    ...res,
+    { key: 6, name: 'Website' }
+  ]
+}
 
 export const reportDurationSelection = [
   {
