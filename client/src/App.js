@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, lazy } from "react";
 import { useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router";
 import "./App.css";
@@ -6,11 +6,12 @@ import Loading from "./Components/UI/Loading";
 import Layout from "./Components/Layout/Layout";
 import PrivateRoute from "./util/PrivateRoute";
 
-const Home = React.lazy(() => import("./Components/Home/Home"));
-const LoginForm = React.lazy(() => import("./Components/Login/LoginForm"));
-const Register = React.lazy(() => import("./Components/Register/Register"));
-const Logout = React.lazy(() => import("./Components/Logout/Logout"));
-const Dashboard = React.lazy(() => import("./Components/Dashboard/Dashboard"));
+const Home = lazy(() => import("./Components/Home/Home"));
+const LoginForm = lazy(() => import("./Components/Login/LoginForm"));
+const Register = lazy(() => import("./Components/Register/Register"));
+const Logout = lazy(() => import("./Components/Logout/Logout"));
+const Dashboard = lazy(() => import("./Components/Dashboard/Dashboard"));
+const Account = lazy(() => import("./Components/Account/Account"));
 
 function App() {
   const isAuth = useSelector((state) => state.auth.loggedIn);
@@ -39,6 +40,8 @@ function App() {
           </Route>
 
           <Route path="/dashboard" component={PrivateRoute(Dashboard)} />
+
+          <Route path="/account" component={PrivateRoute(Account)} />
 
           <Route path="*">
             <Redirect to="/" />

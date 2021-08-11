@@ -1,7 +1,13 @@
-import { authActions } from '../reducers/auth.reducer';
+import { authActions } from "../reducers/auth.reducer";
 import { userActions } from "../reducers/user.reducer";
 import { parseAuthToken, removeToken, validAuthToken } from "../../util/common";
-import { gloginApi, loginApi, registerApi, abortRequest } from "../../services/apiService";
+import {
+  gloginApi,
+  loginApi,
+  registerApi,
+  abortRequest,
+  changePassApi,
+} from "../../services/apiService";
 
 const _sendAuthRequest = (sendRequest, data) => {
   return async (dispatch) => {
@@ -21,35 +27,47 @@ const _sendAuthRequest = (sendRequest, data) => {
       }
 
       dispatch(authActions.setLoading(false));
+
+      /** Set Success */
+      dispatch(authActions.setSuccess(true));
+
+      /** Clear Success */
+      setTimeout(() => {
+        dispatch(authActions.setSuccess(null));
+      }, 3000);
+
     } catch (err) {
       dispatch(authActions.setLoading(false));
     }
-  }
+  };
 };
 
 export const handleRegister = (data) => {
-  return async(dispatch) => dispatch(_sendAuthRequest(registerApi, data));
-}
+  return async (dispatch) => dispatch(_sendAuthRequest(registerApi, data));
+};
 
 export const handleLogin = (data) => {
-  return async(dispatch) => dispatch(_sendAuthRequest(loginApi, data));
-}
+  return async (dispatch) => dispatch(_sendAuthRequest(loginApi, data));
+};
 
 export const handleGLogin = (data) => {
-  return async(dispatch) => dispatch(_sendAuthRequest(gloginApi, data));
-}
+  return async (dispatch) => dispatch(_sendAuthRequest(gloginApi, data));
+};
+
+export const handlePasswordChange = (data) => async (dispatch) =>
+  dispatch(_sendAuthRequest(changePassApi, data));
 
 export const autoLogin = () => {
   return (dispatch) => {
     const tokenValid = validAuthToken();
-    
+
     if (tokenValid !== false) {
-        dispatch(authActions.login());
-        // Load User
-        const userData = parseAuthToken();
-        dispatch(userActions.loadUser(userData));
+      dispatch(authActions.login());
+      // Load User
+      const userData = parseAuthToken();
+      dispatch(userActions.loadUser(userData));
     }
-  }
+  };
 };
 
 export const createLogout = () => {

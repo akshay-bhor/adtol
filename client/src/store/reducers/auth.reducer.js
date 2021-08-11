@@ -7,6 +7,7 @@ const authSlice = createSlice({
     requireRegister: false,
     loading: false,
     gToken: null,
+    success: null
   },
   reducers: {
     login(state) {
@@ -24,6 +25,9 @@ const authSlice = createSlice({
     setRequireRegister(state, action) {
       state.requireRegister = action.payload;
     },
+    setSuccess(state, action) {
+      state.success = action.payload;
+    }
   },
 });
 

@@ -1,5 +1,6 @@
 const { check, validationResult } = require("express-validator");
 const { QueryTypes } = require("sequelize");
+const { App_Settings } = require("../../common/settings");
 const User = require("../../models/users");
 const User_Info = require("../../models/user_info");
 const sequelize = require("../../utils/db");
@@ -17,14 +18,21 @@ exports.accountInfoHelper = async (req) => {
         const userid = req.userInfo.id;
 
         // Get user data
-        const udata = await sequelize.query('SELECT u.name, u.surname, u.mobile, u.status, ui.paypal, ui.bank, ui.ifsc, ui.branch, ui.upi, ui.payoneer FROM users u INNER JOIN user_infos ui ON u.id = ui.uid WHERE u.id = ? LIMIT 1', {
+        const udata = await sequelize.query('SELECT u.name, u.surname, u.mobile, u.country, u.status, ui.paypal, ui.bank, ui.ifsc, ui.branch, ui.upi, ui.payoneer FROM users u INNER JOIN user_infos ui ON u.id = ui.uid WHERE u.id = ? LIMIT 1', {
             type: QueryTypes.SELECT,
             replacements: [userid]
         });
 
+        // Get country
+        const ccode = udata[0].country;
+        const country = App_Settings.countries[ccode][1];
+
         // Return
         return {
-            user_data: udata[0]
+            user_data: {
+                ...udata[0],
+                country
+            }
         };
 
     } catch (err) {

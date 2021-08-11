@@ -19,6 +19,7 @@ import styles from "../Dashboard.module.css";
 import ReportsContainer from "./ReportsContainer";
 
 let title = "Advertiser Reports";
+let selectionOption;
 
 const Reports = () => {
   const params = useParams();
@@ -30,7 +31,6 @@ const Reports = () => {
   const webLoading = useSelector((state) => state.website.loading);
   const webFetched = useSelector((state) => state.website.fetched);
   const webErr = useSelector((state) => state.website.error);
-  const [selectionOption, setSelectionOption] = useState([{ id: 0, name: "All" }]);
   const dispatch = useDispatch();
 
   /**
@@ -75,24 +75,22 @@ const Reports = () => {
   }, [dispatch, params.id]);
 
   /** Set initial selection data */
-  useEffect(() => {
-    if (params.id === "advertiser") {
-      let campaignSelection = [{ id: 0, name: "All" }];
-      campData.data.forEach((data) => {
-        const { id, name } = data;
-        campaignSelection.push({ id, name });
-      });
-      setSelectionOption(_ => campaignSelection);
-    }
-    if (params.id === "publisher") {
-      let websiteSelecton = [{ id: 0, name: "All" }];
-      webData.forEach((data) => {
-        const { id, domain } = data;
-        websiteSelecton.push({ id, name: domain });
-      });
-      setSelectionOption(_ => websiteSelecton);
-    }
-  }, [webData, campData, params.id]);
+  if (params.id === "advertiser") {
+    let campaignSelection = [{ id: 0, name: "All" }];
+    campData.data.forEach((data) => {
+      const { id, name } = data;
+      campaignSelection.push({ id, name });
+    });
+    selectionOption = campaignSelection
+  }
+  if (params.id === "publisher") {
+    let websiteSelecton = [{ id: 0, name: "All" }];
+    webData.forEach((data) => {
+      const { id, domain } = data;
+      websiteSelecton.push({ id, name: domain });
+    });
+    selectionOption = websiteSelecton
+  }
 
   /**
    * Initial form values

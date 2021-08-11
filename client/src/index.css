@@ -20,8 +20,24 @@ code {
   overflow: hidden;
 }
 
+.iblock {
+  display: inline-block;
+}
+
 .mt-15 {
   margin-top: 15px;
+}
+
+.mt-60 {
+  margin-top: 60px;
+}
+
+.pl-10 {
+  padding-left: 10px;
+}
+
+.pr-10 {
+  padding-right: 10px;
 }
 
 .pointer {

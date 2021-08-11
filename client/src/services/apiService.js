@@ -70,6 +70,8 @@ export const loginApi = (data) => conn.post('/api/auth/login', data);
 
 export const gloginApi = (data) => conn.post('/api/auth/glogin', data);
 
+export const changePassApi = (data) => conn.post('/api/auth/change-pass', data);
+
 export const getCountries = () => conn.get('/api/auth/get-countries');
 
 export const getSummaryData = () => conn.get('/api/dashboard/summary');
