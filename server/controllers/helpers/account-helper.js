@@ -18,7 +18,7 @@ exports.accountInfoHelper = async (req) => {
         const userid = req.userInfo.id;
 
         // Get user data
-        const udata = await sequelize.query('SELECT u.name, u.surname, u.mobile, u.country, u.status, ui.paypal, ui.bank, ui.ifsc, ui.branch, ui.upi, ui.payoneer FROM users u INNER JOIN user_infos ui ON u.id = ui.uid WHERE u.id = ? LIMIT 1', {
+        const udata = await sequelize.query('SELECT u.name, u.surname, u.mobile, u.country, u.status, ui.paypal, ui.ac_no as acno, ui.bank, ui.ifsc, ui.branch, ui.upi, ui.payoneer FROM users u INNER JOIN user_infos ui ON u.id = ui.uid WHERE u.id = ? LIMIT 1', {
             type: QueryTypes.SELECT,
             replacements: [userid]
         });
@@ -29,10 +29,8 @@ exports.accountInfoHelper = async (req) => {
 
         // Return
         return {
-            user_data: {
-                ...udata[0],
-                country
-            }
+            ...udata[0],
+            country
         };
 
     } catch (err) {
@@ -109,10 +107,10 @@ exports.editPaymentHelper = async (req) => {
     if(req.body.upi)
         await check('upi').trim().escape().run(req);
     if(req.body.bank) {
-        await check('bank').exists().withMessage('Bank is required!').trim().escape().isString().withMessage('Invalid Bank Name!').run(req);
-        await check('acno').exists().withMessage('Account Number is required!').trim().escape().isNumeric().withMessage('Invalid Account Number!').run(req);
-        await check('branch').exists().withMessage('Branch is required!').trim().escape().isAlpha().withMessage('Invalid Branch Name!').run(req);
-        await check('ifsc').exists().withMessage('IFSC Code is required!').trim().escape().isAlphanumeric().withMessage('Invalid IFSC Number!').run(req);
+        await check('bank').exists().notEmpty().withMessage('Bank is required!').trim().escape().isString().withMessage('Invalid Bank Name!').run(req);
+        await check('acno').exists().notEmpty().withMessage('Account Number is required!').trim().escape().isNumeric().withMessage('Invalid Account Number!').run(req);
+        await check('branch').exists().notEmpty().withMessage('Branch is required!').trim().escape().isAlpha().withMessage('Invalid Branch Name!').run(req);
+        await check('ifsc').exists().notEmpty().withMessage('IFSC Code is required!').trim().escape().isAlphanumeric().withMessage('Invalid IFSC Number!').run(req);
     }
 
     try {
@@ -131,9 +129,9 @@ exports.editPaymentHelper = async (req) => {
         const paypal = req.body.paypal || null;
         const payoneer = req.body.payoneer || null;
         const bank = req.body.bank || null;
-        const ifsc = req.body.ifsc || null;
-        const branch = req.body.branch || null;
-        const acno = req.body.acno || null;
+        const ifsc = bank !== null ? req.body.ifsc : null;
+        const branch = bank !== null ? req.body.branch : null;
+        const acno = bank !== null ? req.body.acno : null;
         const upi = req.body.upi || null;
 
         // Update

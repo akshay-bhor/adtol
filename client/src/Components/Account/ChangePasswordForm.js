@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Box, Button, makeStyles } from "@material-ui/core";
+import { Box, Button, Icon, makeStyles, Typography } from "@material-ui/core";
 import { Form, Formik } from "formik";
 import { useDispatch, useSelector } from "react-redux";
 import { MyTextField } from "../FormUtils/FormUtils";
@@ -10,7 +10,7 @@ import { uiActions } from "../../store/reducers/ui.reducer";
 const useStyles = makeStyles({
   block: {
     width: "60%",
-    margin: "15px auto",
+    margin: "10px auto",
     ["@media(max-width:780px)"]: {
       width: "100%",
     },
@@ -19,6 +19,12 @@ const useStyles = makeStyles({
       width: '100%',
       textAlign: 'center',
       display: 'block',
+  },
+  notice: {
+    margin: '5px auto',
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   }
 });
 
@@ -76,6 +82,10 @@ const ChangePasswordForm = () => {
             label="Confirm Password"
             className={muiStyles.block}
           />
+          <Box component="div" className={[muiStyles.block, muiStyles.notice, "subtitle"].join(' ')}>
+            <Icon>info</Icon>
+            <Typography variant="subtitle2" className="iblock">&nbsp;&nbsp;Changing password will log you out of all the devices except this one.</Typography>
+          </Box>
           <Button
             type="submit"
             variant="contained"

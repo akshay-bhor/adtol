@@ -1,7 +1,7 @@
 import { FormControlLabel, Switch, TextField } from "@material-ui/core";
 import { useField } from "formik";
 
-export const MyTextField = ({ label, type, className, ...props }) => {
+export const MyTextField = ({ label, type, className, disabled, ...props }) => {
   const [field, meta] = useField(props);
   const errorText = meta.error && meta.touched ? meta.error : "";
 
@@ -14,6 +14,7 @@ export const MyTextField = ({ label, type, className, ...props }) => {
       helperText={errorText}
       error={!!errorText}
       variant="outlined"
+      disabled={disabled ? true:false}
     ></TextField>
   );
 };

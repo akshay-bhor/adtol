@@ -6,7 +6,10 @@ const userSlice = createSlice({
         username: '',
         email: '',
         rank: 0,
-        status: 0
+        status: 0,
+        userInfo: {},
+        loading: false,
+        success: null
     },
     reducers: {
         loadUser(state, action) {
@@ -20,6 +23,15 @@ const userSlice = createSlice({
             state.email = null;
             state.rank = null;
             state.status = null;
+        },
+        setUserInfo(state, action) {
+            state.userInfo = action.payload;
+        },
+        setSuccess(state, action) {
+            state.success = action.payload;
+        },
+        setLoading(state, action) {
+            state.loading = action.payload;
         }
     }
 });

@@ -72,6 +72,12 @@ export const gloginApi = (data) => conn.post('/api/auth/glogin', data);
 
 export const changePassApi = (data) => conn.post('/api/auth/change-pass', data);
 
+export const getAccountInfo = () => conn.get('/api/account');
+
+export const editAccountInfo = (data) => conn.post('/api/account/edit-details', data);
+
+export const editPaymentInfo = (data) => conn.post('/api/account/edit-payment', data);
+
 export const getCountries = () => conn.get('/api/auth/get-countries');
 
 export const getSummaryData = () => conn.get('/api/dashboard/summary');

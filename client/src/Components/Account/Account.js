@@ -8,12 +8,14 @@ import {
   Tab,
   Tabs,
 } from "@material-ui/core";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { abortUserRequest, fetchAccountInfoData } from "../../store/actions/user.action";
 import PaperBlock from "../Dashboard/Common/PaperBlock";
 import AccountDetailsForm from "./AccountDetailsForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 import PaymentDetailsForm from "./PaymentsDetailsForm";
+import ShowError from "../UI/ShowError";
 
 const useStyles = makeStyles((theme) => ({
   acInfoContainer: {
@@ -73,8 +75,17 @@ const Tabpanel = (props) => {
 
 const Account = () => {
   const muiStyles = useStyles();
-  const userInfo = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user);
   const [tabValue, setTabValue] = useState(0);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAccountInfoData());
+
+    return () => {
+      abortUserRequest();
+    }
+  }, []);
 
   return (
     <div className="block mt-60 pl-10 pr-10">
@@ -91,7 +102,7 @@ const Account = () => {
                     Username:
                   </Box>
                   <Box component="span" className="bold">
-                    &nbsp;{userInfo.username}
+                    &nbsp;{user.username}
                   </Box>
                 </Box>
                 <Box component="div">
@@ -99,9 +110,17 @@ const Account = () => {
                     Email:
                   </Box>
                   <Box component="span" className="bold">
-                    &nbsp;{userInfo.email}
+                    &nbsp;{user.email}
                   </Box>
                 </Box>
+                {user.userInfo?.country !== undefined && <Box component="div">
+                  <Box component="span" className="bold subtitle">
+                    Country:
+                  </Box>
+                  <Box component="span" className="bold">
+                    &nbsp;{user.userInfo.country}
+                  </Box>
+                </Box>}
                 <Box component="div">
                   <Chip className={muiStyles.success} label="Active" />
                 </Box>
@@ -126,7 +145,7 @@ const Account = () => {
         </Tabs>
       </Paper>
 
-      <PaperBlock fullWidth={true}>
+      {Object.keys(user.userInfo).length > 0 && <PaperBlock fullWidth={true}>
           <Tabpanel value={tabValue} index={0} className={muiStyles.fullWidth}>
             <AccountDetailsForm />
           </Tabpanel>
@@ -136,7 +155,7 @@ const Account = () => {
           <Tabpanel value={tabValue} index={2} className={muiStyles.fullWidth}>
             <ChangePasswordForm />
           </Tabpanel>
-      </PaperBlock>
+      </PaperBlock>}
     </div>
   );
 };
