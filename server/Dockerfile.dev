@@ -14,4 +14,8 @@ COPY . .
 
 EXPOSE 4000
 
-CMD ["npm", "run", "dev"]
+COPY ./docker-entrypoint-dev.sh /docker-entrypoint-dev.sh
+
+RUN chmod +x /docker-entrypoint-dev.sh
+
+ENTRYPOINT ["/docker-entrypoint-dev.sh"]

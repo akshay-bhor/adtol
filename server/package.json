@@ -24,6 +24,7 @@
     "express-validator": "^6.9.2",
     "geoip-country": "^4.0.56",
     "google-auth-library": "^7.0.4",
+    "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.2.5",
     "node-cron": "^3.0.0",

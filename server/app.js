@@ -7,6 +7,7 @@ const cron = require('node-cron');
 const tasks = require('./cron/cron-jobs');
 const app = express();
 const cluster = require('cluster');
+const helmet = require('helmet');
 const { createEmailTransport } = require('./common/emailTransporter');
 let retryCount = 0;
 
@@ -47,6 +48,9 @@ else {
     app.use(cookieParser());
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
+    app.use(helmet.dnsPrefetchControl({
+        allow: false,
+    }));
 
     app.use((req, res, next) => {
         res.setHeader('Access-Control-Allow-Origin', '*');
@@ -75,7 +79,7 @@ else {
             err: err
         });
     })
-    // sequelize.sync();
+    sequelize.sync();
     app.listen(process.env.PORT || 3000, function() {
         loadSettings();
         createEmailTransport();
