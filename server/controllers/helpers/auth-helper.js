@@ -186,6 +186,7 @@ exports.gLoginHelper = async (req) => {
     }
 
     await check('gid').exists().trim().isLength({ min: 21, max:21 }).withMessage('Invalid Login').run(req);
+    await check('mail').exists().trim().isEmail().withMessage('Invalid Email').run(req);
 
     try {
         const errs = validationResult(req);
@@ -197,9 +198,17 @@ exports.gLoginHelper = async (req) => {
         }
 
         const gid = req.body.gid;
+        const mail = req.body.mail;
 
         // Get User Info
-        const user = await User.findOne({ where: { gid: gid } });
+        const user = await User.findOne({ 
+            where: { 
+                [Op.or] : [
+                    { gid: gid }, 
+                    { mail: mail }
+                ] 
+            }
+        });
 
         if(user) {
             //Create token
