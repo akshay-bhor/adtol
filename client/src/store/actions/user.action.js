@@ -37,6 +37,8 @@ const _userPostRequest = (sendRequest, data, updateAccountInfo = true) => {
       // Dispatch update account Info action
       if (updateAccountInfo) await dispatch(fetchAccountInfoData());
 
+      dispatch(userActions.setLoading(false));
+
       /** Set Success */
       dispatch(userActions.setSuccess(true));
 

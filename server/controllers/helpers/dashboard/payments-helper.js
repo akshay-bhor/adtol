@@ -165,18 +165,8 @@ exports.verifyPaymentHelper = async (req) => {
 const capturePayment = async (id, amt, currency) => {
     amt = Math.floor(amt * 100);
     try {
-        // const result = await axios({
-        //     method: 'post',
-        //     url: `https://${process.env.PAY_KEY_ID}:${process.env.PAY_KEY_SECRET}@api.razorpay.com/v1/payments/${id}/capture`,
-        //     data: {
-        //         amount: amt,
-        //         currency: currency
-        //     }
-        // });
-
         // Capture razorpay payment
         const capture = await razorPay.payments.capture(id, amt, currency);
-        
 
         return true;
     } catch (err) {

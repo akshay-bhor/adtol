@@ -399,7 +399,7 @@ exports.forgetPassHelper = async (req) => {
                 <p>You requested a password reset</p>
                 <br />
                 <p>Click below to reset your password</p>
-                <a href="https://${req.get('host')}/reset-password/${rand}" 
+                <a href="https://${process.env.ORIGIN}/reset-password/${rand}" 
                 style="box-sizing:border-box;-webkit-appearance:none;-moz-appearance:none;appearance:none;
                 background-color:transparent;border:2px solid #e74c3c;border-radius:.6em;
                 color:#e74c3c;cursor:pointer;display:inline-block;font-size:1rem;font-weight:400;

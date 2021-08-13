@@ -8,7 +8,7 @@ const tasks = require('./cron/cron-jobs');
 const app = express();
 const cluster = require('cluster');
 const helmet = require('helmet');
-const { createEmailTransport } = require('./common/emailTransporter');
+const { verifyEmailTransport } = require('./common/emailTransporter');
 let retryCount = 0;
 
 if(cluster.isMaster) {
@@ -82,7 +82,7 @@ else {
     // sequelize.sync();
     app.listen(process.env.PORT || 3000, function() {
         loadSettings();
-        createEmailTransport();
+        verifyEmailTransport();
     });
 }
 

@@ -1,22 +1,26 @@
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 
-let transporter;
+const EmailTransporter = nodemailer.createTransport({
+  host: process.env.AWS_SES_HOST,
+  port: process.env.AWS_SES_PORT,
+  secure: true,
+  auth: {
+    user: process.env.AWS_SES_USER,
+    pass: process.env.AWS_SES_PASS,
+  },
+});
 
-exports.createEmailTransport = async () => {
-    // transporter = nodemailer.createTransport({
-    //     service: "Gmail",
-    //     auth: {
-    //         user: process.env.EMAIL_USER,
-    //         pass: process.env.EMAIL_PASS,
-    //     }
-    // });
-    // transporter.verify(function(err, success) {
-    //     if (err) {
-    //         console.log(err);
-    //     } else {
-    //         console.log("Email Server is ready to take our messages");
-    //     }
-    // });
+const verifyEmailTransport = () => {
+  EmailTransporter.verify(function (err, success) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Email Server is ready to take our messages");
+    }
+  });
+};
+
+module.exports = {
+    EmailTransporter,
+    verifyEmailTransport
 }
-
-exports.EmailTransporter = transporter;

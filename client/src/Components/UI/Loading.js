@@ -5,8 +5,13 @@ const Loading = (props) => {
   return (
     <div
       style={{
-        marginTop: "100px",
-        textAlign: "center",
+        width: '100%',
+        height: '100%',
+        marginTop: '100px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
       }}
     >
       <CircularProgress />
