@@ -459,7 +459,7 @@ exports.resetPassHelper = async(req) => {
         });
 
         if(update[1] != 2) {
-            const err = new Error('Oops! The reset link is expired, please request a fresh link!');
+            const err = new Error('Oops! The reset link has expired, please request a fresh link!');
             err.statusCode = 422;
             throw err;
         }
