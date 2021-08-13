@@ -9,8 +9,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { handleGLogin, handleLogin } from "../../store/actions/auth.action";
 import GoogleSignIn from "../GoogleSignIn/GoogleSignIn";
 import { abortRequest } from "../../services/apiService";
+import { Link } from "react-router-dom";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   block: {
     width: "60%",
     margin: "15px auto",
@@ -24,7 +25,10 @@ const useStyles = makeStyles({
     minWidth: "190px",
     marginTop: "10px",
   },
-});
+  link: {
+    color: theme.palette.primary.main
+  }
+}));
 
 const validationSchema = yup.object({
   client: yup
@@ -40,7 +44,7 @@ const validationSchema = yup.object({
 const LoginForm = () => {
   const loading = useSelector((state) => state.auth.loading);
   const dispatch = useDispatch();
-  const style = useStyles();
+  const muiStyles = useStyles();
 
   useEffect(() => {
     // Run on component unmount
@@ -78,18 +82,18 @@ const LoginForm = () => {
               name="client"
               type="text"
               label="Email/Username"
-              className={style.block}
+              className={muiStyles.block}
             />
             <MyTextField
               name="pass"
               type="password"
               label="Password"
-              className={style.block}
+              className={muiStyles.block}
             />
             <div className={[styles.submitContainer, "w-60"].join(" ")}>
               <Button
                 variant="contained"
-                className={style.btn}
+                className={muiStyles.btn}
                 type="submit"
                 color="primary"
                 disabled={loading}
@@ -100,6 +104,8 @@ const LoginForm = () => {
             </div>
           </Form>
         </Formik>
+        <div className={`${muiStyles.block} ${muiStyles.link}`}><Link to="/forgot-password">Forgot Password?</Link></div>
+        <div className={`${muiStyles.block} ${muiStyles.link}`}><Link to="/register">Don't have an account?</Link></div>
       </div>
     </Fragment>
   );

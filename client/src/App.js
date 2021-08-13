@@ -6,12 +6,17 @@ import Loading from "./Components/UI/Loading";
 import Layout from "./Components/Layout/Layout";
 import PrivateRoute from "./util/PrivateRoute";
 
+/**
+ * Lazy Load components
+ */
 const Home = lazy(() => import("./Components/Home/Home"));
 const LoginForm = lazy(() => import("./Components/Login/LoginForm"));
 const Register = lazy(() => import("./Components/Register/Register"));
 const Logout = lazy(() => import("./Components/Logout/Logout"));
 const Dashboard = lazy(() => import("./Components/Dashboard/Dashboard"));
 const Account = lazy(() => import("./Components/Account/Account"));
+const ForgotPassword = lazy(() => import("./Components/Account/ForgotPassword"));
+const ResetPassword = lazy(() => import("./Components/Account/ResetPassword"));
 
 function App() {
   const isAuth = useSelector((state) => state.auth.loggedIn);
@@ -31,6 +36,16 @@ function App() {
 
           <Route path="/register">
             {!isAuth && <Register />}
+            {isAuth && <Redirect to="/dashboard" />}
+          </Route>
+
+          <Route path="/forgot-password">
+            {!isAuth && <ForgotPassword />}
+            {isAuth && <Redirect to="/dashboard" />}
+          </Route>
+
+          <Route path="/reset-password/:token">
+            {!isAuth && <ResetPassword />}
             {isAuth && <Redirect to="/dashboard" />}
           </Route>
 

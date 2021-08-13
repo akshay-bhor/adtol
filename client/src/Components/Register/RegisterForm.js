@@ -8,13 +8,28 @@ import { abortFormDataRequest, fetchCountries } from "../../store/actions/formda
 import LoadReCaptcha from "./LoadReCaptcha";
 import { useHistory } from "react-router";
 import FormContent from "./FormContent";
+import { RECAPTCHA_SITE_KEY } from "../../util/load-scripts";
+import { Link } from "react-router-dom";
+import { makeStyles } from "@material-ui/core";
 
-const SITE_KEY = '6LcIF9waAAAAAM6J1cr9odD8vAi3Yh73Gi2HqG16';
+const useStyles = makeStyles((theme) => ({
+  block: {
+    width: "60%",
+    margin: "15px auto",
+    ["@media(max-width:780px)"]: {
+      width: "100%",
+    },
+  },
+  link: {
+    color: theme.palette.primary.main
+  }
+}));
 
 const RegisterForm = () => { 
   const countries = useSelector((state) => state.formdata.countries);
   const history = useHistory();
   const dispatch = useDispatch();
+  const muiStyles = useStyles();
 
   const gSignInHandler = (data) => {
     history.push('/register/google');
@@ -46,7 +61,7 @@ const RegisterForm = () => {
     }
     // Call Recaptcha
     window.grecaptcha.ready(() => {
-      window.grecaptcha.execute(SITE_KEY, {action: 'submit'}).then((token) => {
+      window.grecaptcha.execute(RECAPTCHA_SITE_KEY, {action: 'submit'}).then((token) => {
           data.grecaptcha = token;
           // Send Request
           dispatch(handleRegister(data));
@@ -78,7 +93,7 @@ const RegisterForm = () => {
             onSuccess={gSignInHandler}
           />
         </Formik>
-        
+        <div className={`${muiStyles.block} ${muiStyles.link}`}><Link to="/login">Already have an account?</Link></div>
       </div>
     </Fragment>
   );

@@ -3,8 +3,11 @@ import {
   abortRequest,
   editAccountInfo,
   editPaymentInfo,
+  forgotPassApi,
   getAccountInfo,
+  resetPassApi,
 } from "../../services/apiService";
+import { dispatch } from "../store";
 
 const _userAPIRequest = (sendRequest) => {
   return async (dispatch) => {
@@ -24,7 +27,7 @@ const _userAPIRequest = (sendRequest) => {
   };
 };
 
-const _userPostRequest = (sendRequest, data) => {
+const _userPostRequest = (sendRequest, data, updateAccountInfo = true) => {
   return async (dispatch) => {
     dispatch(userActions.setLoading(true));
 
@@ -32,7 +35,7 @@ const _userPostRequest = (sendRequest, data) => {
       const postData = await sendRequest(data);
 
       // Dispatch update account Info action
-      await dispatch(fetchAccountInfoData());
+      if (updateAccountInfo) await dispatch(fetchAccountInfoData());
 
       /** Set Success */
       dispatch(userActions.setSuccess(true));
@@ -55,6 +58,12 @@ export const updateAccountInfo = (data) => async (dispatch) =>
 
 export const updatePaymentInfo = (data) => async (dispatch) =>
   dispatch(_userPostRequest(editPaymentInfo, data));
+
+export const sendForgotPass = (data) => async (dispatch) =>
+  dispatch(_userPostRequest(forgotPassApi, data, false));
+
+export const sendResetPass = (data) => async (dispatch) =>
+  dispatch(_userPostRequest(resetPassApi, data, false));
 
 export const abortUserRequest = () => {
   abortRequest();

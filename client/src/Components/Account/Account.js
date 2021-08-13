@@ -15,7 +15,6 @@ import PaperBlock from "../Dashboard/Common/PaperBlock";
 import AccountDetailsForm from "./AccountDetailsForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 import PaymentDetailsForm from "./PaymentsDetailsForm";
-import ShowError from "../UI/ShowError";
 
 const useStyles = makeStyles((theme) => ({
   acInfoContainer: {

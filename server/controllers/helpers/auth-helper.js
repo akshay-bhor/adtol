@@ -431,8 +431,8 @@ exports.resetPassHelper = async(req) => {
         throw err;
     }
 
-    await check('token').exists().isLength({ min: 12, max: 12 }).isAlphanumeric().withMessage('Malformed Token!').run(req);
-    await check('pass').exists().isLength({ min: 8, max: 20 }).withMessage('Min & max Password length is 8 and 20').run(req);
+    await check('token').exists().trim().isLength({ min: 12, max: 12 }).withMessage('Link has Expired').isAlphanumeric().withMessage('Link has Expired').run(req);
+    await check('pass').exists().trim().isLength({ min: 8, max: 20 }).withMessage('Min & max Password length is 8 and 20').run(req);
 
     try {
         const errs = validationResult(req);
@@ -459,7 +459,7 @@ exports.resetPassHelper = async(req) => {
         });
 
         if(update[1] != 2) {
-            const err = new Error('Oops! The reset link is expired!');
+            const err = new Error('Oops! The reset link is expired, please request a fresh link!');
             err.statusCode = 422;
             throw err;
         }

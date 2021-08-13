@@ -1,26 +1,28 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, Suspense, lazy } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch } from "react-router";
-import Summary from "./Summary/Summary";
 import { scripts, scriptSrc, loadScript } from "../../util/load-scripts";
 import { scriptActions } from "../../store/reducers/script.reducer";
 import { uiActions } from "../../store/reducers/ui.reducer";
 import Sidenav from "./Sidenav/Sidenav";
 import styles from "./Dashboard.module.css";
 import { Fragment } from "react";
-import Advertiser from "./Advertiser/Advertiser";
-import CampaignList from "./Campaigns/CampaignList";
-import Publisher from "./Publisher/Publisher";
-import WebsiteList from "./Websites/WebsiteList";
-import EditWebsite from "./Websites/EditWebsite";
-import AddWebsite from "./Websites/AddWebsite";
-import AdCode from "./AdCode/AdCode";
-import Referrals from "./Referrals/Referrals";
-import BillingDashboard from "./Billing/BillingDashboard";
-import Withdraw from "./Billing/Withdraw/Withdraw";
-import Deposit from "./Billing/Deposit/Deposit";
-import Payment from "./Billing/Deposit/Payment";
-import Reports from "./Reports/Reports";
+import Loading from "../UI/Loading";
+
+const Summary = lazy(() => import("./Summary/Summary"));
+const Advertiser = lazy(() => import("./Advertiser/Advertiser"));
+const CampaignList = lazy(() => import("./Campaigns/CampaignList"));
+const Publisher = lazy(() => import("./Publisher/Publisher"));
+const WebsiteList = lazy(() => import("./Websites/WebsiteList"));
+const EditWebsite = lazy(() => import("./Websites/EditWebsite"));
+const AddWebsite = lazy(() => import("./Websites/AddWebsite"));
+const AdCode = lazy(() => import("./AdCode/AdCode"));
+const Referrals = lazy(() => import("./Referrals/Referrals"));
+const BillingDashboard = lazy(() => import("./Billing/BillingDashboard"));
+const Withdraw = lazy(() => import("./Billing/Withdraw/Withdraw"));
+const Deposit = lazy(() => import("./Billing/Deposit/Deposit"));
+const Payment = lazy(() => import("./Billing/Deposit/Payment"));
+const Reports = lazy(() => import("./Reports/Reports"));
 
 const Dashboard = () => {
   const gChartLoaded = useSelector((state) => state.script.g_charts);
@@ -61,22 +63,31 @@ const Dashboard = () => {
       <div className={styles.mainContainer}>
         <Sidenav />
         <div className={styles.container}>
-          <Switch>
-            <Route path="/dashboard" component={Summary} exact />
-            <Route path="/dashboard/advertiser" component={Advertiser} />
-            <Route path="/dashboard/campaigns" component={CampaignList} />
-            <Route path="/dashboard/publisher" component={Publisher} />
-            <Route path="/dashboard/websites" component={WebsiteList} exact />
-            <Route path="/dashboard/websites/add" component={AddWebsite} />
-            <Route path="/dashboard/websites/edit/:id" component={EditWebsite} />
-            <Route path="/dashboard/get-adcode" component={AdCode} />
-            <Route path="/dashboard/referrals" component={Referrals} />
-            <Route path="/dashboard/billing" component={BillingDashboard} exact />
-            <Route path="/dashboard/billing/withdraw" component={Withdraw} />
-            <Route path="/dashboard/billing/deposit" component={Deposit} />
-            <Route path="/dashboard/billing/payment" component={Payment} />
-            <Route path="/dashboard/reports/:id" component={Reports} />
-          </Switch>
+          <Suspense fallback={<Loading />}>
+            <Switch>
+              <Route path="/dashboard" component={Summary} exact />
+              <Route path="/dashboard/advertiser" component={Advertiser} />
+              <Route path="/dashboard/campaigns" component={CampaignList} />
+              <Route path="/dashboard/publisher" component={Publisher} />
+              <Route path="/dashboard/websites" component={WebsiteList} exact />
+              <Route path="/dashboard/websites/add" component={AddWebsite} />
+              <Route
+                path="/dashboard/websites/edit/:id"
+                component={EditWebsite}
+              />
+              <Route path="/dashboard/get-adcode" component={AdCode} />
+              <Route path="/dashboard/referrals" component={Referrals} />
+              <Route
+                path="/dashboard/billing"
+                component={BillingDashboard}
+                exact
+              />
+              <Route path="/dashboard/billing/withdraw" component={Withdraw} />
+              <Route path="/dashboard/billing/deposit" component={Deposit} />
+              <Route path="/dashboard/billing/payment" component={Payment} />
+              <Route path="/dashboard/reports/:id" component={Reports} />
+            </Switch>
+          </Suspense>
         </div>
       </div>
     </Fragment>
