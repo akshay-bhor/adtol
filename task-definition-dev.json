@@ -1,195 +1,282 @@
 {
-    "ipcMode": null,
-    "executionRoleArn": "arn:aws:iam::205900288504:role/ecsTaskExecutionRole",
-    "containerDefinitions": [
-      {
-        "dnsSearchDomains": null,
-        "environmentFiles": null,
-        "logConfiguration": {
-          "logDriver": "awslogs",
-          "secretOptions": null,
-          "options": {
-            "awslogs-group": "/ecs/adtol-dev",
-            "awslogs-region": "ap-south-1",
-            "awslogs-stream-prefix": "ecs"
-          }
+  "ipcMode": null,
+  "executionRoleArn": "arn:aws:iam::205900288504:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "dnsSearchDomains": null,
+      "environmentFiles": null,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/adtol-dev",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "entryPoint": null,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "protocol": "tcp",
+          "containerPort": 80
+        }
+      ],
+      "command": null,
+      "linuxParameters": null,
+      "cpu": 0,
+      "environment": [],
+      "resourceRequirements": null,
+      "ulimits": null,
+      "dnsServers": null,
+      "mountPoints": [],
+      "workingDirectory": null,
+      "secrets": null,
+      "dockerSecurityOptions": null,
+      "memory": null,
+      "memoryReservation": null,
+      "volumesFrom": [],
+      "stopTimeout": null,
+      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-nginx-spa-dev:08b4fb324903dd91d716aecec684547c710740a2",
+      "startTimeout": null,
+      "firelensConfiguration": null,
+      "dependsOn": [
+        {
+          "containerName": "adtol-backend",
+          "condition": "START"
+        }
+      ],
+      "disableNetworking": null,
+      "interactive": null,
+      "healthCheck": null,
+      "essential": true,
+      "links": null,
+      "hostname": null,
+      "extraHosts": null,
+      "pseudoTerminal": null,
+      "user": null,
+      "readonlyRootFilesystem": null,
+      "dockerLabels": null,
+      "systemControls": null,
+      "privileged": null,
+      "name": "adtol-frontend"
+    },
+    {
+      "dnsSearchDomains": null,
+      "environmentFiles": null,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/adtol-dev",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "entryPoint": null,
+      "portMappings": [
+        {
+          "hostPort": 4000,
+          "protocol": "tcp",
+          "containerPort": 4000
+        }
+      ],
+      "command": null,
+      "linuxParameters": null,
+      "cpu": 0,
+      "environment": [],
+      "resourceRequirements": null,
+      "ulimits": null,
+      "dnsServers": null,
+      "mountPoints": [],
+      "workingDirectory": null,
+      "secrets": [
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_NODE_ENV",
+          "name": "NODE_ENV"
         },
-        "entryPoint": null,
-        "portMappings": [
-          {
-            "hostPort": 80,
-            "protocol": "tcp",
-            "containerPort": 80
-          }
-        ],
-        "command": null,
-        "linuxParameters": null,
-        "cpu": 0,
-        "environment": [],
-        "resourceRequirements": null,
-        "ulimits": null,
-        "dnsServers": null,
-        "mountPoints": [],
-        "workingDirectory": null,
-        "secrets": null,
-        "dockerSecurityOptions": null,
-        "memory": null,
-        "memoryReservation": null,
-        "volumesFrom": [],
-        "stopTimeout": null,
-        "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-nginx-spa-dev",
-        "startTimeout": null,
-        "firelensConfiguration": null,
-        "dependsOn": [
-          {
-            "containerName": "adtol-backend",
-            "condition": "START"
-          }
-        ],
-        "disableNetworking": null,
-        "interactive": null,
-        "healthCheck": null,
-        "essential": true,
-        "links": null,
-        "hostname": null,
-        "extraHosts": null,
-        "pseudoTerminal": null,
-        "user": null,
-        "readonlyRootFilesystem": null,
-        "dockerLabels": null,
-        "systemControls": null,
-        "privileged": null,
-        "name": "adtol-frontend"
-      },
-      {
-        "dnsSearchDomains": null,
-        "environmentFiles": null,
-        "logConfiguration": {
-          "logDriver": "awslogs",
-          "secretOptions": null,
-          "options": {
-            "awslogs-group": "/ecs/adtol-dev",
-            "awslogs-region": "ap-south-1",
-            "awslogs-stream-prefix": "ecs"
-          }
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_PORT",
+          "name": "PORT"
         },
-        "entryPoint": null,
-        "portMappings": [
-          {
-            "hostPort": 4000,
-            "protocol": "tcp",
-            "containerPort": 4000
-          }
-        ],
-        "command": null,
-        "linuxParameters": null,
-        "cpu": 0,
-        "environment": [],
-        "resourceRequirements": null,
-        "ulimits": null,
-        "dnsServers": null,
-        "mountPoints": [],
-        "workingDirectory": null,
-        "secrets": null,
-        "dockerSecurityOptions": null,
-        "memory": null,
-        "memoryReservation": null,
-        "volumesFrom": [],
-        "stopTimeout": null,
-        "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-node-dev",
-        "startTimeout": null,
-        "firelensConfiguration": null,
-        "dependsOn": null,
-        "disableNetworking": null,
-        "interactive": null,
-        "healthCheck": null,
-        "essential": true,
-        "links": null,
-        "hostname": null,
-        "extraHosts": null,
-        "pseudoTerminal": null,
-        "user": null,
-        "readonlyRootFilesystem": null,
-        "dockerLabels": null,
-        "systemControls": null,
-        "privileged": null,
-        "name": "adtol-backend"
-      }
-    ],
-    "placementConstraints": [],
-    "memory": "1024",
-    "taskRoleArn": "arn:aws:iam::205900288504:role/ecsTaskExecutionRole",
-    "compatibilities": [
-      "EC2",
-      "FARGATE"
-    ],
-    "taskDefinitionArn": "arn:aws:ecs:ap-south-1:205900288504:task-definition/adtol-dev:8",
-    "family": "adtol-dev",
-    "requiresAttributes": [
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "ecs.capability.execution-role-awslogs"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "com.amazonaws.ecs.capability.ecr-auth"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "com.amazonaws.ecs.capability.task-iam-role"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "ecs.capability.container-ordering"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "ecs.capability.execution-role-ecr-pull"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
-      },
-      {
-        "targetId": null,
-        "targetType": null,
-        "value": null,
-        "name": "ecs.capability.task-eni"
-      }
-    ],
-    "pidMode": null,
-    "requiresCompatibilities": [
-      "FARGATE"
-    ],
-    "networkMode": "awsvpc",
-    "cpu": "512",
-    "revision": 8,
-    "status": "ACTIVE",
-    "inferenceAccelerators": null,
-    "proxyConfiguration": null,
-    "volumes": []
-  }
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_ORIGIN",
+          "name": "ORIGIN"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_NAME",
+          "name": "DB_NAME"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_USER",
+          "name": "DB_USER"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_PASS",
+          "name": "DB_PASS"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_HOST",
+          "name": "DB_HOST"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_DIALECT",
+          "name": "DB_DIALECT"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_PORT",
+          "name": "DB_PORT"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_HASH_SECRET",
+          "name": "HASH_SECRET"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_PAY_KEY_ID",
+          "name": "PAY_KEY_ID"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_PAY_KEY_SECRET",
+          "name": "PAY_KEY_SECRET"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AES_KEY",
+          "name": "AES_KEY"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_RECAPTCHA_SECRET",
+          "name": "RECAPTCHA_SECRET"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_GOOGLE_CLIENT_ID",
+          "name": "GOOGLE_CLIENT_ID"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_GOOGLE_CLIENT_SECRET",
+          "name": "GOOGLE_CLIENT_SECRET"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_SES_HOST",
+          "name": "AWS_SES_HOST"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_SES_PORT",
+          "name": "AWS_SES_PORT"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_SES_USER",
+          "name": "AWS_SES_USER"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_SES_PASS",
+          "name": "AWS_SES_PASS"
+        }
+      ],
+      "dockerSecurityOptions": null,
+      "memory": null,
+      "memoryReservation": null,
+      "volumesFrom": [],
+      "stopTimeout": null,
+      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-node-dev:08b4fb324903dd91d716aecec684547c710740a2",
+      "startTimeout": null,
+      "firelensConfiguration": null,
+      "dependsOn": null,
+      "disableNetworking": null,
+      "interactive": null,
+      "healthCheck": null,
+      "essential": true,
+      "links": null,
+      "hostname": null,
+      "extraHosts": null,
+      "pseudoTerminal": null,
+      "user": null,
+      "readonlyRootFilesystem": null,
+      "dockerLabels": null,
+      "systemControls": null,
+      "privileged": null,
+      "name": "adtol-backend"
+    }
+  ],
+  "placementConstraints": [],
+  "memory": "1024",
+  "taskRoleArn": "arn:aws:iam::205900288504:role/ecsTaskExecutionRole",
+  "compatibilities": [
+    "EC2",
+    "FARGATE"
+  ],
+  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:205900288504:task-definition/adtol-dev:23",
+  "family": "adtol-dev",
+  "requiresAttributes": [
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.container-ordering"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.secrets.ssm.environment-variables"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.task-eni"
+    }
+  ],
+  "pidMode": null,
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "networkMode": "awsvpc",
+  "cpu": "512",
+  "revision": 23,
+  "status": "ACTIVE",
+  "inferenceAccelerators": null,
+  "proxyConfiguration": null,
+  "volumes": []
+}
