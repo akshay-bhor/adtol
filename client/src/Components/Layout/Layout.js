@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../../store/reducers/ui.reducer";
 import Modal from "../UI/Modal";
@@ -7,14 +7,23 @@ import Navbar from "../UI/Navigation/Navbar";
 import OneTap from "../GoogleSignIn/OneTap";
 import { useLocation } from "react-router";
 import SnackBar from "../UI/SnackBar";
+import { useHistory } from "react-router-dom";
 
 const Layout = (props) => {
   const dispatch = useDispatch();
   const loggedIn = useSelector((state) => state.auth.loggedIn);
+  const needRedirect = useSelector((state) => state.auth.redirect);
   const [initial, setInitial] = useState(true);
   const alert = useSelector((state) => state.ui.alert);
   const snack = useSelector((state) => state.ui.snack);
   const location = useLocation();
+  const history = useHistory();
+
+  useEffect(() => {
+    if(needRedirect) {
+      history.push(needRedirect);
+    }
+  }, [needRedirect]);
 
   if (initial) {
     setInitial(false);

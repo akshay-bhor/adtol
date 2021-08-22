@@ -9,7 +9,7 @@ import {
   changePassApi,
 } from "../../services/apiService";
 
-const _sendAuthRequest = (sendRequest, data) => {
+const _sendAuthRequest = (sendRequest, data, redirect = false) => {
   return async (dispatch) => {
     dispatch(authActions.setLoading(true));
 
@@ -36,6 +36,14 @@ const _sendAuthRequest = (sendRequest, data) => {
         dispatch(authActions.setSuccess(null));
       }, 3000);
 
+      // Set redirect
+      if(redirect) {
+        dispatch(authActions.setRedirect(redirect));
+        setTimeout(() => {
+          dispatch(authActions.setRedirect(null));
+        }, 1000);
+      }
+
     } catch (err) {
       dispatch(authActions.setLoading(false));
     }
@@ -52,6 +60,10 @@ export const handleLogin = (data) => {
 
 export const handleGLogin = (data) => {
   return async (dispatch) => dispatch(_sendAuthRequest(gloginApi, data));
+};
+
+export const handleOneTapGLogin = (data, redirect = false) => {
+  return async (dispatch) => dispatch(_sendAuthRequest(gloginApi, data, redirect));
 };
 
 export const handlePasswordChange = (data) => async (dispatch) =>
@@ -74,9 +86,6 @@ export const createLogout = () => {
   return async (dispatch) => {
     // Remove Tokens
     removeToken();
-
-    dispatch(authActions.logout());
-    dispatch(userActions.unloadUser());
   };
 };
 

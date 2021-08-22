@@ -11,7 +11,7 @@ import { uiActions } from "../../store/reducers/ui.reducer";
 import { authActions } from "../../store/reducers/auth.reducer";
 import { useHistory } from "react-router";
 import { useLocation } from "react-router-dom";
-import { handleGLogin } from "../../store/actions/auth.action";
+import { handleOneTapGLogin } from "../../store/actions/auth.action";
 
 const OneTap = () => {
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ const OneTap = () => {
       let data = {};
       data.gToken = response.credential;
       dispatch(authActions.setGToken(response.credential));
-      dispatch(handleGLogin(data));
+      dispatch(handleOneTapGLogin(data, '/dashboard'));
     },
     [dispatch]
   );

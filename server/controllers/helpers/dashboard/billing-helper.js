@@ -313,7 +313,7 @@ exports.convertPubBalHelper = async (req) => {
     }
 
     await check('amt').exists().withMessage('Amount not specified!').trim().escape().isFloat().withMessage('Invalid Amount!')
-    .custom(this.customDepositAmtValidation).run(req);
+    .custom(customDepositAmtValidation).run(req);
 
     try {
 
@@ -382,7 +382,7 @@ exports.convertPubBalHelper = async (req) => {
     }
 }
 
-customWithdrawAmtValidation = async(amt, { req }) => {
+const customWithdrawAmtValidation = async(amt, { req }) => {
     // Check Min Withdraw Amount
     let minWithdraw = App_Settings.web_settings.min_withdraw;
     
@@ -401,7 +401,7 @@ customWithdrawAmtValidation = async(amt, { req }) => {
     }
 }
 
-exports.customDepositAmtValidation = async(amt, { req }) => {
+const customDepositAmtValidation = async(amt, { req }) => {
     // Check Min Deposit Amount
     let minDeposit = App_Settings.web_settings.min_deposit;
     
@@ -420,7 +420,7 @@ exports.customDepositAmtValidation = async(amt, { req }) => {
     }
 }
 
-customProcessorValidation = async(processor) => {
+const customProcessorValidation = async(processor) => {
     // Check if valid witndraw processor
     if(processor != 1 && processor != 2 && processor != 3) {
         throw new Error('Processor Doesn\'t Exist!');

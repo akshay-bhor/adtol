@@ -9,7 +9,7 @@ const Logout = () => {
 
     useEffect(() => {
         dispatch(createLogout());
-        history.push('/');
+        document.location = '/';
     }, [dispatch, history]);
 
     return(null);
