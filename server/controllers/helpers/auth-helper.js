@@ -396,13 +396,13 @@ exports.forgetPassHelper = async (req) => {
             from: 'support@adtol.com',
             subject: 'Adtol - Forgot Password',
             html: `
-                <p>We receive a password reset request for your email.
+                <p>We received a password reset request for your account associated with this email.
                 Click below to reset your password</p>
                 <a href="https://${process.env.ORIGIN}/reset-password/${rand}" 
                 style="box-sizing:border-box;-webkit-appearance:none;-moz-appearance:none;appearance:none;
                 background-color:#3f51b5;border-radius:4px;
                 color:#fff;cursor:pointer;display:inline-block;font-size:14px;font-weight:400;
-                line-height:1;margin:10px;padding:5px 8px;text-decoration:none;text-align:center;
+                line-height:1;margin:10px;padding:10px 15px;text-decoration:none;text-align:center;
                 text-transform:uppercase;font-family:Montserrat,sans-serif;font-weight:700">Reset</a>
                 <br />
                 <span style="color:red">Please note that this link is only valid for 10 minutes! Do not share this link with anyone!</span>
