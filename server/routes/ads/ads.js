@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const adValidation = require('../../middleware/ad-validation');
-const adPreprocess = require('../../middleware/ad_preprocess');
+const adPreprocess = require('../../middleware/ad-preprocess');
 const adServeControlller = require('../../controllers/ads/ad-serve');
 const processClickController = require('../../controllers/ads/process');
 const processPopController = require('../../controllers/ads/pops');

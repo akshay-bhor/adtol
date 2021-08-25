@@ -32,3 +32,11 @@ exports.changeBudget = async (req, res, next) => {
         next(err);
     }
 }
+
+exports.uploadBanners = async (req, res, next) => {
+    try {
+        res.end('success');
+    } catch (err) {
+        next(err)
+    }
+}

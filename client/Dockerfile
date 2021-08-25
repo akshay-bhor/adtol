@@ -1,4 +1,4 @@
-FROM node:alpine as build
+FROM node:16.7-alpine as build
 
 WORKDIR "/client"
 
