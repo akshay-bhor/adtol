@@ -2,7 +2,7 @@ const multer = require("multer");
 
 const whitelist = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
 
-exports.uploadImg = multer({
+exports.storeImg = multer({
   storage: multer.memoryStorage(),
   limits: {
     files: 5,

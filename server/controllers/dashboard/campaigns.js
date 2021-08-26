@@ -35,7 +35,10 @@ exports.changeBudget = async (req, res, next) => {
 
 exports.uploadBanners = async (req, res, next) => {
     try {
-        res.end('success');
+        const result = await campaignsHelper.uploadBannersHelper(req);
+
+        res.status(200).json(result);
+
     } catch (err) {
         next(err)
     }

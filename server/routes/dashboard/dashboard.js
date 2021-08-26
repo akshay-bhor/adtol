@@ -15,7 +15,7 @@ const referralController = require('../../controllers/dashboard/referrals');
 
 const billingController = require('../../controllers/dashboard/billing');
 const paymentController = require('../../controllers/dashboard/payments');
-const { uploadImg } = require('../../common/upload-banner');
+const { storeImg } = require('../../common/upload-banner');
 
 router.get('/summary', isAuth, summaryController.summary);
 router.get('/user-status', isAuth, userStatusController.userStatus);
@@ -23,7 +23,7 @@ router.get('/advertiser', isAuth, advertiserController.advertiser);
 router.get('/campaigns', isAuth, campaignController.campaigns);
 router.post('/campaigns/change-status/:campid', isAuth, campaignController.changeStatus);
 router.post('/campaigns/change-budget/:campid', isAuth, campaignController.changeBudget);
-router.post('/campaigns/upload-banners', isAuth, uploadImg.array('banners', 5), bannerSizeValidation, campaignController.uploadBanners);
+router.post('/campaigns/upload-banners', isAuth, storeImg.array('banners', 5), bannerSizeValidation, campaignController.uploadBanners);
 
 router.post('/reports/:type', isAuth, reportController.reports);
 

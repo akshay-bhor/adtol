@@ -4,6 +4,10 @@ const { tinify } = require('../../../common/util');
 const Campaign_types = require("../../../models/campaign_types");
 const User = require("../../../models/users");
 const { check, validationResult } = require("express-validator");
+const { uploadImageS3 } = require("../../../common/upload-s3");
+const { v4: uuidv4 } = require('uuid');
+const Banners = require("../../../models/banners");
+const sizeOf = require('image-size');
 
 exports.campaignsHelper = async(req) => {
     if(!req.userInfo) {
@@ -243,6 +247,52 @@ exports.changeBudgetHelper = async (req) => {
             'msg': 'success'
         };
 
+    } catch(err) {
+        if(!err.statusCode)
+            err.statusCode = 500;
+        throw err;
+    }
+}
+
+exports.uploadBannersHelper = async (req) => {
+    if(!req.userInfo) {
+        const err = new Error('Not Allowed!');
+        err.statusCode = 401;
+        throw err;
+    }
+
+    try {
+        // Userid
+        const userid = req.userInfo.id;
+
+        // Images list
+        const imageUploadList = [];
+
+        for (let image of req.files) { 
+            const uniqueImageName = uuidv4();
+            const ext = image.originalname.split('.').pop();
+            const finalImageName = uniqueImageName + '.' + ext;
+            await uploadImageS3(image.buffer, finalImageName);
+
+            // Get size
+            const {width, height} = sizeOf(image.buffer);
+            const dimension = `${width}x${height}`;
+
+            const { id:size } = req.banner_sizes_obj.filter(data => data.size === dimension)[0];
+
+            imageUploadList.push({
+                uid: userid,
+                size,
+                src: finalImageName
+            });
+        }
+
+        await Banners.bulkCreate(imageUploadList);
+
+        // Return
+        return {
+            'msg': 'success'
+        };
     } catch(err) {
         if(!err.statusCode)
             err.statusCode = 500;

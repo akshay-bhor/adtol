@@ -8,16 +8,20 @@ const Banners = sequelize.define('banner', {
         allowNull: false,
         autoIncrement: true
     },
-    campaign_id: {
+    uid: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    campaign_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true
     },
     size: {
         type: DataTypes.INTEGER(2),
         allowNull: false
     },
     src: {
-        type: DataTypes.STRING(200),
+        type: DataTypes.STRING(50),
         allowNull: false
     }
 }, {
@@ -31,6 +35,11 @@ const Banners = sequelize.define('banner', {
             name: 'size',
             using: 'BTREE',
             fields: ['size']
+        },
+        {
+            name: 'uid',
+            using: 'BTREE',
+            fields: ['uid']
         }
     ]
 });
