@@ -8,11 +8,12 @@ const S3 = new AWS.S3({
     region: process.env.AWS_REGION,
 });
 
-exports.uploadImageS3 = async (imageBuffer, name) => {
+exports.uploadImageS3 = async (imageBuffer, name, contentType) => {
     const uploadParams = {
         Bucket: process.env.AWS_S3_BUCKET_NAME,
         Body: imageBuffer,
-        Key: name
+        Key: name,
+        ContentType: contentType
     }
 
     return S3.putObject(uploadParams).promise();

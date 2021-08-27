@@ -272,7 +272,7 @@ exports.uploadBannersHelper = async (req) => {
             const uniqueImageName = uuidv4();
             const ext = image.originalname.split('.').pop();
             const finalImageName = uniqueImageName + '.' + ext;
-            await uploadImageS3(image.buffer, finalImageName);
+            await uploadImageS3(image.buffer, finalImageName, image.mimetype);
 
             // Get size
             const {width, height} = sizeOf(image.buffer);

@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk');
 const sharp = require('sharp');
+const FileType = require('file-type');
 const s3 = new AWS.S3();
 
 const destBucket = process.env.DEST_BUCKET;
@@ -69,12 +70,14 @@ function get(srcBucket, srcKey) {
   });
 }
 
-function put(destBucket, destKey, data) {
+async function put(destBucket, destKey, data) {
+  const { mime } = await FileType.fromBuffer(data);
   return new Promise((resolve, reject) => {
     s3.putObject({
       Bucket: destBucket,
       Key: destKey,
-      Body: data
+      Body: data,
+      ContentType: mime
     }, (err, data) => {
       if (err) {
         console.error('Error putting object: ' + destBucket + ':' + destKey);
