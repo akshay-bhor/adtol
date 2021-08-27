@@ -7,6 +7,7 @@ const { check, validationResult } = require("express-validator");
 const { uploadImageS3 } = require("../../../common/upload-s3");
 const { v4: uuidv4 } = require('uuid');
 const Banners = require("../../../models/banners");
+const Timezones = require("../../../models/timezones");
 const sizeOf = require('image-size');
 
 exports.campaignsHelper = async(req) => {
@@ -293,6 +294,59 @@ exports.uploadBannersHelper = async (req) => {
         return {
             'msg': 'success'
         };
+    } catch(err) {
+        if(!err.statusCode)
+            err.statusCode = 500;
+        throw err;
+    }
+}
+
+exports.getCampaignTypesHelper = async (req) => {
+    if(!req.userInfo) {
+        const err = new Error('Not Allowed!');
+        err.statusCode = 401;
+        throw err;
+    }
+
+    try {
+        const res = await Campaign_types.findAll();
+
+        const result = [];
+
+        res.forEach(campaign => {
+            result.push({
+                id: campaign.dataValues.id,
+                type: campaign.dataValues.name 
+            });
+        });
+
+        return result;
+
+    } catch(err) {
+        if(!err.statusCode)
+            err.statusCode = 500;
+        throw err;
+    }
+}
+
+exports.getTimezonesHelper = async (req) => {
+    if(!req.userInfo) {
+        const err = new Error('Not Allowed!');
+        err.statusCode = 401;
+        throw err;
+    }
+
+    try {
+        const res = await Timezones.findAll();
+
+        const result = [];
+
+        res.forEach(timezone => {
+            result.push(timezone.dataValues.zone);
+        });
+
+        return result;
+
     } catch(err) {
         if(!err.statusCode)
             err.statusCode = 500;
