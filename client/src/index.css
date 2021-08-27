@@ -25,7 +25,15 @@ code {
 }
 
 .mt-15 {
-  margin-top: 15px;
+  margin-top: 15px!important;
+}
+
+.mt-5 {
+  margin-top: 5px!important;
+}
+
+.mt-10 {
+  margin-top: 10px!important;
 }
 
 .mt-60 {

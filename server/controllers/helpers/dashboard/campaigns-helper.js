@@ -316,7 +316,8 @@ exports.getCampaignTypesHelper = async (req) => {
         res.forEach(campaign => {
             result.push({
                 id: campaign.dataValues.id,
-                type: campaign.dataValues.name 
+                type: campaign.dataValues.name,
+                icon: campaign.dataValues.icon
             });
         });
 

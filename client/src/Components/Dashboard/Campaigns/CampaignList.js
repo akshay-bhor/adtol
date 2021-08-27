@@ -79,7 +79,7 @@ const CampaignList = () => {
   let rows = [];
 
   useEffect(() => {
-    if (data.data.length === 0 && !fetched) dispatch(fetchCampaignsList());
+    if (data.data.length === 0 || !fetched) dispatch(fetchCampaignsList());
 
     return () => {
       abortCampaignRequest();

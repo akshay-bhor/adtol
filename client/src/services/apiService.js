@@ -90,6 +90,8 @@ export const getAdvertiserData = () => conn.get('/api/dashboard/advertiser');
 
 export const getCampaignsList = () => conn.get('/api/dashboard/campaigns');
 
+export const getCampaignTypes = () => conn.get('/api/dashboard/campaigns/get-campaign-types');
+
 export const changeCampaignStatus = (data) => conn.post('/api/dashboard/campaigns/change-status/' + data.id, data.data);
 
 export const changeCampaignBudget = (data) => conn.post('/api/dashboard/campaigns/change-budget/' + data.id, data.data);

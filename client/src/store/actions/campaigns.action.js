@@ -1,7 +1,7 @@
 import { campaignActions } from "../reducers/campaigns.reducer";
-import { abortRequest, changeCampaignBudget, changeCampaignStatus, getCampaignsList } from "../../services/apiService";
+import { abortRequest, changeCampaignBudget, changeCampaignStatus, getCampaignsList, getCampaignTypes } from "../../services/apiService";
 
-const _campaignGetRequest = (sendRequest) => {
+const _campaignGetRequest = (sendRequest, set) => {
     return async (dispatch) => {
         dispatch(campaignActions.setLoading(true));
     
@@ -11,7 +11,8 @@ const _campaignGetRequest = (sendRequest) => {
           const getData = await sendRequest();
          
           if (getData) {
-            dispatch(campaignActions.setData(getData.data));
+            if(set === 'campaignList') dispatch(campaignActions.setData(getData.data));
+            if(set === 'campaignTypes') dispatch(campaignActions.setCampaignTypes(getData.data));
           }
     
           dispatch(campaignActions.setLoading(false));
@@ -51,7 +52,7 @@ export const updateCampaignStatus = (data) => {
 }
 
 export const fetchCampaignsList = () => {
-  return async (dispatch) => dispatch(_campaignGetRequest(getCampaignsList));
+  return async (dispatch) => dispatch(_campaignGetRequest(getCampaignsList, 'campaignList'));
 }
 
 export const updateCampaignBudget = (data) => {
@@ -59,6 +60,10 @@ export const updateCampaignBudget = (data) => {
     await dispatch(_campaignPostRequest(changeCampaignBudget, data));
     dispatch(fetchCampaignsList());
   }
+}
+
+export const fetchCampaignTypes = () => {
+  return async (dispatch) => dispatch(_campaignGetRequest(getCampaignTypes, 'campaignTypes'));
 }
 
 export const abortCampaignRequest = () => {

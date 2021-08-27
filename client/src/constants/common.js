@@ -227,7 +227,7 @@ export const SidenavMenuItems = [
       {
         id: 341,
         title: "Campaign",
-        url: "/dashboard/create-ad/campaign",
+        url: "/dashboard/campaign-type",
         icon: "ads_click",
       },
       {

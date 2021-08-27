@@ -8,6 +8,7 @@ const campaignSlice = createSlice({
             data: [],
             max_budget: null
         },
+        campaign_types: [],
         success: null,
         error: null, 
         fetched: false
@@ -15,6 +16,9 @@ const campaignSlice = createSlice({
     reducers: {
         setData(state, action) {
             state.data = action.payload;
+        },
+        setCampaignTypes(state, action) {
+            state.campaign_types = action.payload;
         },
         setLoading(state, action) {
             state.loading = action.payload;
