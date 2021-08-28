@@ -1,5 +1,5 @@
 import { formDataActions } from "../reducers/formdata.reducer";
-import { abortRequest, getCountries, getWebsiteFormData } from "../../services/apiService";
+import { abortRequest, getCountries, getTimezones, getWebsiteFormData } from "../../services/apiService";
 import { authActions } from "../reducers/auth.reducer";
 
 const _formDataAPIRequest = (sendRequest, which) => {
@@ -23,6 +23,9 @@ const _formDataAPIRequest = (sendRequest, which) => {
         const langData = data.data.languages;
         dispatch(formDataActions.loadLanguages(langData));
       }
+      if(which.includes("Timezones")) {
+        dispatch(formDataActions.loadTimezones(data.data));
+      }
       
     } catch (err) {
       dispatch(authActions.setLoading(false));
@@ -36,6 +39,10 @@ export const fetchCountries = () => {
 
 export const fetchWebsiteFormData = () => {
   return async (dispatch) => dispatch(_formDataAPIRequest(getWebsiteFormData, ["Categories", "Languages"]))
+}
+
+export const fetchTimezones = () => {
+  return async (dispatch) => dispatch(_formDataAPIRequest(getTimezones, ["Timezones"]))
 }
 
 export const abortFormDataRequest = () => {
