@@ -24,6 +24,8 @@ router.get('/campaigns', isAuth, campaignController.campaigns);
 router.post('/campaigns/change-status/:campid', isAuth, campaignController.changeStatus);
 router.post('/campaigns/change-budget/:campid', isAuth, campaignController.changeBudget);
 router.post('/campaigns/upload-banners', isAuth, storeImg.array('banners', 5), bannerSizeValidation, campaignController.uploadBanners);
+router.post('/campaigns/create', isAuth, campaignController.createCampaign);
+router.post('/campaigns/edit/:campid', isAuth, campaignController.editCampaign);
 router.get('/campaigns/get-campaign-types', isAuth, campaignController.getCampaigntypes);
 router.get('/campaigns/get-timezones', isAuth, campaignController.getTimezones);
 

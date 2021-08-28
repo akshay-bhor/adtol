@@ -140,7 +140,7 @@ const Campaigns = sequelize.define('campaign', {
     adult: {
         type: DataTypes.TINYINT(1),
         allowNull: false,
-        defaultValue: 2
+        defaultValue: 0
     },
     run: { // 1 running 2 user pause 3 machine pause
         type: DataTypes.TINYINT(1),

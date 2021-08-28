@@ -44,6 +44,34 @@ exports.uploadBanners = async (req, res, next) => {
     }
 }
 
+exports.createCampaign = async (req, res, next) => {
+    try {
+        // Add type
+        req.manage = 'add';
+
+        const result = await campaignsHelper.manageCampaignHelper(req);
+
+        res.status(200).json(result);
+
+    } catch (err) {
+        next(err);
+    }
+}
+
+exports.editCampaign = async (req, res, next) => {
+    try {
+        // Add type
+        req.manage = 'edit';
+
+        const result = await campaignsHelper.manageCampaignHelper(req);
+
+        res.status(200).json(result);
+
+    } catch (err) {
+        next(err);
+    }
+}
+
 exports.getCampaigntypes = async (req, res, next) => {
     try {
         const result = await campaignsHelper.getCampaignTypesHelper(req);

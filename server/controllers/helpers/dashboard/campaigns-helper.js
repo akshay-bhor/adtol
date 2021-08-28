@@ -8,7 +8,11 @@ const { uploadImageS3 } = require("../../../common/upload-s3");
 const { v4: uuidv4 } = require('uuid');
 const Banners = require("../../../models/banners");
 const Timezones = require("../../../models/timezones");
+const Btns = require("../../../models/btn");
+const Settings = require("../../../models/settings");
 const sizeOf = require('image-size');
+const { App_Settings } = require("../../../common/settings");
+const User_Banners = require("../../../models/user_banners");
 
 exports.campaignsHelper = async(req) => {
     if(!req.userInfo) {
@@ -255,6 +259,74 @@ exports.changeBudgetHelper = async (req) => {
     }
 }
 
+exports.manageCampaignHelper = async (req) => {
+    if(!req.userInfo) {
+        const err = new Error('Not Allowed!');
+        err.statusCode = 401;
+        throw err;
+    }
+
+    await check('campaign_name').exists().trim().escape().isString().notEmpty().withMessage('Campaign Name is required').run(req);
+    await check('campaign_type').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Campaign Type').run(req);
+    await check('title').exists().trim().escape().isString().notEmpty().withMessage('Title is required').run(req);
+    await check('desc').exists().trim().escape().isString().notEmpty().withMessage('Description is required').run(req);
+    await check('url').exists().trim().escape().notEmpty().withMessage('URL is required').isURL().withMessage('URL is invalid').run(req);
+    if(req.body.banners) await check('banners').exists().trim().escape().isString().notEmpty()
+    .withMessage('Please select atleast 1 banner').custom(bannerValidation).run(req);
+    await check('category').exists().trim().escape().isString().notEmpty().withMessage('Category is required').custom(adTargetingValidation).run(req);
+    await check('country').exists().trim().escape().isString().notEmpty().withMessage('Country is required').custom(adTargetingValidation).run(req);
+    await check('device').exists().trim().escape().isString().notEmpty().withMessage('Device is required').custom(adTargetingValidation).run(req);
+    await check('os').exists().trim().escape().isString().notEmpty().withMessage('OS is required').custom(adTargetingValidation).run(req);
+    await check('browser').exists().trim().escape().isString().notEmpty().withMessage('Browser is required').custom(adTargetingValidation).run(req);
+    await check('language').exists().trim().escape().isString().notEmpty().withMessage('Language is required').custom(adTargetingValidation).run(req);
+    await check('day').exists().trim().escape().isString().notEmpty().withMessage('Days are required').custom(adTargetingValidation).run(req);
+    await check('timezone').exists().trim().isString().notEmpty().withMessage('Timezone is required').custom(timezoneValidation).run(req);
+    if(req.body.btn) await check('btn').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Button').custom(btnValidation).run(req);
+    await check('cpc').exists().trim().escape().isFloat().notEmpty().withMessage('CPC is required').custom(adSettingsValidation).run(req);
+    await check('adult').exists().trim().escape().isInt().notEmpty().withMessage('Adult is required')
+    .custom(val => {
+        if(val == 0 || val == 1) return true;
+        else throw new Error('Invalid selection for Adult');
+    }).run(req);
+    await check('budget').exists().trim().escape().isFloat().notEmpty().withMessage('Budget is required').custom(adSettingsValidation).run(req);
+    await check('daily_budget').exists().trim().escape().isFloat().notEmpty().withMessage('Daily Budget is required').custom(adSettingsValidation).run(req);
+    await check('run').exists().trim().escape().isInt().notEmpty().withMessage('Run is required')
+    .custom(val => {
+        if(val == 1 || val == 2) return true;
+        else throw new Error('Invalid selection for run');
+    }).run(req);
+    
+    try {
+        // Get type => campaign or pop
+        const reqType = req.query.type;
+
+        if(reqType !== 'campaign' && reqType !== 'pop') {
+            const err = new Error('Something went wrong, try again!');
+            throw err;
+        }
+
+        const errs = validationResult(req); 
+        if(!errs.isEmpty()) {
+            const err = new Error('Validation Failed!');
+            err.statusCode = 422;
+            err.data = errs.array();
+            throw err;
+        }
+
+        // Edit or create new
+        const manage = req.manage;
+
+        const editCampId = req.params?.campid || null;
+
+        return 'end';
+
+    } catch(err) {
+        if(!err.statusCode)
+            err.statusCode = 500;
+        throw err;
+    }
+}
+
 exports.uploadBannersHelper = async (req) => {
     if(!req.userInfo) {
         const err = new Error('Not Allowed!');
@@ -288,7 +360,7 @@ exports.uploadBannersHelper = async (req) => {
             });
         }
 
-        await Banners.bulkCreate(imageUploadList);
+        await User_Banners.bulkCreate(imageUploadList);
 
         // Return
         return {
@@ -352,5 +424,126 @@ exports.getTimezonesHelper = async (req) => {
         if(!err.statusCode)
             err.statusCode = 500;
         throw err;
+    }
+}
+
+const adTargetingValidation = (value, { req, location, path }) => {
+    if(value == 0) return true; // 0 is all values
+
+    if(path !== 'day') {
+        let data;
+        if(path === 'category') data = App_Settings.categories;
+        if(path === 'browser') data = App_Settings.browsers;
+        if(path === 'device') data = App_Settings.devices;
+        if(path === 'language') data = App_Settings.languages;
+        if(path === 'country') data = App_Settings.countries;
+        if(path === 'os') data = App_Settings.os;
+
+        const values = value.split(',');
+        const compareData = Object.keys(data).map(d => +d);
+
+        for(let val of values) {
+            if(!compareData.includes(+val)) {
+                throw new Error(`Invalid selection for ${path}`);
+            }
+        }
+        return true;
+    }
+    else {
+        const values = value.split(',');
+        
+        for(let val of values) {
+            if(+val < 1 || +val > 7) {
+                throw new Error(`Invalid selection for days`);
+            }
+        }
+        return true;
+    }
+}
+
+const timezoneValidation = async (value) => {
+    try {
+        const timzones = await Timezones.findAll();
+
+        const tzArr = [];
+        for(let tz of timzones) {
+            tzArr.push(tz.dataValues.zone);
+        }
+
+        if(!tzArr.includes(value)) {
+            throw new Error('Selected timezone does not exist');
+        }
+
+        return true;
+
+    } catch (err) {
+        throw new Error(err.message);
+    }
+}
+
+const btnValidation = async (value) => {
+    try {
+        const btns = await Btns.findAll();
+
+        const btnArr = [];
+        for(let btn of btns) {
+            btnArr.push(btn.dataValues.id);
+        }
+
+        if(!btnArr.includes(+value)) {
+            throw new Error('Selected button does not exist');
+        }
+
+        return true;
+
+    } catch (err) {
+        throw new Error(err.message);
+    }
+}
+
+const adSettingsValidation = async (value, { req, location, path }) => {
+    try {
+        const web_settings = await Settings.findOne();
+
+        if(path === 'cpc') {
+            if(+value < +web_settings.dataValues.min_cpc) 
+                throw new Error(`Min CPC is $${web_settings.dataValues.min_cpc}`);
+        }
+        if(path === 'budget') {
+            if(+value < +web_settings.dataValues.min_budget) 
+                throw new Error(`Min Budget is $${web_settings.dataValues.min_budget}`);
+        }
+        if(path === 'daily_budget') {
+            if(+value < +web_settings.dataValues.min_daily_budget) 
+                throw new Error(`Min Daily Budget is $${web_settings.dataValues.min_daily_budget}`);
+        }
+
+        return true;
+    } catch (err) {
+        throw new Error(err.message);
+    }
+}
+
+const bannerValidation = async (value, { req }) => {
+    try {
+        const values = value.split(',');
+
+        const user_banners = await User_Banners.findAll({ where: { uid: req.userInfo.id } });
+
+        const banners = [];
+
+        for(let banner of user_banners) {
+            banners.push(+banner.dataValues.id);
+        }
+        
+        for(let val of values) {
+            if(!banners.includes(+val)) {
+                throw new Error("Selected banners doesn't exist");
+            }
+        }
+
+        return true;
+    } catch (err) {
+        throw new Error(err.message);
     }
 }

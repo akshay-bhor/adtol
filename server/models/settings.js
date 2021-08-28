@@ -28,6 +28,21 @@ const Settings = sequelize.define('setting', {
         type: DataTypes.FLOAT(4, 2),
         allowNull: false,
         defaultValue: '0.1'
+    }, 
+    min_cpc: {
+        type: DataTypes.FLOAT(10, 5),
+        allowNull: false,
+        defaultValue: '0.02'
+    },
+    min_budget: {
+        type: DataTypes.FLOAT(15, 5),
+        allowNull: false,
+        defaultValue: '1'
+    },
+    min_daily_budget: {
+        type: DataTypes.FLOAT(15, 5),
+        allowNull: false,
+        defaultValue: '1'
     }
 });
 
