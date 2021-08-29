@@ -47,7 +47,7 @@ exports.uploadBanners = async (req, res, next) => {
 exports.createCampaign = async (req, res, next) => {
     try {
         // Add type
-        req.manage = 'add';
+        req.manage = 'create';
 
         const result = await campaignsHelper.manageCampaignHelper(req);
 

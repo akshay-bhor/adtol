@@ -1,11 +1,12 @@
 const { QueryTypes } = require("sequelize");
 const sequelize = require("../../../utils/db");
-const { tinify } = require('../../../common/util');
+const { tinify, extractHostname } = require('../../../common/util');
 const Campaign_types = require("../../../models/campaign_types");
 const User = require("../../../models/users");
 const { check, validationResult } = require("express-validator");
 const { uploadImageS3 } = require("../../../common/upload-s3");
 const { v4: uuidv4 } = require('uuid');
+const psl = require('psl');
 const Banners = require("../../../models/banners");
 const Timezones = require("../../../models/timezones");
 const Btns = require("../../../models/btn");
@@ -13,6 +14,9 @@ const Settings = require("../../../models/settings");
 const sizeOf = require('image-size');
 const { App_Settings } = require("../../../common/settings");
 const User_Banners = require("../../../models/user_banners");
+const Ads = require("../../../models/ads");
+const Banner_Sizes = require("../../../models/banner_sizes");
+const Campaigns = require("../../../models/campaigns");
 
 exports.campaignsHelper = async(req) => {
     if(!req.userInfo) {
@@ -204,11 +208,6 @@ exports.changeBudgetHelper = async (req) => {
             err.statusCode = 422;
             throw err;
         }
-        if(budget > ad_bal) {
-            const err = new Error('Maximum budget exceeds available balance!');
-            err.statusCode = 422;
-            throw err;
-        }
 
         // Get old remaining budget
         const old_budget_query = await sequelize.query('SELECT budget_rem FROM campaigns WHERE id = ? AND uid = ? LIMIT 1', {
@@ -224,6 +223,11 @@ exports.changeBudgetHelper = async (req) => {
 
         // Get additional
         const add = (old_budget - budget);
+
+        // Validate
+        if((ad_bal + add) < 0.1) {
+            throw new Error('New Budget exceeds available balance!');
+        }
 
         const ts = await sequelize.transaction();
 
@@ -266,13 +270,14 @@ exports.manageCampaignHelper = async (req) => {
         throw err;
     }
 
-    await check('campaign_name').exists().trim().escape().isString().notEmpty().withMessage('Campaign Name is required').run(req);
-    await check('campaign_type').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Campaign Type').run(req);
-    await check('title').exists().trim().escape().isString().notEmpty().withMessage('Title is required').run(req);
-    await check('desc').exists().trim().escape().isString().notEmpty().withMessage('Description is required').run(req);
-    await check('url').exists().trim().escape().notEmpty().withMessage('URL is required').isURL().withMessage('URL is invalid').run(req);
+    if(req.manage === 'edit') await check('campid').exists().trim().escape().isInt().withMessage('Campaign ID is required').run(req);
+    await check('campaign_name').exists().trim().escape().isString().notEmpty().withMessage('Campaign Name is required').isLength({ min:3, max:60 }).withMessage('Min and max allowed characters are 3 & 60').run(req);
+    await check('campaign_type').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Campaign Type').custom(campaignTypeValidation).run(req);
+    await check('title').exists().trim().escape().isString().notEmpty().withMessage('Title is required').isLength({ min:3, max:60 }).withMessage('Min and max allowed characters are 3 & 60').run(req);
+    await check('desc').exists().trim().escape().isString().notEmpty().withMessage('Description is required').isLength({ min:3, max:300 }).withMessage('Min and max allowed characters are 3 & 300').run(req);
+    await check('url').exists().trim().notEmpty().withMessage('URL is required').isURL().withMessage('URL is invalid').run(req);
     if(req.body.banners) await check('banners').exists().trim().escape().isString().notEmpty()
-    .withMessage('Please select atleast 1 banner').custom(bannerValidation).run(req);
+    .withMessage('Please select atleast 1 banner').run(req);
     await check('category').exists().trim().escape().isString().notEmpty().withMessage('Category is required').custom(adTargetingValidation).run(req);
     await check('country').exists().trim().escape().isString().notEmpty().withMessage('Country is required').custom(adTargetingValidation).run(req);
     await check('device').exists().trim().escape().isString().notEmpty().withMessage('Device is required').custom(adTargetingValidation).run(req);
@@ -297,13 +302,6 @@ exports.manageCampaignHelper = async (req) => {
     }).run(req);
     
     try {
-        // Get type => campaign or pop
-        const reqType = req.query.type;
-
-        if(reqType !== 'campaign' && reqType !== 'pop') {
-            const err = new Error('Something went wrong, try again!');
-            throw err;
-        }
 
         const errs = validationResult(req); 
         if(!errs.isEmpty()) {
@@ -313,12 +311,197 @@ exports.manageCampaignHelper = async (req) => {
             throw err;
         }
 
+        // Get type => campaign or pop
+        const reqType = req.query.type;
+
+        if(reqType !== 'campaign' && reqType !== 'pop') {
+            const err = new Error('Something went wrong, try again!');
+            throw err;
+        }
+
         // Edit or create new
         const manage = req.manage;
+        let campaign_id = req.params?.campid || null;
+        const userid = req.userInfo.id;
 
-        const editCampId = req.params?.campid || null;
+        // Validate if campaign exists
+        if(manage === 'edit') {
+            const res = await Campaigns.findAll({ where: { id: campaign_id, uid: userid } });
+            if(res.length < 1) {
+                const err = new Error('Campaign not found!');
+                err.statusCode = 404;
+                throw err;
+            }
+        }
 
-        return 'end';
+        // Validate banners
+        let banner_ids;
+        let user_banners;
+        let banner_sizes;
+        if(req.body.banners) {
+            banner_ids = req.body.banners.split(',').map(d => +d);
+            user_banners = await User_Banners.findAll({ where: { uid: userid } });
+            bannerValidation(banner_ids, user_banners);
+            banner_sizes = await Banner_Sizes.findAll();
+        }
+
+        /**
+         * Get request payload
+         */
+        const campaign_obj = {};
+        campaign_obj.campaign_title = req.body.campaign_name;
+        campaign_obj.campaign_type = req.body.campaign_type;
+        campaign_obj.title = req.body.title;
+        campaign_obj.desc = req.body.desc;
+        campaign_obj.url = req.body.url;
+        campaign_obj.uid = userid;
+        // Domain
+        const domain = psl.get(extractHostname(req.body.url));
+        campaign_obj.domain_hash = tinify(domain);
+        campaign_obj.category = req.body.category.split(',').join('|');
+        campaign_obj.device = req.body.device.split(',').join('|');
+        campaign_obj.os = req.body.os.split(',').join('|');
+        campaign_obj.country = req.body.country.split(',').join('|');
+        campaign_obj.browser = req.body.browser.split(',').join('|');
+        campaign_obj.language = req.body.language.split(',').join('|');
+        campaign_obj.day = req.body.category.split(',').join('|');
+        campaign_obj.cpc = req.body.cpc;
+        campaign_obj.adult = req.body.adult;
+        campaign_obj.timezone = req.body.timezone;
+        campaign_obj.btn = req.body.btn || 0;
+        campaign_obj.budget = req.body.budget;
+        campaign_obj.budget_rem = (req.body.budget - req.body.daily_budget);
+        campaign_obj.today_budget = req.body.daily_budget;
+        campaign_obj.today_budget_rem = req.body.daily_budget;
+        campaign_obj.spent = 0;
+        campaign_obj.run = req.body.run;
+        campaign_obj.status = 2;
+
+        const ts = await sequelize.transaction();
+        try {
+            /**
+             * Edit
+             */
+            if(manage === 'edit' && reqType === 'campaign') {
+                // Delete banners 
+                await Banners.destroy({ where: { campaign_id: campaign_id }, transaction: ts });
+                // Delete ads
+                await Ads.destroy({ where: { campaign_id: campaign_id }, transaction: ts });
+            } 
+
+            if(manage === 'create') {
+                const res = await Campaigns.create(campaign_obj, { transaction: ts });
+                campaign_id = res.id;
+
+                // Update user ad balance
+                const deduct = req.body.budget;
+                const update_ad_bal = await sequelize.query('UPDATE users SET `ad_balance` = `ad_balance` - ? WHERE `id` = ?', {
+                    type: QueryTypes.UPDATE,
+                    replacements: [deduct, userid],
+                    transaction: ts
+                });
+            }
+            if(manage === 'edit') {
+                // Delete fields fron object
+                delete campaign_obj.budget;
+                delete campaign_obj.budget_rem;
+                delete campaign_obj.today_budget_rem;
+                delete campaign_obj.spent;
+                const new_budget = req.body.budget;
+
+                const oldData = await sequelize.query('SELECT u.ad_balance, c.budget_rem from users u INNER JOIN campaigns c ON u.id = c.uid WHERE u.id = ? AND c.id = ?', {
+                    type: QueryTypes.SELECT,
+                    replacements: [userid, campaign_id]
+                });
+
+                const old_budget_rem = oldData[0].budget_rem;
+                const ad_balance = oldData[0].ad_balance;
+
+                // Get additional
+                const add = (old_budget_rem - new_budget);
+
+                // Validate
+                if((ad_balance + add) < 0.1) {
+                    throw new Error('New Budget exceeds available balance!');
+                }
+
+                const res = await Campaigns.update(campaign_obj, { where: { id: campaign_id, uid: userid }, transaction: ts });
+
+                // Update ad budget
+                const update_ad_budget = await sequelize.query('UPDATE campaigns SET budget_rem = ?, `budget` = `budget` - ? WHERE id = ? AND uid = ?', {
+                    type: QueryTypes.UPDATE,
+                    replacements: [new_budget, add, campaign_id, userid],
+                    transaction: ts
+                });
+
+                // Update user ad balance
+                const update_ad_bal = await sequelize.query('UPDATE users SET `ad_balance` = `ad_balance` + ? WHERE `id` = ?', {
+                    type: QueryTypes.UPDATE,
+                    replacements: [add, userid],
+                    transaction: ts
+                });
+
+            }
+
+            // Create ad types
+            if(reqType === 'campaign') {
+                // Insert ads
+                const adsArr = createAds(req, campaign_id, banner_ids, user_banners, banner_sizes);
+                const res = await Ads.bulkCreate(adsArr, { transaction: ts });
+                if(req.body.banners) {
+                    // Filter banners
+                    const bannersArr = user_banners.filter(banner => {
+                        if(banner_ids.includes(banner.dataValues.id)) return true;
+                        else return false;
+                    })
+                    .map(banner => {
+                        return ({
+                            campaign_id: campaign_id,
+                            size: banner.dataValues.size,
+                            src: banner.dataValues.src
+                        });
+                    });
+                    // Insert Banners
+                    const bRes = await Banners.bulkCreate(bannersArr, { transaction: ts });
+                }
+            }
+
+            if(reqType === 'pop') {
+                const ad_type = 5;
+                const str = `0|2|${ad_type}|${req.body.adult}|${req.body.run}`; 
+                const match_hash = tinify(str);
+
+                if(manage === 'create') {
+                    const insert = await Ads.create({
+                        campaign_id: campaign_id,
+                        type: ad_type,
+                        match_hash: match_hash
+                    }, {
+                        transaction: ts
+                    });
+                }
+                if(manage === 'edit') {
+                    const update = await Ads.update({
+                        match_hash: match_hash
+                    }, {
+                        where: {
+                            campaign_id: campaign_id,
+                            type: ad_type
+                        },
+                        transaction: ts
+                    });
+                }
+            }
+            
+            await ts.commit();
+        } catch (err) { console.log(err);
+            await ts.rollback();
+            throw new Error('Something went wrong, try again');
+        }
+
+        return {
+            msg: "success"
+        }
 
     } catch(err) {
         if(!err.statusCode)
@@ -427,6 +610,101 @@ exports.getTimezonesHelper = async (req) => {
     }
 }
 
+const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes) => {
+    /**
+     * Chekout website-helper for more info
+     */
+    // Text ad
+    const adsArr = [];
+    {
+        const ad_type = 1;
+        const str = `0|2|${ad_type}|${req.body.adult}|${req.body.run}`; 
+        let match_hash = tinify(str);
+        adsArr.push({
+            campaign_id: campaign_id,
+            type: ad_type,
+            match_hash: match_hash
+        });
+    }
+    // Banners 
+    if(req.body.banners) {
+        const ad_type = 2;
+        const str = `0|2|${ad_type}|${req.body.adult}|${req.body.run}`; 
+        let match_hash = tinify(str);
+        adsArr.push({
+            campaign_id: campaign_id,
+            type: ad_type,
+            match_hash: match_hash
+        });
+    }
+    // Native
+    if(req.body.banners) {
+        /**
+         * Get native banners ids
+         */
+        const native_banner_ids = [];
+        const native_banner_sizes = ['300x280', '300x150', '300x250'];
+        for(let banner_size of banner_sizes) {
+            const size = banner_size.dataValues.size;
+            if(native_banner_sizes.includes(size)) {
+                native_banner_ids.push(banner_size.dataValues.id);
+            }
+        }
+
+        /** 
+         * cross check stored banner id with banner_sizes ids
+         * */
+        let has_native = false;
+        for(let banner of user_banners) {
+            if(native_banner_ids.includes(banner.dataValues.size) && banner_ids.includes(banner.dataValues.id)) {
+                has_native = true;
+                break;
+            }
+        }
+
+        if(has_native) {
+            const ad_type = 3;
+            const str = `0|2|${ad_type}|${req.body.adult}|${req.body.run}`; 
+            let match_hash = tinify(str);
+            adsArr.push({
+                campaign_id: campaign_id,
+                type: ad_type,
+                match_hash: match_hash
+            });
+        }
+    }
+    // Widget
+    if(req.body.banners) {
+        let widget_banner_id;
+        for(let banner_size of banner_sizes) {
+            if(banner_size.dataValues.size === '300x250') {
+                widget_banner_id = banner_size.dataValues.id;
+            }
+        }
+
+        const has_widget = false;
+        for(let user_banner of user_banners) {
+            if(user_banner.dataValues.size === widget_banner_id) {
+                has_widget = true;
+                break;
+            }
+        }
+
+        if(has_widget) {
+            const ad_type = 4;
+            const str = `0|2|${ad_type}|${req.body.adult}|${req.body.run}`; 
+            let match_hash = tinify(str);
+            adsArr.push({
+                campaign_id: campaign_id,
+                type: ad_type,
+                match_hash: match_hash
+            });
+        }
+    }
+
+    return adsArr;
+}
+
 const adTargetingValidation = (value, { req, location, path }) => {
     if(value == 0) return true; // 0 is all values
 
@@ -510,12 +788,24 @@ const adSettingsValidation = async (value, { req, location, path }) => {
                 throw new Error(`Min CPC is $${web_settings.dataValues.min_cpc}`);
         }
         if(path === 'budget') {
-            if(+value < +web_settings.dataValues.min_budget) 
+            if(+value < +web_settings.dataValues.min_budget) {
                 throw new Error(`Min Budget is $${web_settings.dataValues.min_budget}`);
+            }
+            if(req.manage === 'create') {
+                // Check user balance
+                const user_info = await User.findOne({ where: { id: req.userInfo.id } });
+                if(+value >= user_info.dataValues.ad_balance) {
+                    throw new Error(`Campaign budget can't be over available balance - $${user_info.dataValues.ad_balance}`);
+                }
+            }
         }
         if(path === 'daily_budget') {
-            if(+value < +web_settings.dataValues.min_daily_budget) 
+            if(+value < +web_settings.dataValues.min_daily_budget) {
                 throw new Error(`Min Daily Budget is $${web_settings.dataValues.min_daily_budget}`);
+            }
+            if(+value > +req.body.budget) {
+                throw new Error(`Daily Budget can't be greater than campaign budget`);
+            }
         }
 
         return true;
@@ -524,12 +814,8 @@ const adSettingsValidation = async (value, { req, location, path }) => {
     }
 }
 
-const bannerValidation = async (value, { req }) => {
+const bannerValidation = (values, user_banners) => {
     try {
-        const values = value.split(',');
-
-        const user_banners = await User_Banners.findAll({ where: { uid: req.userInfo.id } });
-
         const banners = [];
 
         for(let banner of user_banners) {
@@ -540,6 +826,26 @@ const bannerValidation = async (value, { req }) => {
             if(!banners.includes(+val)) {
                 throw new Error("Selected banners doesn't exist");
             }
+        }
+
+        return true;
+    } catch (err) {
+        throw new Error(err.message);
+    }
+}
+
+const campaignTypeValidation = async (value, { req }) => {
+    try {
+        const res = await Campaign_types.findAll();
+
+        const cTypes = [];
+
+        for(let cType of res) {
+            cTypes.push(+cType.dataValues.id);
+        }
+        
+        if(!cTypes.includes(+value)) {
+            throw new Error("Selected Campaign Type doesn't exist");
         }
 
         return true;

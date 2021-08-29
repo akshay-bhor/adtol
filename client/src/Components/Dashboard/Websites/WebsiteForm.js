@@ -47,7 +47,7 @@ const WebsiteForm = (props) => {
           <MyTextField
             name="domain"
             type="text"
-            label="Domain (without http:// and https:// and www)"
+            label="Domain Name"
             className={muiStyles.block}
           />
 

@@ -2,7 +2,7 @@ const { check, validationResult } = require("express-validator");
 const { App_Settings } = require("../../../common/settings");
 const Pub_Sites = require("../../../models/publisher_sites");
 const psl = require('psl');
-const { tinify } = require("../../../common/util");
+const { tinify, extractHostname } = require("../../../common/util");
 const Banner_Sizes = require("../../../models/banner_sizes");
 const { encryptAES } = require("../../../common/encrypt");
 const crypto = require('crypto');
@@ -71,7 +71,7 @@ exports.addWebsiteHelper = async (req) => {
      */
 
     await check('domain').exists().withMessage('Domain not posted!').trim()
-    .custom(val => psl.isValid(val)).withMessage('Invalid Domain!').run(req); // Post without http or https
+    .custom(val => psl.isValid(extractHostname(val))).withMessage('Invalid Domain!').run(req); // Post without http or https
     await check('category').exists().withMessage('Please select a category!').trim().isString().withMessage('Invalid Category!').run(req);
     await check('language').exists().withMessage('Please select website\'s language!').trim().isString().withMessage('Invalid Language!').run(req);
     await check('traffic').exists().trim().isInt().withMessage('Invalid traffic value!').escape().toInt().run(req);
@@ -94,7 +94,7 @@ exports.addWebsiteHelper = async (req) => {
         const userid = req.userInfo.id;
 
         // Domain
-        const parse = psl.parse(req.body.domain);
+        const parse = psl.parse(extractHostname(req.body.domain));
         const domain = parse.domain;
 
         // Domain hash
@@ -170,7 +170,7 @@ exports.editWebsiteHelper = async (req) => {
 
     await check('webid').exists().trim().isInt().withMessage('Invalid website ID!').run(req);
     await check('domain').exists().withMessage('Domain not posted!').trim()
-    .custom(val => psl.isValid(val)).withMessage('Invalid Domain!').run(req); // Post without http or https
+    .custom(val => psl.isValid(extractHostname(val))).withMessage('Invalid Domain!').run(req);
     await check('category').exists().withMessage('Please select a category!').trim().isString().withMessage('Invalid Category!').run(req);
     await check('language').exists().withMessage('Please select website\'s language!').trim().isString().withMessage('Invalid Language!').run(req);
     await check('traffic').exists().trim().isInt().withMessage('Invalid traffic value!').escape().toInt().run(req);
@@ -193,7 +193,7 @@ exports.editWebsiteHelper = async (req) => {
         const userid = req.userInfo.id;
 
         // Domain
-        const parse = psl.parse(req.body.domain);
+        const parse = psl.parse(extractHostname(req.body.domain));
         const domain = parse.domain;
 
         // Domain hash
