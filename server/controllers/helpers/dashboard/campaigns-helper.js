@@ -295,7 +295,7 @@ exports.manageCampaignHelper = async (req) => {
     }).run(req);
     await check('budget').exists().trim().escape().isFloat().notEmpty().withMessage('Budget is required').custom(adSettingsValidation).run(req);
     await check('daily_budget').exists().trim().escape().isFloat().notEmpty().withMessage('Daily Budget is required').custom(adSettingsValidation).run(req);
-    await check('run').exists().trim().escape().isInt().notEmpty().withMessage('Run is required')
+    if(req.body.run) await check('run').exists().trim().escape().isInt().notEmpty().withMessage('Run is required')
     .custom(val => {
         if(val == 1 || val == 2) return true;
         else throw new Error('Invalid selection for run');
@@ -358,13 +358,13 @@ exports.manageCampaignHelper = async (req) => {
         // Domain
         const domain = psl.get(extractHostname(req.body.url));
         campaign_obj.domain_hash = tinify(domain);
-        campaign_obj.category = req.body.category.split(',').join('|');
-        campaign_obj.device = req.body.device.split(',').join('|');
-        campaign_obj.os = req.body.os.split(',').join('|');
-        campaign_obj.country = req.body.country.split(',').join('|');
-        campaign_obj.browser = req.body.browser.split(',').join('|');
-        campaign_obj.language = req.body.language.split(',').join('|');
-        campaign_obj.day = req.body.category.split(',').join('|');
+        campaign_obj.category = req.body.category.split(',').map(s => trim(s)).join('|');
+        campaign_obj.device = req.body.device.split(',').map(s => trim(s)).join('|');
+        campaign_obj.os = req.body.os.split(',').map(s => trim(s)).join('|');
+        campaign_obj.country = req.body.country.split(',').map(s => trim(s)).join('|');
+        campaign_obj.browser = req.body.browser.split(',').map(s => trim(s)).join('|');
+        campaign_obj.language = req.body.language.split(',').map(s => trim(s)).join('|');
+        campaign_obj.day = req.body.day.split(',').map(s => trim(s)).join('|');
         campaign_obj.cpc = req.body.cpc;
         campaign_obj.adult = req.body.adult;
         campaign_obj.timezone = req.body.timezone;
@@ -407,6 +407,7 @@ exports.manageCampaignHelper = async (req) => {
                 delete campaign_obj.budget_rem;
                 delete campaign_obj.today_budget_rem;
                 delete campaign_obj.spent;
+                delete campaign_obj.run;
                 const new_budget = req.body.budget;
 
                 const oldData = await sequelize.query('SELECT u.ad_balance, c.budget_rem from users u INNER JOIN campaigns c ON u.id = c.uid WHERE u.id = ? AND c.id = ?', {
@@ -504,6 +505,62 @@ exports.manageCampaignHelper = async (req) => {
         }
 
     } catch(err) {
+        if(!err.statusCode)
+            err.statusCode = 500;
+        throw err;
+    }
+}
+
+exports.getCampaignInfoHelper = async (req) => {
+    if(!req.userInfo) {
+        const err = new Error('Not Allowed!');
+        err.statusCode = 401;
+        throw err;
+    }
+    
+    await check('campid').exists().trim().escape().notEmpty().isInt().withMessage('Campaign ID is required').run(req);
+
+    try {
+        const errs = validationResult(req);
+
+        if(!errs.isEmpty()) {
+            const err = new Error('Validation Failed!');
+            err.statusCode = 422;
+            err.data = errs.array();
+            throw err;
+        }
+
+        // Req data
+        const campaign_id = req.params.campid;
+        const userid = req.userInfo.id;
+        
+        const data = await sequelize.query('SELECT b.id as banner_id, c.campaign_title as campaign_name, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.day, c.timezone, c.btn, c.cpc, c.budget_rem as budget, c.today_budget as daily_budget, c.adult FROM campaigns c INNER JOIN banners b ON c.id = b.campaign_id WHERE c.id = ? AND c.uid = ?', {
+            type: QueryTypes.SELECT,
+            replacements: [campaign_id, userid]
+        });
+        
+        const campaignData = data[0];
+
+        // Get banner_ids
+        const banner_ids = [];
+        for(let item of data) {
+            banner_ids.push(item.banner_id);
+        }
+
+        // Modify resposne
+        delete campaignData.banner_id;
+        campaignData.banners = banner_ids;
+        campaignData.category = campaignData.category.split('|');
+        campaignData.country = campaignData.country.split('|');
+        campaignData.device = campaignData.device.split('|');
+        campaignData.os = campaignData.os.split('|');
+        campaignData.browser = campaignData.browser.split('|');
+        campaignData.language = campaignData.language.split('|');
+        campaignData.day = campaignData.day.split('|');
+
+        return campaignData;
+
+    } catch (err) {
         if(!err.statusCode)
             err.statusCode = 500;
         throw err;

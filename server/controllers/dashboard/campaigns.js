@@ -72,6 +72,18 @@ exports.editCampaign = async (req, res, next) => {
     }
 }
 
+exports.getCampaignInfo = async (req, res, next) => {
+    try {
+
+        const result = await campaignsHelper.getCampaignInfoHelper(req);
+
+        res.status(200).json(result);
+
+    } catch (err) {
+        next(err);
+    }
+}
+
 exports.getCampaigntypes = async (req, res, next) => {
     try {
         const result = await campaignsHelper.getCampaignTypesHelper(req);
