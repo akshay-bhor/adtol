@@ -92,7 +92,7 @@ export const getCampaignsList = () => conn.get('/api/dashboard/campaigns');
 
 export const getCampaignTypes = () => conn.get('/api/dashboard/campaigns/get-campaign-types');
 
-export const getTimezones = () => conn.get('/api/dashboard/campaigns/get-timezones');
+export const getCampaignFormData = () => conn.get('/api/dashboard/campaigns/formdata');
 
 export const changeCampaignStatus = (data) => conn.post('/api/dashboard/campaigns/change-status/' + data.id, data.data);
 

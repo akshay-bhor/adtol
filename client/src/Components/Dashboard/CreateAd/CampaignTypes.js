@@ -54,8 +54,8 @@ const CampaignTypes = () => {
       {!loading && !err && (
         <PaperBlock heading="Choose Your Goal" fullWidth="true">
           <Box component="div" className={muiStyles.campaignCardContainer}>
-            {campaignTypes.map((item) => (
-              <Link to={`/dashboard/campaign/create/${item.id}`} className={muiStyles.campaignCard}>
+            {campaignTypes.map((item, idx) => (
+              <Link to={`/dashboard/create-ad/campaign?type=${item.id}`} key={idx} className={muiStyles.campaignCard}>
                   <Icon>{item.icon}</Icon>
                   <Typography
                     component="h3"

@@ -6,7 +6,10 @@ const formDataSlice = createSlice({
     countries: [],
     categories: [],
     languages: [],
-    timezones: []
+    timezones: [],
+    devices: [],
+    os: [],
+    browsers: []
   },
   reducers: {
     loadCountries(state, action) {
@@ -20,6 +23,15 @@ const formDataSlice = createSlice({
     },
     loadTimezones(state, action) {
       state.timezones = action.payload;
+    },
+    loadDevices(state, action) {
+      state.devices = action.payload
+    },
+    loadOs(state, action) {
+      state.os = action.payload
+    },
+    loadBrowsers(state, action) {
+      state.browsers = action.payload
     }
   },
 });

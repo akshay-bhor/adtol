@@ -58,8 +58,8 @@ const WebsiteForm = (props) => {
           >
             {categories.map((category, idx) => {
               return (
-                <MenuItem key={idx} value={category}>
-                  {category}
+                <MenuItem key={idx} value={category.name}>
+                  {category.name}
                 </MenuItem>
               );
             })}
@@ -72,8 +72,8 @@ const WebsiteForm = (props) => {
           >
             {languages.map((language, idx) => {
               return (
-                <MenuItem key={idx} value={language}>
-                  {language}
+                <MenuItem key={idx} value={language.name}>
+                  {language.name}
                 </MenuItem>
               );
             })}

@@ -29,6 +29,7 @@ router.post('/campaigns/edit/:campid', isAuth, campaignController.editCampaign);
 router.get('/campaigns/get-info/:campid', isAuth, campaignController.getCampaignInfo);
 router.get('/campaigns/get-campaign-types', isAuth, campaignController.getCampaigntypes);
 router.get('/campaigns/get-timezones', isAuth, campaignController.getTimezones);
+router.get('/campaigns/formdata', isAuth, campaignController.getCampaignFormData);
 
 router.post('/reports/:type', isAuth, reportController.reports);
 

@@ -24,6 +24,8 @@ const Deposit = lazy(() => import("./Billing/Deposit/Deposit"));
 const Payment = lazy(() => import("./Billing/Deposit/Payment"));
 const Reports = lazy(() => import("./Reports/Reports"));
 const CampaignTypes = lazy(() => import("./CreateAd/CampaignTypes"));
+const CreateCampaign = lazy(() => import("./CreateAd/CreateCampaign"));
+const EditCampaign = lazy(() => import("./CreateAd/EditCampaign"));
 
 const Dashboard = () => {
   const gChartLoaded = useSelector((state) => state.script.g_charts);
@@ -70,6 +72,8 @@ const Dashboard = () => {
               <Route path="/dashboard/advertiser" component={Advertiser} />
               <Route path="/dashboard/campaigns" component={CampaignList} />
               <Route path="/dashboard/campaign-type" component={CampaignTypes} />
+              <Route path="/dashboard/create-ad/:type" component={CreateCampaign} />
+              <Route path="/dashboard/edit-ad/:type/:campid" component={EditCampaign} />
               <Route path="/dashboard/publisher" component={Publisher} />
               <Route path="/dashboard/websites" component={WebsiteList} exact />
               <Route path="/dashboard/websites/add" component={AddWebsite} />

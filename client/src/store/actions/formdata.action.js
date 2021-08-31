@@ -1,5 +1,5 @@
 import { formDataActions } from "../reducers/formdata.reducer";
-import { abortRequest, getCountries, getTimezones, getWebsiteFormData } from "../../services/apiService";
+import { abortRequest, getCampaignFormData, getCountries, getWebsiteFormData } from "../../services/apiService";
 import { authActions } from "../reducers/auth.reducer";
 
 const _formDataAPIRequest = (sendRequest, which) => {
@@ -24,7 +24,20 @@ const _formDataAPIRequest = (sendRequest, which) => {
         dispatch(formDataActions.loadLanguages(langData));
       }
       if(which.includes("Timezones")) {
-        dispatch(formDataActions.loadTimezones(data.data));
+        const tzData = data.data.timezones;
+        dispatch(formDataActions.loadTimezones(tzData));
+      }
+      if(which.includes("Devices")) {
+        const deviceData = data.data.devices;
+        dispatch(formDataActions.loadDevices(deviceData));
+      }
+      if(which.includes("Os")) {
+        const osData = data.data.os;
+        dispatch(formDataActions.loadOs(osData));
+      }
+      if(which.includes("Browsers")) {
+        const browserData = data.data.browsers;
+        dispatch(formDataActions.loadBrowsers(browserData));
       }
       
     } catch (err) {
@@ -41,8 +54,8 @@ export const fetchWebsiteFormData = () => {
   return async (dispatch) => dispatch(_formDataAPIRequest(getWebsiteFormData, ["Categories", "Languages"]))
 }
 
-export const fetchTimezones = () => {
-  return async (dispatch) => dispatch(_formDataAPIRequest(getTimezones, ["Timezones"]))
+export const fetchCampaignFormData = () => {
+  return async (dispatch) => dispatch(_formDataAPIRequest(getCampaignFormData, ["Timezones", "Devices", "Os", "Browsers"]))
 }
 
 export const abortFormDataRequest = () => {

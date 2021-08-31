@@ -17,6 +17,9 @@ const User_Banners = require("../../../models/user_banners");
 const Ads = require("../../../models/ads");
 const Banner_Sizes = require("../../../models/banner_sizes");
 const Campaigns = require("../../../models/campaigns");
+const Devices = require("../../../models/devices");
+const Os = require("../../../models/os");
+const Browsers = require("../../../models/browsers");
 
 exports.campaignsHelper = async(req) => {
     if(!req.userInfo) {
@@ -534,7 +537,7 @@ exports.getCampaignInfoHelper = async (req) => {
         const campaign_id = req.params.campid;
         const userid = req.userInfo.id;
         
-        const data = await sequelize.query('SELECT b.id as banner_id, c.campaign_title as campaign_name, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.day, c.timezone, c.btn, c.cpc, c.budget_rem as budget, c.today_budget as daily_budget, c.adult FROM campaigns c INNER JOIN banners b ON c.id = b.campaign_id WHERE c.id = ? AND c.uid = ?', {
+        const data = await sequelize.query('SELECT b.id as banner_id, a.type as ad_type, c.campaign_title as campaign_name, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.day, c.timezone, c.btn, c.cpc, c.budget_rem as budget, c.today_budget as daily_budget, c.adult FROM campaigns c INNER JOIN banners b ON c.id = b.campaign_id INNER JOIN ads a ON c.id = a.campaign_id WHERE c.id = ? AND c.uid = ?', {
             type: QueryTypes.SELECT,
             replacements: [campaign_id, userid]
         });
@@ -542,21 +545,26 @@ exports.getCampaignInfoHelper = async (req) => {
         const campaignData = data[0];
 
         // Get banner_ids
-        const banner_ids = [];
+        let banner_ids = new Set();
         for(let item of data) {
-            banner_ids.push(item.banner_id);
+            banner_ids.add(item.banner_id);
         }
+        banner_ids = Array.from(banner_ids); // [...banner_ids]
+
+        // Ad type
+        if(campaignData.ad_type === '5') campaignData.ad_type = 'pop';
+        else campaignData.ad_type = 'campaign';
 
         // Modify resposne
         delete campaignData.banner_id;
         campaignData.banners = banner_ids;
-        campaignData.category = campaignData.category.split('|');
-        campaignData.country = campaignData.country.split('|');
-        campaignData.device = campaignData.device.split('|');
-        campaignData.os = campaignData.os.split('|');
-        campaignData.browser = campaignData.browser.split('|');
-        campaignData.language = campaignData.language.split('|');
-        campaignData.day = campaignData.day.split('|');
+        campaignData.category = campaignData.category.split('|').map(d => +d);
+        campaignData.country = campaignData.country.split('|').map(d => +d);
+        campaignData.device = campaignData.device.split('|').map(d => +d);
+        campaignData.os = campaignData.os.split('|').map(d => +d);
+        campaignData.browser = campaignData.browser.split('|').map(d => +d);
+        campaignData.language = campaignData.language.split('|').map(d => +d);
+        campaignData.day = campaignData.day.split('|').map(d => +d);
 
         return campaignData;
 
@@ -659,6 +667,65 @@ exports.getTimezonesHelper = async (req) => {
         });
 
         return result;
+
+    } catch(err) {
+        if(!err.statusCode)
+            err.statusCode = 500;
+        throw err;
+    }
+}
+
+exports.getCampaignFormDataHelper = async (req) => {
+    if(!req.userInfo) {
+        const err = new Error('Not Allowed!');
+        err.statusCode = 401;
+        throw err;
+    }
+
+    try {
+        const res = await Promise.all([
+            await Devices.findAll(),
+            await Os.findAll(),
+            await Browsers.findAll(),
+            await Timezones.findAll()
+        ]);
+
+        const devices = [];
+        const os = [];
+        const browsers = [];
+        const timezones = [];
+
+        res[0].forEach(item => {
+            devices.push({
+                id: item.dataValues.id,
+                name: item.dataValues.name
+            });
+        });
+
+        res[1].forEach(item => {
+            os.push({
+                id: item.dataValues.id,
+                name: `${item.dataValues.name} ${item.dataValues.version} and up`
+            });
+        });
+
+        res[2].forEach(item => {
+            browsers.push({
+                id: item.dataValues.id,
+                name: item.dataValues.name
+            });
+        });
+
+        res[3].forEach(timezone => {
+            timezones.push(timezone.dataValues.zone);
+        });
+
+        return {
+            devices,
+            os,
+            browsers,
+            timezones
+        };
 
     } catch(err) {
         if(!err.statusCode)
