@@ -1,5 +1,5 @@
 import { campaignActions } from "../reducers/campaigns.reducer";
-import { abortRequest, changeCampaignBudget, changeCampaignStatus, getCampaignsList, getCampaignTypes } from "../../services/apiService";
+import { abortRequest, changeCampaignBudget, changeCampaignStatus, getCampaignBanners, getCampaignsList, getCampaignTypes } from "../../services/apiService";
 
 const _campaignGetRequest = (sendRequest, set) => {
     return async (dispatch) => {
@@ -13,6 +13,7 @@ const _campaignGetRequest = (sendRequest, set) => {
           if (getData) {
             if(set === 'campaignList') dispatch(campaignActions.setData(getData.data));
             if(set === 'campaignTypes') dispatch(campaignActions.setCampaignTypes(getData.data));
+            if(set === 'banners') dispatch(campaignActions.setBanners(getData.data));
           }
     
           dispatch(campaignActions.setLoading(false));
@@ -64,6 +65,10 @@ export const updateCampaignBudget = (data) => {
 
 export const fetchCampaignTypes = () => {
   return async (dispatch) => dispatch(_campaignGetRequest(getCampaignTypes, 'campaignTypes'));
+}
+
+export const fetchCampaignBanners = () => {
+  return async (dispatch) => dispatch(_campaignGetRequest(getCampaignBanners, 'banners'));
 }
 
 export const abortCampaignRequest = () => {

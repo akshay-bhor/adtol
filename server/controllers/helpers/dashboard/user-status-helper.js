@@ -21,7 +21,7 @@ exports.userStatusHelper = async (req) => {
 
     // Check if payment details and web and is low
     const check_1 = await sequelize.query(
-      "SELECT p.id as pid, w.id as wid, u.ad_balance as balance FROM users u LEFT JOIN user_infos p ON u.id = p.uid LEFT JOIN pub_sites w ON u.id = w.uid WHERE u.id = ? LIMIT 1",
+      "SELECT p.id as pid, w.id as wid, u.ad_balance as balance FROM users u LEFT JOIN user_info p ON u.id = p.uid LEFT JOIN pub_sites w ON u.id = w.uid WHERE u.id = ? LIMIT 1",
       {
         replacements: [userid],
         type: QueryTypes.SELECT,

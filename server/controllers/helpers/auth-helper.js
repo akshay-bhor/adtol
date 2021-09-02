@@ -373,7 +373,7 @@ exports.forgetPassHelper = async (req) => {
         const exp = Math.floor((new Date().getTime() / 1000) + 600);
 
         // Save 
-        const update = await sequelize.query('UPDATE user_infos SET verify = ?, verify_exp = ? WHERE uid = ?',
+        const update = await sequelize.query('UPDATE user_info SET verify = ?, verify_exp = ? WHERE uid = ?',
         {
             replacements: [rand, exp, uid],
             type: QueryTypes.UPDATE,
@@ -452,7 +452,7 @@ exports.resetPassHelper = async(req) => {
         const hash = await bcrypt.hash(req.body.pass, 12);
 
         // Update
-        const update = await sequelize.query('UPDATE users AS u INNER JOIN user_infos as ui ON u.id = ui.uid SET u.pass = ?, ui.verify_exp = ? WHERE ui.verify = ? AND ui.verify_exp > ? AND u.status = 1', {
+        const update = await sequelize.query('UPDATE users AS u INNER JOIN user_info as ui ON u.id = ui.uid SET u.pass = ?, ui.verify_exp = ? WHERE ui.verify = ? AND ui.verify_exp > ? AND u.status = 1', {
             replacements: [hash, currTime, verifyToken, currTime],
             type: QueryTypes.UPDATE
         });
@@ -493,9 +493,9 @@ exports.formdataHelper = async (req) => {
     for(let c in countries) {
         let tmp = {};
         tmp.id = c;
-        tmp.country_code = countries[c][0];
-        tmp.country_name = countries[c][1];
-        tmp.country_tel = countries[c][2];
+        tmp.code = countries[c][0];
+        tmp.name = countries[c][1];
+        tmp.tel = countries[c][2];
 
         returnVal.push(tmp);
     }

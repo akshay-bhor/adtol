@@ -11,7 +11,9 @@ const campaignSlice = createSlice({
         campaign_types: [],
         success: null,
         error: null, 
-        fetched: false
+        fetched: false,
+        banners: [],
+        campaign_data: null
     },
     reducers: {
         setData(state, action) {
@@ -19,6 +21,12 @@ const campaignSlice = createSlice({
         },
         setCampaignTypes(state, action) {
             state.campaign_types = action.payload;
+        },
+        setBanners(state, action) {
+            state.banners = action.payload
+        },
+        setCampaignData(state, action) {
+            state.campaign_data = action.payload;
         },
         setLoading(state, action) {
             state.loading = action.payload;

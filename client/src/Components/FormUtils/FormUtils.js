@@ -1,7 +1,7 @@
 import { FormControlLabel, Switch, TextField } from "@material-ui/core";
 import { useField } from "formik";
 
-export const MyTextField = ({ label, type, className, disabled, ...props }) => {
+export const MyTextField = ({ label, type, className, disabled, multiline, placeholder, ...props }) => {
   const [field, meta] = useField(props);
   const errorText = meta.error && meta.touched ? meta.error : "";
 
@@ -14,7 +14,10 @@ export const MyTextField = ({ label, type, className, disabled, ...props }) => {
       helperText={errorText}
       error={!!errorText}
       variant="outlined"
-      disabled={disabled ? true:false}
+      disabled={disabled ? true : false}
+      multiline={multiline ? true : false}
+      placeholder={placeholder ? placeholder : ''}
+      rows={'3'}
     ></TextField>
   );
 };
@@ -41,13 +44,14 @@ export const MySelectField = ({ label, size, className, ...props }) => {
 
 export const MySwitchField = ({ label, className, ...props }) => {
   const [field, meta] = useField(props);
-
+  
   return (
     <FormControlLabel
       className={className}
       control={
         <Switch
           color="primary"
+          checked={field.value}
           {...field}
         />
       }

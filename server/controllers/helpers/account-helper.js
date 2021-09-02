@@ -18,7 +18,7 @@ exports.accountInfoHelper = async (req) => {
         const userid = req.userInfo.id;
 
         // Get user data
-        const udata = await sequelize.query('SELECT u.name, u.surname, u.mobile, u.country, u.status, ui.paypal, ui.ac_no as acno, ui.bank, ui.ifsc, ui.branch, ui.upi, ui.payoneer FROM users u INNER JOIN user_infos ui ON u.id = ui.uid WHERE u.id = ? LIMIT 1', {
+        const udata = await sequelize.query('SELECT u.name, u.surname, u.mobile, u.country, u.status, ui.paypal, ui.ac_no as acno, ui.bank, ui.ifsc, ui.branch, ui.upi, ui.payoneer FROM users u INNER JOIN user_info ui ON u.id = ui.uid WHERE u.id = ? LIMIT 1', {
             type: QueryTypes.SELECT,
             replacements: [userid]
         });

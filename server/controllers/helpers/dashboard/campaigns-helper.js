@@ -675,6 +675,48 @@ exports.getTimezonesHelper = async (req) => {
     }
 }
 
+exports.getCampaignBannersHelper = async (req) => {
+    if(!req.userInfo) {
+        const err = new Error('Not Allowed!');
+        err.statusCode = 401;
+        throw err;
+    }
+
+    try {
+        const userid = req.userInfo.id;
+
+        // Get All Banners
+        const user_banners = await sequelize.query('SELECT id, size, src FROM user_banners WHERE uid = ?', {
+            type: QueryTypes.SELECT,
+            replacements: [userid]
+        });
+
+        // Get All Banner Sizes
+        const banner_sizes = await sequelize.query('SELECT id, size from banner_sizes', {
+            type: QueryTypes.SELECT
+        });
+
+        const response = [];
+        
+        user_banners.forEach(item => {
+            const { size } = banner_sizes.filter(banner => banner.id === item.size)[0];
+            
+            response.push({
+                id: item.id,
+                size,
+                src: `${process.env.CLOUDFRONT_S3_ORIGIN}${item.src}`
+            });
+        });
+
+        return response;
+
+    } catch (err) {
+        if(!err.statusCode)
+            err.statusCode = 500
+        throw err;
+    }
+}
+
 exports.getCampaignFormDataHelper = async (req) => {
     if(!req.userInfo) {
         const err = new Error('Not Allowed!');

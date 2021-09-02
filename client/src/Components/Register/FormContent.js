@@ -59,7 +59,7 @@ const FormContent = (props) => {
               {countries.map((country) => {
                 return (
                   <MenuItem key={country.id} value={country.id}>
-                    {country.country_name}
+                    {country.name}
                   </MenuItem>
                 );
               })}
