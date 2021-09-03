@@ -217,7 +217,10 @@ export const CampaignForm = ({ type, edit }) => {
         </PaperBlock>
       </Form>
       
-      {modalOpen ? <BannersListModal onClose={modalToggle} />:null}
+      {modalOpen ? <BannersListModal 
+        banners={[]}
+        onClose={modalToggle} 
+      />:null}
 
     </Fragment>
   );

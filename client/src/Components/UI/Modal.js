@@ -12,7 +12,12 @@ const Modal = (props) => {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="dialog-title">
+    <Dialog open={open} 
+      onClose={handleClose} 
+      aria-labelledby="dialog-title" 
+      maxWidth={props.maxWidth ? props.maxWidth:'sm'} 
+      fullWidth={true}
+    >
       <DialogTitle id="dialog-title">{props.title}</DialogTitle>
       <DialogContent>
         <div className={styles.content}>{props.children}</div>

@@ -460,6 +460,7 @@ exports.manageCampaignHelper = async (req) => {
                     })
                     .map(banner => {
                         return ({
+                            id: banner.dataValues.id,
                             campaign_id: campaign_id,
                             size: banner.dataValues.size,
                             src: banner.dataValues.src
