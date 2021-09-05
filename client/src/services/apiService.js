@@ -96,6 +96,8 @@ export const getCampaignBanners = () => conn.get('/api/dashboard/campaigns/get-b
 
 export const getCampaignFormData = () => conn.get('/api/dashboard/campaigns/formdata');
 
+export const uploadBannersApi = (data) => conn.post('/api/dashboard/campaigns/upload-banners', data);
+
 export const changeCampaignStatus = (data) => conn.post('/api/dashboard/campaigns/change-status/' + data.id, data.data);
 
 export const changeCampaignBudget = (data) => conn.post('/api/dashboard/campaigns/change-budget/' + data.id, data.data);

@@ -168,6 +168,20 @@ export const breakdownByListPub = () => {
   ]
 }
 
+export const bannerSizes = [
+  '300x50',
+  '320x50',
+  '250x250',
+  '300x250',
+  '728x90',
+  '970x250',
+  '120x600',
+  '160x600',
+  '336x280',
+  '300x600',
+  '300x150'
+];
+
 export const reportDurationSelection = [
   {
     name: "Today",

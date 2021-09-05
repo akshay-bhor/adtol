@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     },
     img: {
         margin: '0 auto',
-        width: 'auto',
+        maxWidth: '100%',
         maxHeight: '100%',
         cursor: 'pointer',
     },
