@@ -492,7 +492,7 @@ exports.formdataHelper = async (req) => {
 
     for(let c in countries) {
         let tmp = {};
-        tmp.id = c;
+        tmp.id = +c;
         tmp.code = countries[c][0];
         tmp.name = countries[c][1];
         tmp.tel = countries[c][2];

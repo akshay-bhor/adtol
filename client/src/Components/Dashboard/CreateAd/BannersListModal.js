@@ -87,7 +87,7 @@ const BannersListModal = (props) => {
   } 
 
   const onSave = () => {
-
+    props.onSave(choosenBanners);
   }
 
   const onClose = () => {
@@ -99,8 +99,8 @@ const BannersListModal = (props) => {
         <FullScreenModal
         title={"Banners"}
         onClose={onClose}
+        onSave={onSave}
         >
-        
                 <Box component="div">
                     <Typography variant="h6" className={muiStyles.title}>
                         Choosen Banners

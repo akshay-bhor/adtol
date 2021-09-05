@@ -11,6 +11,7 @@ import {
 import { Form } from "formik";
 import { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
+import { weekDaysList } from "../../../constants/common";
 import {
   MySelectField,
   MySwitchField,
@@ -59,7 +60,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const CampaignForm = ({ type, edit }) => {
+export const CampaignForm = ({ 
+    type, 
+    edit, 
+    banners,
+    setBanners,
+    categoriesList,
+    setCategories, 
+    languagesList,
+    setLanguages, 
+    devicesList,
+    setDevices, 
+    countriesList,
+    setCountries, 
+    osList,
+    setOs, 
+    browsersList,
+    setBrowsers, 
+    daysList,
+    setDays 
+  }) => {
   const muiStyles = useStyles();
   const loading = false;
   const [modalOpen, setModalOpen] = useState(false);
@@ -71,8 +91,12 @@ export const CampaignForm = ({ type, edit }) => {
   const os = useSelector((state) => state.formdata.os);
   const browsers = useSelector((state) => state.formdata.browsers);
 
+  const saveBanners = (bannerIds) => {
+    setBanners(_ => bannerIds);
+  }
+
   const modalToggle = () => {
-      setModalOpen(prev => !prev);
+    setModalOpen(prev => !prev);
   }
 
   return (
@@ -118,9 +142,9 @@ export const CampaignForm = ({ type, edit }) => {
                   <Button
                     onClick={modalToggle}
                     color="primary"
-                    startIcon={<Icon>{edit ? "edit" : "add"}</Icon>}
+                    startIcon={<Icon>{edit || banners.length > 0 ? "edit" : "add"}</Icon>}
                   >
-                    {edit ? "Edit Banners" : "Choose Banners"}
+                    {edit || banners.length > 0 ? "Edit Banners" : "Choose Banners"}
                   </Button>
                 </Typography>
               </Grid>
@@ -131,27 +155,31 @@ export const CampaignForm = ({ type, edit }) => {
         <PaperBlock heading={"Targeting"} fullWidth={true} headingCenter={true}>
           <Box component="div" className={muiStyles.formGroup}>
             <Typography className={muiStyles.label}>Categories</Typography>
-            <TransferList list={categories} />
+            <TransferList selected={categoriesList} list={categories} setState={setCategories} />
           </Box>
           <Box component="div" className={muiStyles.formGroup}>
             <Typography className={muiStyles.label}>Countries</Typography>
-            <TransferList list={countries} />
+            <TransferList selected={countriesList} list={countries} setState={setCountries} />
           </Box>
           <Box component="div" className={muiStyles.formGroup}>
             <Typography className={muiStyles.label}>Devices</Typography>
-            <TransferList list={devices} />
+            <TransferList selected={devicesList} list={devices} setState={setDevices} />
           </Box>
           <Box component="div" className={muiStyles.formGroup}>
             <Typography className={muiStyles.label}>OS</Typography>
-            <TransferList list={os} />
+            <TransferList selected={osList} list={os} setState={setOs} />
           </Box>
           <Box component="div" className={muiStyles.formGroup}>
             <Typography className={muiStyles.label}>Browser</Typography>
-            <TransferList list={browsers} />
+            <TransferList selected={browsersList} list={browsers} setState={setBrowsers} />
           </Box>
           <Box component="div" className={muiStyles.formGroup}>
             <Typography className={muiStyles.label}>Languages</Typography>
-            <TransferList list={languages} />
+            <TransferList selected={languagesList} list={languages} setState={setLanguages} />
+          </Box>
+          <Box component="div" className={muiStyles.formGroup}>
+            <Typography className={muiStyles.label}>Days</Typography>
+            <TransferList selected={daysList} list={weekDaysList} setState={setDays} />
           </Box>
         </PaperBlock>
 
@@ -199,11 +227,11 @@ export const CampaignForm = ({ type, edit }) => {
             label="Adult"
             className={muiStyles.block}
           />
-          <MySwitchField
+          {!edit && <MySwitchField
             name="run"
             label="Run After Approval?"
             className={muiStyles.block}
-          />
+          />}
 
           <Button
             variant="contained"
@@ -218,8 +246,9 @@ export const CampaignForm = ({ type, edit }) => {
       </Form>
       
       {modalOpen ? <BannersListModal 
-        banners={[]}
-        onClose={modalToggle} 
+        banners={banners}
+        onClose={modalToggle}
+        onSave={saveBanners}
       />:null}
 
     </Fragment>

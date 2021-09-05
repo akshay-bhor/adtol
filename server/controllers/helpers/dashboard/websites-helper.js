@@ -471,7 +471,7 @@ exports.formdataHelper = async (req) => {
 
     // Return 
     return {
-        categories: Object.keys(cats).map(key => ({ id: key, name: cats[key] })),
-        languages: Object.keys(lang).map(key => ({ id: key, name: lang[key] })),
+        categories: Object.keys(cats).map(key => ({ id: +key, name: cats[key] })),
+        languages: Object.keys(lang).map(key => ({ id: +key, name: lang[key] })),
     };
 }

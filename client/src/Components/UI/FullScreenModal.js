@@ -35,6 +35,12 @@ const FullScreenModal = (props) => {
     if (props.onClose) props.onClose();
   };
 
+  const handleSave = () => {
+    setOpen(false);
+    if (props.onSave) props.onSave();
+    if (props.onClose) props.onClose();
+  }
+
   return (
     <Dialog
       open={open}
@@ -56,7 +62,7 @@ const FullScreenModal = (props) => {
           <Typography variant="h6" className={muiStyles.title}>
             {props.title}
           </Typography>
-          <Button autoFocus color="inherit" onClick={handleClose}>
+          <Button autoFocus color="inherit" onClick={handleSave}>
             save
           </Button>
         </Toolbar>

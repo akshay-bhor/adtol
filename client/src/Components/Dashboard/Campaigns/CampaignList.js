@@ -12,6 +12,7 @@ import ShowError from "../../UI/ShowError";
 import Loading from "../../UI/Loading";
 import { Button, Chip, Icon, makeStyles } from "@material-ui/core";
 import EditBudgetModal from "./EditBudgetModal";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   warning: {
@@ -220,16 +221,20 @@ const CampaignList = () => {
         </Fragment>
       );
     }
-    if (params.colDef.field == "manage") {
+    if (params.colDef.field == "manage") { 
+      const pathParam = params.row.type.split(',')[0].toLowerCase() === 'pop' ? 'pop':'campaign';
       return (
         <Fragment>
-          <Button
-            color="primary"
-            className={muiStyles.smallBtn}
-            startIcon={<Icon>edit</Icon>}
-          >
-            Edit
-          </Button>
+          <Link 
+            to={`/dashboard/edit-ad/${pathParam}/${params.id}`}>
+            <Button
+              color="primary"
+              className={muiStyles.smallBtn}
+              startIcon={<Icon>edit</Icon>}
+            >
+              Edit
+            </Button>
+          </Link>
           <Button
             color="secondary"
             className={muiStyles.smallBtn}

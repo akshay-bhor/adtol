@@ -72,7 +72,7 @@ const Dashboard = () => {
               <Route path="/dashboard/advertiser" component={Advertiser} />
               <Route path="/dashboard/campaigns" component={CampaignList} />
               <Route path="/dashboard/campaign-type" component={CampaignTypes} />
-              <Route path="/dashboard/create-ad/:type" component={CreateCampaign} />
+              <Route path="/dashboard/create-ad/:type" component={props => <CreateCampaign {...props} />} />
               <Route path="/dashboard/edit-ad/:type/:campid" component={EditCampaign} />
               <Route path="/dashboard/publisher" component={Publisher} />
               <Route path="/dashboard/websites" component={WebsiteList} exact />

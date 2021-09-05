@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
@@ -41,14 +41,19 @@ function union(a, b) {
   return [...a, ...not(b, a)];
 }
 
-export default function TransferList(props) {
+export default function TransferList(props) { console.log(props.list, props.selected);
   const classes = useStyles();
   const [checked, setChecked] = useState([]);
-  const [left, setLeft] = useState([]);
-  const [right, setRight] = useState(props.list);
+  const [left, setLeft] = useState(not(props.list, props.selected));
+  const [right, setRight] = useState(props.selected);
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
+
+  useEffect(() => {
+    const values = right.map(item => +item.id); // Return only id from object [{id, name}]
+    props.setState(_ => values);
+  }, [right]);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);

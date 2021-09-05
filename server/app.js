@@ -48,7 +48,7 @@ else {
     app.use(cookieParser());
     app.use(express.urlencoded({ extended: true }));
     app.use(express.json());
-    app.use(helmet());
+    app.use(helmet({contentSecurityPolicy: false}));
 
     app.use((req, res, next) => {
         res.setHeader('Access-Control-Allow-Origin', '*');

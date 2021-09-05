@@ -12,6 +12,10 @@ const Banners = sequelize.define('banner', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
+    banner_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
     size: {
         type: DataTypes.INTEGER(2),
         allowNull: false

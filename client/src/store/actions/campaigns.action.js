@@ -1,19 +1,24 @@
 import { campaignActions } from "../reducers/campaigns.reducer";
-import { abortRequest, changeCampaignBudget, changeCampaignStatus, getCampaignBanners, getCampaignsList, getCampaignTypes } from "../../services/apiService";
+import { abortRequest, changeCampaignBudget, changeCampaignStatus, createCampaignApi, getCampaignBanners, getCampaignData, getCampaignsList, getCampaignTypes } from "../../services/apiService";
+import { uiActions } from "../reducers/ui.reducer";
 
-const _campaignGetRequest = (sendRequest, set) => {
+const _campaignGetRequest = (sendRequest, set, hasData=false, data=null) => {
     return async (dispatch) => {
         dispatch(campaignActions.setLoading(true));
     
         try {
           dispatch(campaignActions.setError(null));
           dispatch(campaignActions.setSuccess(null));
-          const getData = await sendRequest();
+          let getData;
+          
+          if(!hasData) getData = await sendRequest();
+          if(hasData) getData = await sendRequest(data);
          
           if (getData) {
             if(set === 'campaignList') dispatch(campaignActions.setData(getData.data));
             if(set === 'campaignTypes') dispatch(campaignActions.setCampaignTypes(getData.data));
             if(set === 'banners') dispatch(campaignActions.setBanners(getData.data));
+            if(set === 'campaignData') dispatch(campaignActions.setCampaignData(getData.data));
           }
     
           dispatch(campaignActions.setLoading(false));
@@ -25,7 +30,7 @@ const _campaignGetRequest = (sendRequest, set) => {
     };
 }
 
-const _campaignPostRequest = (sendRequest, data) => {
+const _campaignPostRequest = (sendRequest, data, snack=false, msg=null, reset=false) => {
   return async (dispatch) => {
     dispatch(campaignActions.setLoading(true));
 
@@ -37,6 +42,9 @@ const _campaignPostRequest = (sendRequest, data) => {
 
       dispatch(campaignActions.setLoading(false));
       dispatch(campaignActions.setSuccess(true));
+      
+      if(snack) dispatch(uiActions.showSnack({severity: 'success', message: msg}));
+      if(reset) dispatch(uiActions.setFetched(false));
 
     } catch (err) {
       dispatch(campaignActions.setError(err));
@@ -56,11 +64,19 @@ export const fetchCampaignsList = () => {
   return async (dispatch) => dispatch(_campaignGetRequest(getCampaignsList, 'campaignList'));
 }
 
+export const fetchCampaignData = (data) => {
+  return async (dispatch) => dispatch(_campaignGetRequest(getCampaignData, 'campaignData', true, data));
+}
+
 export const updateCampaignBudget = (data) => {
   return async (dispatch) => {
     await dispatch(_campaignPostRequest(changeCampaignBudget, data));
     dispatch(fetchCampaignsList());
   }
+}
+
+export const createCampaign = (data) => {
+  return async (dispatch) => dispatch(_campaignPostRequest(createCampaignApi, data, true, 'Campaign created successfully', true));
 }
 
 export const fetchCampaignTypes = () => {

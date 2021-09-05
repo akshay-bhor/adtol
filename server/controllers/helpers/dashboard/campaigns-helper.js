@@ -64,7 +64,7 @@ exports.campaignsHelper = async(req) => {
             campData.isPro = data.pro;
             // Campaign type
             if(data.campaign_type == 0) {
-                campData.campaign_type = 'pop';
+                campData.campaign_type = 'Pop';
             }
             else {
                 campTypes.forEach(c => {
@@ -116,7 +116,7 @@ exports.changeStatusHelper = async (req) => {
         const userid = req.userInfo.id;
 
         // Get campaigns
-        const campaigns = await sequelize.query('SELECT c.id, a.id as adid, c.bot, c.status, a.type, c.adult, c.run FROM campaigns c INNER JOIN ads a ON c.id = a.campaign_id WHERE c.uid = ? AND c.id = ? AND c.status = 1', {
+        const campaigns = await sequelize.query('SELECT c.id, a.id as adid, c.bot, c.status, a.type, c.adult, c.run, c.budget_rem, c.today_budget_rem FROM campaigns c INNER JOIN ads a ON c.id = a.campaign_id WHERE c.uid = ? AND c.id = ? AND c.status != 4', {
             type: QueryTypes.SELECT,
             replacements: [userid, campId]
         });
@@ -124,7 +124,8 @@ exports.changeStatusHelper = async (req) => {
             throw new Error('Not Allowed!');
         }
 
-        campaigns.forEach(data => {
+        let i = 0;
+        for(let data of campaigns) {
             let id = data.id;
             let bot = data.bot;
             let status = data.status;
@@ -132,6 +133,8 @@ exports.changeStatusHelper = async (req) => {
             let adult = data.adult;
             let run = data.run;
             let ad_id = data.adid;
+            let budget_rem = data.budget_rem;
+            let today_budget_rem = data.today_budget_rem;
             let nrun;
             let nstatus;
 
@@ -142,20 +145,44 @@ exports.changeStatusHelper = async (req) => {
             }
 
             // Construct new hash
+            const camp_budget_rem = (budget_rem + today_budget_rem);
             if(action == 'run') nrun = 1;
             else if(action == 'pause') nrun = 2;
             else nrun = run;
-            if(action == 'delete') nstatus = 4;
+            if(action == 'delete') {
+                nstatus = 4;
+                budget_rem = 0;
+                today_budget_rem = 0;
+            }
             else nstatus = status;
             const str = '0|'+nstatus+'|'+type+'|'+adult+'|'+nrun;
             const match_hash = tinify(str);
 
-            // Update
-            const update = sequelize.query('UPDATE ads a, campaigns c SET c.status = ?, c.run = ?, a.match_hash = ? WHERE c.id = ? AND a.id = ?', {
-                type: QueryTypes.UPDATE,
-                replacements: [nstatus, nrun, match_hash, id, ad_id]
-            });
-        });
+            const ts = await sequelize.transaction();
+            try {
+                // Update
+                const update = await sequelize.query('UPDATE ads a, campaigns c SET c.status = ?, c.run = ?, c.budget_rem = ?, c.today_budget_rem = ?, a.match_hash = ? WHERE c.id = ? AND a.id = ?', {
+                    type: QueryTypes.UPDATE,
+                    replacements: [nstatus, nrun, budget_rem, today_budget_rem, match_hash, id, ad_id],
+                    transaction: ts
+                });
+
+                // If delete deposit amt back
+                if(action == 'delete' && i == 0) {
+                    const user_update = await sequelize.query('UPDATE users SET ad_balance = ad_balance + ? WHERE id = ?', {
+                        type: QueryTypes.UPDATE,
+                        replacements: [camp_budget_rem, userid]
+                    });
+                }
+
+                i++;
+
+                await ts.commit();
+            } catch (err) { console.log(err);
+                await ts.rollback();
+                throw new Error('Something went wrong, try again!');
+            }
+        }
 
         // Return
         return {
@@ -252,6 +279,7 @@ exports.changeBudgetHelper = async (req) => {
             await ts.commit();
         } catch (err) {
             await ts.rollback();
+            throw new Error('Something went wrong, try again!');
         }
 
         // Return
@@ -361,13 +389,13 @@ exports.manageCampaignHelper = async (req) => {
         // Domain
         const domain = psl.get(extractHostname(req.body.url));
         campaign_obj.domain_hash = tinify(domain);
-        campaign_obj.category = req.body.category.split(',').map(s => trim(s)).join('|');
-        campaign_obj.device = req.body.device.split(',').map(s => trim(s)).join('|');
-        campaign_obj.os = req.body.os.split(',').map(s => trim(s)).join('|');
-        campaign_obj.country = req.body.country.split(',').map(s => trim(s)).join('|');
-        campaign_obj.browser = req.body.browser.split(',').map(s => trim(s)).join('|');
-        campaign_obj.language = req.body.language.split(',').map(s => trim(s)).join('|');
-        campaign_obj.day = req.body.day.split(',').map(s => trim(s)).join('|');
+        campaign_obj.category = req.body.category.split(',').map(s => s.trim()).join('|');
+        campaign_obj.device = req.body.device.split(',').map(s => s.trim()).join('|');
+        campaign_obj.os = req.body.os.split(',').map(s => s.trim()).join('|');
+        campaign_obj.country = req.body.country.split(',').map(s => s.trim()).join('|');
+        campaign_obj.browser = req.body.browser.split(',').map(s => s.trim()).join('|');
+        campaign_obj.language = req.body.language.split(',').map(s => s.trim()).join('|');
+        campaign_obj.day = req.body.day.split(',').map(s => s.trim()).join('|');
         campaign_obj.cpc = req.body.cpc;
         campaign_obj.adult = req.body.adult;
         campaign_obj.timezone = req.body.timezone;
@@ -460,8 +488,8 @@ exports.manageCampaignHelper = async (req) => {
                     })
                     .map(banner => {
                         return ({
-                            id: banner.dataValues.id,
                             campaign_id: campaign_id,
+                            banner_id: banner.dataValues.id,
                             size: banner.dataValues.size,
                             src: banner.dataValues.src
                         });
@@ -538,17 +566,23 @@ exports.getCampaignInfoHelper = async (req) => {
         const campaign_id = req.params.campid;
         const userid = req.userInfo.id;
         
-        const data = await sequelize.query('SELECT b.id as banner_id, a.type as ad_type, c.campaign_title as campaign_name, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.day, c.timezone, c.btn, c.cpc, c.budget_rem as budget, c.today_budget as daily_budget, c.adult FROM campaigns c INNER JOIN banners b ON c.id = b.campaign_id INNER JOIN ads a ON c.id = a.campaign_id WHERE c.id = ? AND c.uid = ?', {
+        const data = await sequelize.query('SELECT b.banner_id as banner_id, a.type as ad_type, c.campaign_title as campaign_name, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.day, c.timezone, c.btn, c.cpc, c.budget_rem as budget, c.today_budget as daily_budget, c.adult FROM campaigns c LEFT JOIN banners b ON c.id = b.campaign_id INNER JOIN ads a ON c.id = a.campaign_id WHERE c.id = ? AND c.uid = ? AND c.status != 4', {
             type: QueryTypes.SELECT,
             replacements: [campaign_id, userid]
         });
+        if(data.length === 0) {
+            const err = new Error('Campaign not found!');
+            err.statusCode = 404;
+            throw err;
+        }
         
         const campaignData = data[0];
-
+        
         // Get banner_ids
         let banner_ids = new Set();
         for(let item of data) {
-            banner_ids.add(item.banner_id);
+            if(item.banner_id !== null)
+                banner_ids.add(+item.banner_id);
         }
         banner_ids = Array.from(banner_ids); // [...banner_ids]
 
@@ -740,21 +774,21 @@ exports.getCampaignFormDataHelper = async (req) => {
 
         res[0].forEach(item => {
             devices.push({
-                id: item.dataValues.id,
+                id: +item.dataValues.id,
                 name: item.dataValues.name
             });
         });
 
         res[1].forEach(item => {
             os.push({
-                id: item.dataValues.id,
+                id: +item.dataValues.id,
                 name: `${item.dataValues.name} ${item.dataValues.version} and up`
             });
         });
 
         res[2].forEach(item => {
             browsers.push({
-                id: item.dataValues.id,
+                id: +item.dataValues.id,
                 name: item.dataValues.name
             });
         });

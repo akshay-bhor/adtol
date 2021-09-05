@@ -1,18 +1,17 @@
 import { Formik } from "formik";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchCampaignFormData,
   fetchCountries,
   fetchWebsiteFormData,
 } from "../../../store/actions/formdata.action";
-import PaperBlock from "../Common/PaperBlock";
-import * as luxon from "luxon";
 import * as yup from "yup";
 import CampaignForm from "./CampaignForm";
 import { useLocation, useParams } from "react-router-dom";
 import Loading from "../../UI/Loading";
-const DateTime = luxon.DateTime;
+import { weekDaysList } from "../../../constants/common";
+import { createCampaign } from "../../../store/actions/campaigns.action";
 
 const validationSchema = yup.object({
   campaign_name: yup
@@ -31,6 +30,12 @@ const validationSchema = yup.object({
     .min(3, "Min length is 3")
     .max(300, "Max length is 300"),
   url: yup.string().required("URL is required").url("Invalid URL"),
+  timezone: yup.string().required('Timezone is required'),
+  cpc: yup.number().required('CPC is required').min(0.02, 'Min CPC is $0.01'),
+  budget: yup.number().required('Budget is required').min(1, 'Min budget is $1'),
+  daily_budget: yup.number().required('Daily Budget is required').min(1, 'Min Daily Budget is $1'),
+  run: yup.boolean().required('Run value is required'),
+  adult: yup.boolean().required('Adult value is required'),
 });
 
 const initialData = {
@@ -38,13 +43,6 @@ const initialData = {
   title: "",
   desc: "",
   url: "",
-  category: "",
-  country: "",
-  device: "",
-  os: "",
-  browser: "",
-  language: "",
-  day: "",
   timezone: "Asia/Kolkata",
   cpc: 0.02,
   adult: false,
@@ -59,7 +57,7 @@ const CreateCampaign = () => {
   const location = useLocation();
   const type = params.type; // campaign or pop
   const searchParams = new URLSearchParams(location.search);
-  const goal = searchParams.get("type");
+  const goal = searchParams.get("type") || 1;
 
   /**
    * FormData
@@ -74,6 +72,18 @@ const CreateCampaign = () => {
   /**
    * End
    */
+
+  /**
+   * States
+   */
+  const [categoryState, setCategoryState] = useState(categories);
+  const [langState, setLangState] = useState(languages);
+  const [countryState, setCountryState] = useState(countries);
+  const [deviceState, setDeviceState] = useState(devices);
+  const [osState, setOsState] = useState(os);
+  const [browserState, setBrowserState] = useState(browsers);
+  const [daysState, setDaysState] = useState(weekDaysList);
+  const [banners, setBanners] = useState([]);
 
   useEffect(() => {
     // Fetch timezones
@@ -96,6 +106,32 @@ const CreateCampaign = () => {
     else return false;
   };
 
+  const onSubmit = (values) => {
+    const postData = {
+      ...values,
+      campaign_type: goal,
+      banners: banners.join(','),
+      category: categoryState.length === categories.length ? '0':categoryState.join(','),
+      country: countryState.length > 150 ? '0':countryState.join(','),
+      device:  deviceState.length === devices.length ? '0':deviceState.join(','),
+      os: osState.length === os.length ? '0':osState.join(','),
+      browser: browserState.length === browsers.length ? '0':browserState.join(','),
+      language: langState.length === languages.length ? '0':langState.join(','),
+      day: daysState.length === 7 ? '0':daysState.join(','),
+      run: values.run ? 1:2,
+      adult: values.adult ? 1:0,
+      params: {
+        type
+      }
+    }
+
+    if(postData.banners.length === 0) {
+      delete postData.banners;
+    }
+
+    dispatch(createCampaign(postData));
+  }
+
   return (
     <Fragment>
       {!formDataFetched && <Loading />}
@@ -104,10 +140,29 @@ const CreateCampaign = () => {
           initialValues={initialData}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            console.log(values);
+            onSubmit(values);
           }}
         >
-          <CampaignForm type={type} edit={false} />
+          <CampaignForm 
+            type={type} 
+            edit={false} 
+            banners={banners}
+            setBanners={setBanners}
+            categoriesList={categories}
+            setCategories={setCategoryState}
+            languagesList={languages}
+            setLanguages={setLangState}
+            countriesList={countries}
+            setCountries={setCountryState}
+            devicesList={devices}
+            setDevices={setDeviceState}
+            osList={os}
+            setOs={setOsState}
+            browsersList={browsers}
+            setBrowsers={setBrowserState}
+            daysList={weekDaysList}
+            setDays={setDaysState}
+          />
         </Formik>
       )}
     </Fragment>
