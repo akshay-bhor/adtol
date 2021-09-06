@@ -89,6 +89,7 @@ const EditCampaign = () => {
     // Clear campaign data
     return () => {
         dispatch(campaignActions.setCampaignData(null));
+        dispatch(campaignActions.setError(null));
     }
   }, []);
 

@@ -93,6 +93,12 @@ const CreateCampaign = () => {
     dispatch(fetchWebsiteFormData());
     dispatch(fetchCountries());
     dispatch(fetchCampaignFormData());
+    
+    // Clear campaign data
+    return () => {
+      dispatch(campaignActions.setCampaignData(null));
+      dispatch(campaignActions.setError(null));
+    }
   }, []);
 
   const formDataFetched = () => {
