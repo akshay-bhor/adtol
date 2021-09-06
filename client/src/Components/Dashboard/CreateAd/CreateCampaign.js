@@ -12,6 +12,7 @@ import { useLocation, useParams } from "react-router-dom";
 import Loading from "../../UI/Loading";
 import { weekDaysList } from "../../../constants/common";
 import { createCampaign } from "../../../store/actions/campaigns.action";
+import { campaignActions } from "../../../store/reducers/campaigns.reducer";
 
 const validationSchema = yup.object({
   campaign_name: yup
