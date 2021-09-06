@@ -303,7 +303,7 @@ exports.manageCampaignHelper = async (req) => {
 
     if(req.manage === 'edit') await check('campid').exists().trim().escape().isInt().withMessage('Campaign ID is required').run(req);
     await check('campaign_name').exists().trim().escape().isString().notEmpty().withMessage('Campaign Name is required').isLength({ min:3, max:60 }).withMessage('Min and max allowed characters are 3 & 60').run(req);
-    await check('campaign_type').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Campaign Type').custom(campaignTypeValidation).run(req);
+    if(req.manage !== 'edit') await check('campaign_type').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Campaign Type').custom(campaignTypeValidation).run(req);
     await check('title').exists().trim().escape().isString().notEmpty().withMessage('Title is required').isLength({ min:3, max:60 }).withMessage('Min and max allowed characters are 3 & 60').run(req);
     await check('desc').exists().trim().escape().isString().notEmpty().withMessage('Description is required').isLength({ min:3, max:300 }).withMessage('Min and max allowed characters are 3 & 300').run(req);
     await check('url').exists().trim().notEmpty().withMessage('URL is required').isURL().withMessage('URL is invalid').run(req);
@@ -434,6 +434,7 @@ exports.manageCampaignHelper = async (req) => {
             }
             if(manage === 'edit') {
                 // Delete fields fron object
+                delete campaign_obj.campaign_type;
                 delete campaign_obj.budget;
                 delete campaign_obj.budget_rem;
                 delete campaign_obj.today_budget_rem;

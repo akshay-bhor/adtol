@@ -11,7 +11,7 @@ import CampaignForm from "./CampaignForm";
 import { useLocation, useParams } from "react-router-dom";
 import Loading from "../../UI/Loading";
 import { weekDaysList } from "../../../constants/common";
-import { createCampaign, fetchCampaignData } from "../../../store/actions/campaigns.action";
+import { editCampaign, fetchCampaignData } from "../../../store/actions/campaigns.action";
 import { campaignActions } from "../../../store/reducers/campaigns.reducer";
 
 const validationSchema = yup.object({
@@ -30,12 +30,14 @@ const validationSchema = yup.object({
     .required("Description is required")
     .min(3, "Min length is 3")
     .max(300, "Max length is 300"),
-  url: yup.string().required("URL is required").url("Invalid URL"),
+  url: yup.string().required("URL is required").matches(
+    /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+    'Enter correct url!'
+  ),
   timezone: yup.string().required('Timezone is required'),
   cpc: yup.number().required('CPC is required').min(0.02, 'Min CPC is $0.01'),
   budget: yup.number().required('Budget is required').min(1, 'Min budget is $1'),
   daily_budget: yup.number().required('Daily Budget is required').min(1, 'Min Daily Budget is $1'),
-  run: yup.boolean().required('Run value is required'),
   adult: yup.boolean().required('Adult value is required'),
 });
 
@@ -63,14 +65,15 @@ const EditCampaign = () => {
   /**
    * States
    */
-  const [categoryState, setCategoryState] = useState(categories);
-  const [langState, setLangState] = useState(languages);
-  const [countryState, setCountryState] = useState(countries);
-  const [deviceState, setDeviceState] = useState(devices);
-  const [osState, setOsState] = useState(os);
-  const [browserState, setBrowserState] = useState(browsers);
+  const [categoryState, setCategoryState] = useState(null);
+  const [langState, setLangState] = useState(null);
+  const [countryState, setCountryState] = useState(null);
+  const [deviceState, setDeviceState] = useState(null);
+  const [osState, setOsState] = useState(null);
+  const [browserState, setBrowserState] = useState(null);
   const [daysState, setDaysState] = useState(weekDaysList);
   const [banners, setBanners] = useState([]);
+  const [stateUpdated, setStateUpdated] = useState(false);
 
   useEffect(() => {
     // Campaign Data
@@ -90,37 +93,45 @@ const EditCampaign = () => {
   }, []);
 
   const updateStates = () => {
-    if(campaignData.category.length === 1 && campaignData.category[0] === 0)  {}
+    if(stateUpdated) return;
+
+    if(campaignData.category.length === 1 && campaignData.category[0] === 0) 
+      setCategoryState(_ => categories);
     else setCategoryState(_ => campaignData.category.map(id => {
         const {name} = categories.filter(item => item.id === id)[0];
         return {id, name};
     }));
 
-    if(campaignData.language.length === 1 && campaignData.language[0] === 0)  {}
+    if(campaignData.language.length === 1 && campaignData.language[0] === 0)  
+      setLangState(_ => languages);
     else setLangState(_ => campaignData.language.map(id => {
         const {name} = languages.filter(item => item.id === id)[0];
         return {id, name};
     }));
 
-    if(campaignData.country.length === 1 && campaignData.country[0] === 0)  {}
+    if(campaignData.country.length === 1 && campaignData.country[0] === 0)
+      setCountryState(_ => countries);
     else setCountryState(_ => campaignData.country.map(id => {
         const {name} = countries.filter(item => item.id === id)[0];
         return {id, name};
     }));
 
-    if(campaignData.device.length === 1 && campaignData.device[0] === 0)  {}
+    if(campaignData.device.length === 1 && campaignData.device[0] === 0)  
+      setDeviceState(_ => devices);
     else setDeviceState(_ => campaignData.device.map(id => {
         const {name} = devices.filter(item => item.id === id)[0];
         return {id, name};
     }));
 
-    if(campaignData.os.length === 1 && campaignData.os[0] === 0)  {}
+    if(campaignData.os.length === 1 && campaignData.os[0] === 0)
+      setOsState(_ => os);
     else setOsState(_ => campaignData.os.map(id => {
         const {name} = os.filter(item => item.id === id)[0];
         return {id, name};
     }));
 
-    if(campaignData.browser.length === 1 && campaignData.browser[0] === 0)  {}
+    if(campaignData.browser.length === 1 && campaignData.browser[0] === 0)
+      setBrowserState(_ => browsers);
     else setBrowserState(_ => campaignData.browser.map(id => {
         const {name} = browsers.filter(item => item.id === id)[0];
         return {id, name};
@@ -134,6 +145,8 @@ const EditCampaign = () => {
 
     if(campaignData.banners.length === 1 && campaignData.banners[0] === 0)  {}
     else setBanners(_ => campaignData.banners);
+
+    setStateUpdated(_ => true);
   }
 
   const getInitialData = () => {
@@ -183,7 +196,8 @@ const EditCampaign = () => {
       run: values.run ? 1:2,
       adult: values.adult ? 1:0,
       params: {
-        type
+        type,
+        campaign_id
       }
     }
 
@@ -191,13 +205,13 @@ const EditCampaign = () => {
       delete postData.banners;
     }
 
-    dispatch(createCampaign(postData));
+    dispatch(editCampaign(postData));
   }
-
+  console.log(categoryState);
   return (
     <Fragment>
-      {!formDataFetched && <Loading />}
-      {formDataFetched() && (
+      {!stateUpdated && <Loading />}
+      {stateUpdated && (
         <Formik
           initialValues={getInitialData()}
           validationSchema={validationSchema}

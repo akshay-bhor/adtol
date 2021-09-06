@@ -30,33 +30,38 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function not(a, b) {
-  return a.filter((value) => b.indexOf(value) === -1);
+  const a_ids = a.map(v => v.id);
+  const b_ids = b.map(v => v.id);
+  return a.filter((value) => b_ids.indexOf(value.id) === -1);
 }
 
-function intersection(a, b) {
-  return a.filter((value) => b.indexOf(value) !== -1);
+function intersection(a, b) { 
+  const a_ids = a.map(v => +v.id);
+  const b_ids = b.map(v => +v.id);
+  return a.filter((value) => b_ids.indexOf(value.id) !== -1);
 }
 
 function union(a, b) {
   return [...a, ...not(b, a)];
 }
 
-export default function TransferList(props) { console.log(props.list, props.selected);
+export default function TransferList(props) {
   const classes = useStyles();
+  const selected = props.selected.slice().map(e => ({...e}));
   const [checked, setChecked] = useState([]);
-  const [left, setLeft] = useState(not(props.list, props.selected));
-  const [right, setRight] = useState(props.selected);
+  const [left, setLeft] = useState(not(props.list, selected));
+  const [right, setRight] = useState(selected);
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
-
-  useEffect(() => {
+  
+  useEffect(() => { console.log('executed');
     const values = right.map(item => +item.id); // Return only id from object [{id, name}]
     props.setState(_ => values);
   }, [right]);
 
   const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value);
+    const currentIndex = checked.findIndex(e => e.id === value.id);
     const newChecked = [...checked];
 
     if (currentIndex === -1) {
@@ -115,7 +120,7 @@ export default function TransferList(props) { console.log(props.list, props.sele
             <ListItem key={value.id} role="listitem" button onClick={handleToggle(value)}>
               <ListItemIcon>
                 <Checkbox
-                  checked={checked.indexOf(value) !== -1}
+                  checked={checked.findIndex(e => e.id === value.id) !== -1}
                   tabIndex={-1}
                   disableRipple
                   inputProps={{ 'aria-labelledby': labelId }}
