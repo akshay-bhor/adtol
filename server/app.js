@@ -77,7 +77,7 @@ else {
             err: err
         });
     })
-    // sequelize.sync();
+    sequelize.sync();
     app.listen(process.env.PORT || 3000, function() {
         loadSettings();
         verifyEmailTransport();
