@@ -37,7 +37,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-nginx-spa-dev:08b4fb324903dd91d716aecec684547c710740a2",
+      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-nginx-spa-dev:bd2a0c3704fd04137fbe3c7dc9a6b13793c2eeef",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": [
@@ -92,60 +92,48 @@
       "workingDirectory": null,
       "secrets": [
         {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_NODE_ENV",
-          "name": "NODE_ENV"
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AES_KEY",
+          "name": "AES_KEY"
         },
         {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_PORT",
-          "name": "PORT"
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_SES_ACCESS_KEY",
+          "name": "AWS_SES_ACCESS_KEY"
         },
         {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_ORIGIN",
-          "name": "ORIGIN"
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_SES_SECRET_KEY",
+          "name": "AWS_SES_SECRET_KEY"
         },
         {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_NAME",
-          "name": "DB_NAME"
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_REGION",
+          "name": "AWS_REGION"
         },
         {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_USER",
-          "name": "DB_USER"
-        },
-        {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_PASS",
-          "name": "DB_PASS"
-        },
-        {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_HOST",
-          "name": "DB_HOST"
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_EMAIL_SENDING_RATE",
+          "name": "EMAIL_SENDING_RATE"
         },
         {
           "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_DIALECT",
           "name": "DB_DIALECT"
         },
         {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_HOST",
+          "name": "DB_HOST"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_NAME",
+          "name": "DB_NAME"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_PASS",
+          "name": "DB_PASS"
+        },
+        {
           "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_PORT",
           "name": "DB_PORT"
         },
         {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_HASH_SECRET",
-          "name": "HASH_SECRET"
-        },
-        {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_PAY_KEY_ID",
-          "name": "PAY_KEY_ID"
-        },
-        {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_PAY_KEY_SECRET",
-          "name": "PAY_KEY_SECRET"
-        },
-        {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AES_KEY",
-          "name": "AES_KEY"
-        },
-        {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_RECAPTCHA_SECRET",
-          "name": "RECAPTCHA_SECRET"
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_USER",
+          "name": "DB_USER"
         },
         {
           "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_GOOGLE_CLIENT_ID",
@@ -156,20 +144,48 @@
           "name": "GOOGLE_CLIENT_SECRET"
         },
         {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_SES_HOST",
-          "name": "AWS_SES_HOST"
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_HASH_SECRET",
+          "name": "HASH_SECRET"
         },
         {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_SES_PORT",
-          "name": "AWS_SES_PORT"
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_NODE_ENV",
+          "name": "NODE_ENV"
         },
         {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_SES_USER",
-          "name": "AWS_SES_USER"
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_ORIGIN",
+          "name": "ORIGIN"
         },
         {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_SES_PASS",
-          "name": "AWS_SES_PASS"
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_PAY_KEY_ID",
+          "name": "PAY_KEY_ID"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_PAY_KEY_SECRET",
+          "name": "PAY_KEY_SECRET"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_PORT",
+          "name": "PORT"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_RECAPTCHA_SECRET",
+          "name": "RECAPTCHA_SECRET"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_S3_BUCKET_NAME",
+          "name": "AWS_S3_BUCKET_NAME"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_S3_ACCESS_KEY",
+          "name": "AWS_S3_ACCESS_KEY"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_S3_SECRET_KEY",
+          "name": "AWS_S3_SECRET_KEY"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_CLOUDFRONT_S3_ORIGIN",
+          "name": "CLOUDFRONT_S3_ORIGIN"
         }
       ],
       "dockerSecurityOptions": null,
@@ -177,7 +193,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-node-dev:08b4fb324903dd91d716aecec684547c710740a2",
+      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-node-dev:bd2a0c3704fd04137fbe3c7dc9a6b13793c2eeef",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
@@ -204,7 +220,7 @@
     "EC2",
     "FARGATE"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:205900288504:task-definition/adtol-dev:23",
+  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:205900288504:task-definition/adtol-dev:26",
   "family": "adtol-dev",
   "requiresAttributes": [
     {
@@ -274,7 +290,7 @@
   ],
   "networkMode": "awsvpc",
   "cpu": "512",
-  "revision": 23,
+  "revision": 26,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
