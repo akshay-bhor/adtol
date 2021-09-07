@@ -30,10 +30,7 @@ const validationSchema = yup.object({
     .required("Description is required")
     .min(3, "Min length is 3")
     .max(300, "Max length is 300"),
-  url: yup.string().required("URL is required").matches(
-    /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
-    'Enter correct url!'
-  ),
+  url: yup.string().required("URL is required").url('Invalid URL, make sure to add https://'),
   timezone: yup.string().required('Timezone is required'),
   cpc: yup.number().required('CPC is required').min(0.02, 'Min CPC is $0.01'),
   budget: yup.number().required('Budget is required').min(1, 'Min budget is $1'),

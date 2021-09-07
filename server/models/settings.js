@@ -14,6 +14,11 @@ const Settings = sequelize.define('setting', {
         allowNull: false,
         defaultValue: '1.00'
     },
+    max_deposit: {
+        type: DataTypes.FLOAT(10, 2),
+        allowNull: false,
+        defaultValue: '5000'
+    },
     min_withdraw: {
         type: DataTypes.FLOAT(10, 2),
         allowNull: false,

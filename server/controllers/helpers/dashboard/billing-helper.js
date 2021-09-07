@@ -206,6 +206,9 @@ exports.formDataHelper = async (req) => {
         // Min deposit
         const min_deposit = web_settings.min_deposit;
 
+        // Max deposit
+        const max_deposit = web_settings.max_deposit;
+
         // Min withdrawal
         const min_withdraw = web_settings.min_withdraw;
 
@@ -216,6 +219,7 @@ exports.formDataHelper = async (req) => {
         return {
             pub_bal,
             min_deposit,
+            max_deposit,
             min_withdraw,
             withdraw_fee
         };

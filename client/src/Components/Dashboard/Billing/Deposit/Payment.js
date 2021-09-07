@@ -115,6 +115,7 @@ const Payment = () => {
       abortBillingRequest();
       dispatch(billingActions.setPaymentSuccess(null));
       dispatch(billingActions.setPaymentLoading(false));
+      dispatch(billingActions.setPayFormData(null));
       dispatch(billingActions.clearError());
     };
   }, []);
