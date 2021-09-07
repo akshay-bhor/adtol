@@ -119,7 +119,7 @@ export const CampaignForm = ({
             name="url"
             type="text"
             label="URL"
-            placeholder="Enter without http:// or https://"
+            placeholder="Enter with http:// or https://"
             className={muiStyles.block}
           />
           <MyTextField

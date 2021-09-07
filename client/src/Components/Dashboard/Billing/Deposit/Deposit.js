@@ -105,6 +105,10 @@ const Deposit = () => {
         .min(
           formData.min_deposit,
           `Min deposit amount is ${formData.min_deposit}`
+        )
+        .max(
+          formData.max_deposit,
+          `Max deposit amount is ${formData.max_deposit}`
         ),
       processor: yup.string().required("Processor is required"),
     });
