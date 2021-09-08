@@ -29,7 +29,7 @@ exports.adminUserNotifyHelper = async (req) => {
         for(let mail of emails) {
             EmailTransporter.sendMail({
                 to: mail,
-                from: 'admin@adtol.com',
+                from: 'support@adtol.com',
                 subject: subject,
                 html: `
                     ${msg}
