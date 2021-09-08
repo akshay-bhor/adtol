@@ -267,7 +267,7 @@ exports.processPop = async (req, res, next) => {
  */
 const executeAdUpdateQuery = async (table, day_unix, col, value, campaign, ad_uid, cpc) => {
     const incCount = 1;
-    return await sequelize.query(`UPDATE ${table} SET clicks = clicks + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND campaign = ? AND ad_uid = ?`, {
+    return sequelize.query(`UPDATE ${table} SET clicks = clicks + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND campaign = ? AND ad_uid = ?`, {
         type: QueryTypes.UPDATE,
         replacements: [cpc, day_unix, value, campaign, ad_uid]
     });
@@ -275,7 +275,7 @@ const executeAdUpdateQuery = async (table, day_unix, col, value, campaign, ad_ui
 
 const executePubUpdateQuery = async (table, day_unix, col, value, website, pub_uid, cpc) => {
     const incCount = 1;
-    return await sequelize.query(`UPDATE ${table} SET clicks = clicks + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND website = ? AND pub_uid = ?`, {
+    return sequelize.query(`UPDATE ${table} SET clicks = clicks + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND website = ? AND pub_uid = ?`, {
         type: QueryTypes.UPDATE,
         replacements: [cpc, day_unix, value, website, pub_uid]
     });

@@ -762,10 +762,10 @@ exports.getCampaignFormDataHelper = async (req) => {
 
     try {
         const res = await Promise.all([
-            await Devices.findAll(),
-            await Os.findAll(),
-            await Browsers.findAll(),
-            await Timezones.findAll()
+            Devices.findAll(),
+            Os.findAll(),
+            Browsers.findAll(),
+            Timezones.findAll()
         ]);
 
         const devices = [];

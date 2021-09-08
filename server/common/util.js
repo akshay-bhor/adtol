@@ -51,7 +51,7 @@ exports.extractHostname = (url) => {
 }
 
 executeQueryAsync = async (query) => {
-    return await sequelize.query(query, {
+    return sequelize.query(query, {
         type: QueryTypes.SELECT
     });
 }

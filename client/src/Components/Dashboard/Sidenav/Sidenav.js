@@ -8,7 +8,8 @@ const useStyles = makeStyles((theme) => ({
         width: '250px',
         position: 'fixed',
         top: '0',
-        left: '0'
+        left: '0',
+        overflowX: 'auto'
     }
 }));
 
