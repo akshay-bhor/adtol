@@ -9,6 +9,7 @@ const adminNotifyController = require('../controllers/admin/notify');
 const adminSitesController = require('../controllers/admin/sites');
 const adminPaymentsController = require('../controllers/admin/payments');
 const adminWithdrawsController = require('../controllers/admin/withdraws');
+const adminSecKeysController = require('../controllers/admin/sec-keys');
 
 router.get('', isAuth, adminHomeControlller.home);
 router.get('/login', isAuth, adminLoginController.getAdminLogin);
@@ -27,5 +28,7 @@ router.post('/payments', isAuth, adminPaymentsController.postPaymentsList);
 router.get('/withdraws', isAuth, adminWithdrawsController.getWithdrawList);
 router.post('/withdraws', isAuth, adminWithdrawsController.postWithdrawsList);
 router.post('/withdraws/change-status', isAuth, adminWithdrawsController.postChangeWithdrawStatus);
+router.get('/keys', isAuth, adminSecKeysController.secKeys);
+router.get('/get-keys', isAuth, adminSecKeysController.genKeys);
 
 module.exports = router;
