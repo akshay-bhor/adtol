@@ -90,6 +90,9 @@ exports.adminChangeWithdrawsStatusHelper = async (req) => {
     const wd_id = +req.body.id;
     const status = +req.body.status;
 
+    // No update for rejected
+    const noUpdate = 3;
+
     if (
       typeof wd_id !== "number" ||
       (status != 1 && status != 2 && status != 3)
@@ -98,29 +101,44 @@ exports.adminChangeWithdrawsStatusHelper = async (req) => {
     }
 
     // Change status
-    const cStatus = await Withdraw.update(
-      {
-        status,
-      },
-      {
-        where: {
-          id: wd_id,
-        },
-      }
-    );
+    const cStatus = await sequelize.query('UPDATE withdraws SET status = ? WHERE id = ? AND status != ?', {
+      type: QueryTypes.UPDATE,
+      replacements: [status, wd_id, noUpdate]
+    });
+
+    // Withdrawal status
+    let wstatus = "Processed";
+    if (status === 2) wstatus = "Pending";
+    if (status === 3) wstatus = "Denied";
+
+    if(cStatus[1] === 0) {
+      const err = new Error(`Already ${wstatus}`);
+      err.statusCode = 422;
+      throw err;
+    }
 
     // Get user email
     const data = await sequelize.query(
-      "SELECT u.mail as email, w.mtx, w.amount, w.fee, w.processor from users u INNER JOIN withdraws w ON u.id = w.uid WHERE w.id = ?",
+      "SELECT u.id as uid, u.mail as email, w.mtx, w.amount, w.fee, w.processor from users u INNER JOIN withdraws w ON u.id = w.uid WHERE w.id = ?",
       {
         type: QueryTypes.SELECT,
         replacements: [wd_id],
       }
     );
 
+    const wdUid = data[0].uid;
+    const amt = +data[0].amount;
+
+    // If rejected then add back to publisher balance
+    if(status === 3) {
+      await sequelize.query('UPDATE users SET pub_balance = pub_balance + ? WHERE id = ?', {
+        type: QueryTypes.UPDATE,
+        replacements:[amt, wdUid]
+      });
+    }
+
     const mail = data[0].email;
     const mtx = data[0].mtx;
-    const amt = data[0].amount;
     const fee = data[0].fee;
     const processor =
       data[0].processor === 1
@@ -130,11 +148,6 @@ exports.adminChangeWithdrawsStatusHelper = async (req) => {
         : data[0].processor === 3
         ? "Payoneer"
         : `System - <span style='color:red'>Abuse</span>`;
-
-    // Withdrawal status
-    let wstatus = "Processed";
-    if (wstatus === 2) wstatus = "Pending";
-    if (wstatus === 3) wstatus = "Denied";
 
     // Send Mail
     EmailTransporter.sendMail({
