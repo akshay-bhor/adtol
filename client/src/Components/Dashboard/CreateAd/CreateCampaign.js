@@ -32,25 +32,20 @@ const validationSchema = yup.object({
     .max(300, "Max length is 300"),
   url: yup.string().required("URL is required").url('Invalid URL, make sure to add https://'),
   timezone: yup.string().required('Timezone is required'),
-  cpc: yup.number().required('CPC is required').min(0.02, 'Min CPC is $0.01'),
+  rel: yup.number().optional(),
+  cpc: yup.number().required('CPC is required').when('rel', {
+    is: 1,
+    then: yup.number().min(0.03, 'Min CPC when DoFollow is $0.03')
+  })
+  .when('rel', {
+    is: (rel) => rel !== 1,
+    then: yup.number().min(0.02, 'Min CPC is $0.02')
+  }),
   budget: yup.number().required('Budget is required').min(1, 'Min budget is $1'),
   daily_budget: yup.number().required('Daily Budget is required').min(1, 'Min Daily Budget is $1'),
   run: yup.boolean().required('Run value is required'),
   adult: yup.boolean().required('Adult value is required'),
 });
-
-const initialData = {
-  campaign_name: "",
-  title: "",
-  desc: "",
-  url: "",
-  timezone: "Asia/Kolkata",
-  cpc: 0.02,
-  adult: false,
-  budget: 100,
-  daily_budget: 10,
-  run: true,
-};
 
 const CreateCampaign = () => {
   const dispatch = useDispatch();
@@ -59,6 +54,29 @@ const CreateCampaign = () => {
   const type = params.type; // campaign or pop
   const searchParams = new URLSearchParams(location.search);
   const goal = searchParams.get("type") || 1;
+
+  // Intial form data
+  const initialData = {
+    campaign_name: "",
+    title: "",
+    desc: "",
+    url: "",
+    timezone: "Asia/Kolkata",
+    cpc: 0.02,
+    adult: false,
+    budget: 100,
+    daily_budget: 10,
+    run: true,
+  };
+
+  /**
+   * If type campaign then add rel
+   */
+  if(type === 'campaign') { 
+    initialData.rel = 1;
+    initialData.cpc = 0.03;
+    initialData.btn = '';
+  }
 
   /**
    * FormData
@@ -70,6 +88,7 @@ const CreateCampaign = () => {
   const devices = useSelector((state) => state.formdata.devices);
   const os = useSelector((state) => state.formdata.os);
   const browsers = useSelector((state) => state.formdata.browsers);
+  const btns = useSelector((state) => state.formdata.btns);
   /**
    * End
    */
@@ -107,7 +126,8 @@ const CreateCampaign = () => {
       countries.length > 0 &&
       devices.length > 0 &&
       os.length > 0 &&
-      browsers.length > 0
+      browsers.length > 0 &&
+      btns.length > 0
     )
       return true;
     else return false;

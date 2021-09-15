@@ -337,3 +337,18 @@ export const SidenavMenuItems = [
     nested: false,
   },
 ];
+
+export const linkRelList = [
+  {
+    id: 0,
+    name: "Nofollow"
+  },
+  {
+    id: 1,
+    name: "Follow"
+  },
+  {
+    id: 2,
+    name: "Nofollow Noreferrer Noopener"
+  }
+];
