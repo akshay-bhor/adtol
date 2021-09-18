@@ -11,6 +11,7 @@ const adminPaymentsController = require('../controllers/admin/payments');
 const adminWithdrawsController = require('../controllers/admin/withdraws');
 const adminSecKeysController = require('../controllers/admin/sec-keys');
 const adminRatesLimits = require('../controllers/admin/rates-limits');
+const adminSiteData = require('../controllers/admin/site-data');
 
 router.get('', isAuth, adminHomeControlller.home);
 router.get('/login', isAuth, adminLoginController.getAdminLogin);
@@ -33,5 +34,6 @@ router.get('/keys', isAuth, adminSecKeysController.secKeys);
 router.get('/get-keys', isAuth, adminSecKeysController.genKeys);
 router.get('/rates', isAuth, adminRatesLimits.getRatesLimits);
 router.post('/rates', isAuth, adminRatesLimits.postRatesLimits);
+router.get('/site-data', isAuth, adminSiteData.getSiteData);
 
 module.exports = router;

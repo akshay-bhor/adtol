@@ -1,0 +1,90 @@
+<%- include('includes/head.ejs') %>
+
+<div class="jumbotron">
+  <div class="container-md">
+    <% if(error) { %> <%- include('includes/err.ejs') %> <% } %>
+
+    <div id="app">
+      <h2>Categories</h2>
+      <form @submit.prevent @submit="fetchKeyPair()">
+        <div data-toggle="collapse" data-target="#catRow">Show Categories</div>
+        <div class="collapse" id="catRow">
+            <div class="row">
+                <% for(var i=0; i < data.cats.length; i++) { %>
+                    <div class="col-md-6"><%= data.cats[i].name%>&nbsp;&nbsp;<i class="fas fa-trash text-danger"></i></div>
+                <% } %>
+            </div>
+        </div>
+
+        <input
+          type="text"
+          id="cat"
+          rows="5"
+          :value="cat"
+          placeholder="Category Name"
+          name="cat"
+          class="form-control mb-3 mt-3"
+        />
+
+        <input
+          type="submit"
+          name="submit"
+          value="Add Category"
+          class="btn btn-primary btn-block mt-3"
+        />
+      </form>
+
+      
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/vue@next"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+  const keysApp = {
+    data() {
+      return {
+        private_key: null,
+        public_key: null,
+        hash_key: null,
+        aes_key: null
+      };
+    },
+    methods: {
+      async fetchKeyPair() {
+        try {
+          const res = await axios.get("/admin/get-keys?type=keyPair");
+          this.private_key = res.data.privateKey;
+          this.public_key = res.data.publicKey;
+        } catch (err) {
+          alert(err);
+          console.log(err);
+        }
+      },
+      async fetchHashKey() {
+        try {
+          const res = await axios.get("/admin/get-keys?type=hash");
+          this.hash_key = res.data.key;
+        } catch (err) {
+          alert(err);
+          console.log(err);
+        }
+      },
+      async fetchAESKey() {
+        try {
+          const res = await axios.get("/admin/get-keys?type=aes");
+          this.aes_key = res.data.key;
+        } catch (err) {
+          alert(err);
+          console.log(err);
+        }
+      },
+    },
+  };
+
+  Vue.createApp(keysApp).mount("#app");
+</script>
+
+<%- include('includes/end.ejs') %>
