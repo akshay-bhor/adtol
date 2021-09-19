@@ -35,5 +35,7 @@ router.get('/get-keys', isAuth, adminSecKeysController.genKeys);
 router.get('/rates', isAuth, adminRatesLimits.getRatesLimits);
 router.post('/rates', isAuth, adminRatesLimits.postRatesLimits);
 router.get('/site-data', isAuth, adminSiteData.getSiteData);
+router.post('/site-data', isAuth, adminSiteData.addSiteData);
+router.delete('/site-data', isAuth, adminSiteData.deleteSiteData);
 
 module.exports = router;

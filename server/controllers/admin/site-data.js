@@ -22,3 +22,35 @@ exports.getSiteData = async (req, res, next) => {
         })
     }
 }
+
+exports.addSiteData = async (req, res, next) => {
+    if(!req.userInfo || req.userInfo.rank != 1) {
+        res.redirect('/admin/login');
+        return;
+    }
+
+    try {
+        const result = await siteDataHelper.addSiteDataHelper(req);
+
+        res.status(200).json(result);
+
+    } catch(err) {
+        next(err);
+    }
+}
+
+exports.deleteSiteData = async (req, res, next) => {
+    if(!req.userInfo || req.userInfo.rank != 1) {
+        res.redirect('/admin/login');
+        return;
+    }
+
+    try {
+        const result = await siteDataHelper.deleteSiteDataHelper(req);
+
+        res.status(200).json(result);
+
+    } catch(err) {
+        next(err);
+    }
+}
