@@ -9,7 +9,8 @@ const formDataSlice = createSlice({
     timezones: [],
     devices: [],
     os: [],
-    browsers: []
+    browsers: [],
+    btns: []
   },
   reducers: {
     loadCountries(state, action) {
@@ -32,6 +33,9 @@ const formDataSlice = createSlice({
     },
     loadBrowsers(state, action) {
       state.browsers = action.payload
+    },
+    loadBtns(state, action) {
+      state.btns = action.payload
     }
   },
 });

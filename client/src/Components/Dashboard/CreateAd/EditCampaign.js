@@ -8,7 +8,7 @@ import {
 } from "../../../store/actions/formdata.action";
 import * as yup from "yup";
 import CampaignForm from "./CampaignForm";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Loading from "../../UI/Loading";
 import { weekDaysList } from "../../../constants/common";
 import { editCampaign, fetchCampaignData } from "../../../store/actions/campaigns.action";
@@ -32,7 +32,15 @@ const validationSchema = yup.object({
     .max(300, "Max length is 300"),
   url: yup.string().required("URL is required").url('Invalid URL, make sure to add https://'),
   timezone: yup.string().required('Timezone is required'),
-  cpc: yup.number().required('CPC is required').min(0.02, 'Min CPC is $0.01'),
+  rel: yup.number().optional(),
+  cpc: yup.number().required('CPC is required').when('rel', {
+    is: 1,
+    then: yup.number().min(0.03, 'Min CPC when DoFollow is $0.03')
+  })
+  .when('rel', {
+    is: (rel) => rel !== 1,
+    then: yup.number().min(0.02, 'Min CPC is $0.02')
+  }),
   budget: yup.number().required('Budget is required').min(1, 'Min budget is $1'),
   daily_budget: yup.number().required('Daily Budget is required').min(1, 'Min Daily Budget is $1'),
   adult: yup.boolean().required('Adult value is required'),
@@ -55,6 +63,7 @@ const EditCampaign = () => {
   const devices = useSelector((state) => state.formdata.devices);
   const os = useSelector((state) => state.formdata.os);
   const browsers = useSelector((state) => state.formdata.browsers);
+  const btns = useSelector((state) => state.formdata.btns);
   /**
    * End
    */
@@ -148,7 +157,7 @@ const EditCampaign = () => {
   }
 
   const getInitialData = () => {
-    return {
+    const initData = {
         campaign_name: campaignData.campaign_name,
         title: campaignData.title,
         desc: campaignData.desc,
@@ -159,6 +168,12 @@ const EditCampaign = () => {
         budget: campaignData.budget,
         daily_budget: campaignData.daily_budget
     };
+    if(type === 'campaign') {
+      initData.rel = campaignData.rel !== undefined ? campaignData.rel:1;
+      initData.btn = campaignData.btn || 0;
+    }
+
+    return initData;
   }
 
   const formDataFetched = useCallback(() => {
@@ -170,11 +185,12 @@ const EditCampaign = () => {
       devices.length > 0 &&
       os.length > 0 &&
       browsers.length > 0 &&
+      btns.length > 0 &&
       campaignData !== null
     )
       return true;
     else return false;
-  }, [timezones, categories, languages, countries, devices, os, browsers, campaignData]);
+  }, [timezones, categories, languages, countries, devices, os, browsers, btns, campaignData]);
 
   useEffect(() => {
     if(formDataFetched()) updateStates();
@@ -205,7 +221,7 @@ const EditCampaign = () => {
 
     dispatch(editCampaign(postData));
   }
-  console.log(categoryState);
+
   return (
     <Fragment>
       {!stateUpdated && <Loading />}

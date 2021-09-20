@@ -194,11 +194,13 @@
           }
           let date = timeConverter(d.time_unix);
           res += `
-                      <div class="float-right ml-3">
-                          <span class="font-weight-bold">Date</span><br>${date}
-                      </div>
-                      <div class="float-right ml-3">
-                          ${status} <br>
+                      <div class="float-right">
+                          <span class="ml-3">${status}</span>
+                          <span class="font-weight-bold ml-3">${date}</span>
+                          <br>
+                          <span role="button" class="text-success ml-3" onclick="cstatus(${d.id}, 1)">Approve</span>
+                          <span role="button" class="text-warning ml-1" onclick="cstatus(${d.id}, 2)">Pending</span>
+                          <span role="button" class="text-danger ml-1" onclick="cstatus(${d.id}, 3)">Reject</span>
                       </div>
                       <div class="float-right ml-3">
                         <span class="font-weight-bold">Fee</span><br>${d.fee}%
@@ -218,6 +220,32 @@
       res += `</div>`;
   
       $("#wd_list").html(res);
+    }
+
+    function cstatus(id, status) {
+      let confirmation = confirm('Are you sure?');
+  
+      if(!confirmation || isloading) return;
+      isloading = true
+  
+      $.ajax({
+        method: 'post',
+        url: '/admin/withdraws/change-status',
+        dataType: 'json',
+        data: {
+            id: id,
+            status: status
+        },
+        success: function(d) {
+          isloading = false;
+          getWdList();
+        },
+        error: function (jqXHR, exception) {
+          isloading = false;
+          var err = jscriptErr(jqXHR.status, exception);
+          alert(err);
+        },
+      });
     }
   
     function jscriptErr(status, exception) {

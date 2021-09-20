@@ -110,7 +110,7 @@ const User = sequelize.define('user', {
         allowNull: false,
         defaultValue: 0
     },
-    status: {
+    status: { // 1 active 2 banned
         type: DataTypes.TINYINT(1),
         defaultValue: 1
     },

@@ -39,6 +39,10 @@ const _formDataAPIRequest = (sendRequest, which) => {
         const browserData = data.data.browsers;
         dispatch(formDataActions.loadBrowsers(browserData));
       }
+      if(which.includes("Btns")) {
+        const btnsData = data.data.btns;
+        dispatch(formDataActions.loadBtns(btnsData));
+      }
       
     } catch (err) {
       dispatch(authActions.setLoading(false));
@@ -55,7 +59,7 @@ export const fetchWebsiteFormData = () => {
 }
 
 export const fetchCampaignFormData = () => {
-  return async (dispatch) => dispatch(_formDataAPIRequest(getCampaignFormData, ["Timezones", "Devices", "Os", "Browsers"]))
+  return async (dispatch) => dispatch(_formDataAPIRequest(getCampaignFormData, ["Timezones", "Devices", "Os", "Browsers", "Btns"]))
 }
 
 export const abortFormDataRequest = () => {

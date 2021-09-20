@@ -37,6 +37,8 @@ if(cluster.isMaster) {
     });
 }
 else {
+    // Static
+    app.use(express.static(__dirname + '/public'));
 
     // View Engine
     app.set('view engine', 'ejs');

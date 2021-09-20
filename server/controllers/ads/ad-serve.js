@@ -283,7 +283,7 @@ exports.adServe = async (req, res, next) => {
  */
 const executeUpdateQuery = async (table, day_unix, col, value, campaign, website, ad_uid, pub_uid) => {
     const incCount = 1;
-    return await sequelize.query(`UPDATE ${table} SET views = views + ${incCount} WHERE day_unix = ? AND ${col} = ? AND (campaign = ? OR website = ?) AND (ad_uid = ? OR pub_uid = ?)`, {
+    return sequelize.query(`UPDATE ${table} SET views = views + ${incCount} WHERE day_unix = ? AND ${col} = ? AND (campaign = ? OR website = ?) AND (ad_uid = ? OR pub_uid = ?)`, {
         type: QueryTypes.UPDATE,
         replacements: [day_unix, value, campaign, website, ad_uid, pub_uid]
     });

@@ -11,7 +11,7 @@ import {
 import { Form } from "formik";
 import { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
-import { weekDaysList } from "../../../constants/common";
+import { linkRelList, weekDaysList } from "../../../constants/common";
 import {
   MySelectField,
   MySwitchField,
@@ -90,6 +90,7 @@ export const CampaignForm = ({
   const devices = useSelector((state) => state.formdata.devices);
   const os = useSelector((state) => state.formdata.os);
   const browsers = useSelector((state) => state.formdata.browsers);
+  const btns = useSelector((state) => state.formdata.btns);
 
   const saveBanners = (bannerIds) => {
     setBanners(_ => bannerIds);
@@ -222,6 +223,31 @@ export const CampaignForm = ({
             label="Daily Budget"
             className={muiStyles.block}
           />
+          {type === "campaign" && (
+            <Fragment>
+              <MySelectField 
+                name="btn"
+                label="Button"
+                className={muiStyles.block}
+              >
+                {btns.map(item => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+              </MySelectField>
+              <MySelectField 
+                name="rel"
+                label="Follow"
+                className={muiStyles.block}
+              >
+                {linkRelList.map(item => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+              </MySelectField>
+            </Fragment>)}
           <MySwitchField
             name="adult"
             label="Adult"

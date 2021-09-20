@@ -15,6 +15,12 @@ exports.tinify = (str) => {
     return base62.encode(number); // no -> 7 char base62 -> upto 3 trillion combinations
 }
 
+exports.genSecretKey = (type = 'hmac', length = 96) => {
+    if(type === 'hmac') return crypto.generateKeySync('hmac', { length: length }).export().toString('hex');
+    if(type === 'aes') return crypto.generateKeySync('aes', { length: 128 }).export().toString('hex');
+    return;
+}
+
 exports.createUniquePaymentId = (prefix) => {
 
     // Create random integer
@@ -51,7 +57,7 @@ exports.extractHostname = (url) => {
 }
 
 executeQueryAsync = async (query) => {
-    return await sequelize.query(query, {
+    return sequelize.query(query, {
         type: QueryTypes.SELECT
     });
 }

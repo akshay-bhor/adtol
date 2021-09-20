@@ -155,7 +155,7 @@ exports.adminUserStatusChangeHelper = async (req) => {
         if (processedCamps.includes(cid)) balToAdd = 0;
         else processedCamps.push(cid);
         let cStatus = 3;
-        if (setStatus == 1) cStatus = 1;
+        // if (setStatus == 1) cStatus = 1;
         let setBudget = 0;
 
         // Create Match_Hash
@@ -187,7 +187,7 @@ exports.adminUserStatusChangeHelper = async (req) => {
 
       // Website status
       let wStatus = 3;
-      if (setStatus == 1) wStatus = 1;
+      // if (setStatus == 1) wStatus = 1;
       const webStatus = await sequelize.query(
         "UPDATE pub_sites SET status = ? WHERE uid = ? AND (status = 1 OR status = 3)",
         {

@@ -55,7 +55,7 @@ export default function TransferList(props) {
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
   
-  useEffect(() => { console.log('executed');
+  useEffect(() => {
     const values = right.map(item => +item.id); // Return only id from object [{id, name}]
     props.setState(_ => values);
   }, [right]);

@@ -1,0 +1,132 @@
+<%- include('includes/head.ejs') %>
+
+<div class="jumbotron">
+  <div class="container-md">
+    <% if(error) { %> <%- include('includes/err.ejs') %> <% } %>
+
+    <div id="app">
+      <form @submit.prevent @submit="fetchKeyPair()">
+        <label for="pub_key">Public Key</label>
+        <textarea
+          type="text"
+          id="pub_key"
+          rows="5"
+          :value="public_key"
+          name="pub_key"
+          onClick="this.select()"
+          class="form-control mb-3"
+          readonly
+        ></textarea>
+
+        <label for="priv_key">Private Key</label>
+        <textarea
+          type="text"
+          id="priv_key"
+          rows="10"
+          :value="private_key"
+          name="priv_key"
+          onClick="this.select()"
+          class="form-control mb-3"
+          readonly
+        ></textarea>
+
+        <input
+          type="submit"
+          name="submit"
+          value="Generate KeyPair"
+          class="btn btn-primary btn-block mt-3"
+        />
+      </form>
+
+      <form @submit.prevent @submit="fetchHashKey()" class="mt-5">
+        <label for="hash_key">Hash Key (96bit)</label>
+        <textarea
+          type="text"
+          id="hash_key"
+          rows="1"
+          :value="hash_key"
+          name="hash_key"
+          onClick="this.select()"
+          class="form-control mb-3"
+          readonly
+        ></textarea
+        ><input
+          type="submit"
+          name="submit"
+          value="Generate Hash Key"
+          class="btn btn-primary btn-block mt-3"
+        />
+      </form>
+
+      <form @submit.prevent @submit="fetchAESKey()" class="mt-5">
+        <label for="aes_key">AES Key (128bit)</label>
+        <textarea
+          type="text"
+          id="aes_key"
+          rows="1"
+          :value="aes_key"
+          name="aes_key"
+          onClick="this.select()"
+          class="form-control mb-3"
+          readonly
+        ></textarea
+        ><input
+          type="submit"
+          name="submit"
+          value="Generate AES Key"
+          class="btn btn-primary btn-block mt-3"
+        />
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/vue@next"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+  const keysApp = {
+    data() {
+      return {
+        private_key: null,
+        public_key: null,
+        hash_key: null,
+        aes_key: null
+      };
+    },
+    methods: {
+      async fetchKeyPair() {
+        try {
+          const res = await axios.get("/admin/get-keys?type=keyPair");
+          this.private_key = res.data.privateKey;
+          this.public_key = res.data.publicKey;
+        } catch (err) {
+          alert(err);
+          console.log(err);
+        }
+      },
+      async fetchHashKey() {
+        try {
+          const res = await axios.get("/admin/get-keys?type=hash");
+          this.hash_key = res.data.key;
+        } catch (err) {
+          alert(err);
+          console.log(err);
+        }
+      },
+      async fetchAESKey() {
+        try {
+          const res = await axios.get("/admin/get-keys?type=aes");
+          this.aes_key = res.data.key;
+        } catch (err) {
+          alert(err);
+          console.log(err);
+        }
+      },
+    },
+  };
+
+  Vue.createApp(keysApp).mount("#app");
+</script>
+
+<%- include('includes/end.ejs') %>

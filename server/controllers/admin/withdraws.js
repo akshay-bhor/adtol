@@ -38,11 +38,11 @@ exports.postWithdrawsList = async (req, res, next) => {
 
 exports.postChangeWithdrawStatus = async (req, res, next) => {
     if(!req.userInfo || req.userInfo.rank != 1) {
-        res.redirect('/admin.login');
+        res.redirect('/admin/login');
     }
 
     try {
-        const result = adminWithdrawHelper.adminChangeWithdrawsStatusHelper(req);
+        const result = await adminWithdrawHelper.adminChangeWithdrawsStatusHelper(req);
 
         res.status(200).json(result);
 

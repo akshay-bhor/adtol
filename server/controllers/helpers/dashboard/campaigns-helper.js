@@ -318,6 +318,10 @@ exports.manageCampaignHelper = async (req) => {
     await check('day').exists().trim().escape().isString().notEmpty().withMessage('Days are required').custom(adTargetingValidation).run(req);
     await check('timezone').exists().trim().isString().notEmpty().withMessage('Timezone is required').custom(timezoneValidation).run(req);
     if(req.body.btn) await check('btn').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Button').custom(btnValidation).run(req);
+    if(req.body.rel) await check('rel').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Follow').custom(val => {
+        if(val !== 0 || val !== 1 || val !== 2) throw new Error('Invalid value for Follow');
+        else return true;
+    })
     await check('cpc').exists().trim().escape().isFloat().notEmpty().withMessage('CPC is required').custom(adSettingsValidation).run(req);
     await check('adult').exists().trim().escape().isInt().notEmpty().withMessage('Adult is required')
     .custom(val => {
@@ -399,6 +403,7 @@ exports.manageCampaignHelper = async (req) => {
         campaign_obj.cpc = req.body.cpc;
         campaign_obj.adult = req.body.adult;
         campaign_obj.timezone = req.body.timezone;
+        campaign_obj.rel = req.body.rel || 0;
         campaign_obj.btn = req.body.btn || 0;
         campaign_obj.budget = req.body.budget;
         campaign_obj.budget_rem = (req.body.budget - req.body.daily_budget);
@@ -567,7 +572,7 @@ exports.getCampaignInfoHelper = async (req) => {
         const campaign_id = req.params.campid;
         const userid = req.userInfo.id;
         
-        const data = await sequelize.query('SELECT b.banner_id as banner_id, a.type as ad_type, c.campaign_title as campaign_name, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.day, c.timezone, c.btn, c.cpc, c.budget_rem as budget, c.today_budget as daily_budget, c.adult FROM campaigns c LEFT JOIN banners b ON c.id = b.campaign_id INNER JOIN ads a ON c.id = a.campaign_id WHERE c.id = ? AND c.uid = ? AND c.status != 4', {
+        const data = await sequelize.query('SELECT b.banner_id as banner_id, a.type as ad_type, c.campaign_title as campaign_name, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.day, c.timezone, c.rel, c.btn, c.cpc, c.budget_rem as budget, c.today_budget as daily_budget, c.adult FROM campaigns c LEFT JOIN banners b ON c.id = b.campaign_id INNER JOIN ads a ON c.id = a.campaign_id WHERE c.id = ? AND c.uid = ? AND c.status != 4', {
             type: QueryTypes.SELECT,
             replacements: [campaign_id, userid]
         });
@@ -762,16 +767,18 @@ exports.getCampaignFormDataHelper = async (req) => {
 
     try {
         const res = await Promise.all([
-            await Devices.findAll(),
-            await Os.findAll(),
-            await Browsers.findAll(),
-            await Timezones.findAll()
+            Devices.findAll(),
+            Os.findAll(),
+            Browsers.findAll(),
+            Timezones.findAll(),
+            Btns.findAll()
         ]);
 
         const devices = [];
         const os = [];
         const browsers = [];
         const timezones = [];
+        const btns = [];
 
         res[0].forEach(item => {
             devices.push({
@@ -798,11 +805,19 @@ exports.getCampaignFormDataHelper = async (req) => {
             timezones.push(timezone.dataValues.zone);
         });
 
+        res[4].forEach(item => {
+            btns.push({
+                id: +item.dataValues.id,
+                name: item.dataValues.name
+            });
+        });
+
         return {
             devices,
             os,
             browsers,
-            timezones
+            timezones,
+            btns
         };
 
     } catch(err) {
@@ -986,8 +1001,12 @@ const adSettingsValidation = async (value, { req, location, path }) => {
         const web_settings = await Settings.findOne();
 
         if(path === 'cpc') {
-            if(+value < +web_settings.dataValues.min_cpc) 
+            if(+value < +web_settings.dataValues.min_cpc) {
                 throw new Error(`Min CPC is $${web_settings.dataValues.min_cpc}`);
+            }
+            if(req.body.rel === 1 && +value < (+web_settings.dataValues.min_cpc + 0.01)) {
+                throw new Error(`Min CPC is $${(+web_settings.dataValues.min_cpc + 0.01)}`);
+            }
         }
         if(path === 'budget') {
             if(+value < +web_settings.dataValues.min_budget) {

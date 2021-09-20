@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const fs = require('fs');
 
-exports.genKeyPair = () => {
+exports.genKeyPair = (save = true) => {
     // Generate RSA public/private key-pair
     const keyPair = crypto.generateKeyPairSync('rsa', {
         modulusLength: 4096,
@@ -21,7 +21,15 @@ exports.genKeyPair = () => {
         }
     });
 
-    // Save it to files
-    fs.writeFileSync(__dirname + '/id_rsa_pub.pem', keyPair.publicKey);
-    fs.writeFileSync(__dirname + '/id_rsa_priv.pem', keyPair.privateKey);
+    if(save) {
+        // Save it to files
+        fs.writeFileSync(__dirname + '/id_rsa_pub.pem', keyPair.publicKey);
+        fs.writeFileSync(__dirname + '/id_rsa_priv.pem', keyPair.privateKey);
+    }
+    else {
+        return {
+            publicKey: keyPair.publicKey,
+            privateKey: keyPair.privateKey
+        }
+    }
 }

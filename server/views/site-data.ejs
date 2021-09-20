@@ -1,0 +1,295 @@
+<%- include('includes/head.ejs') %>
+
+<div class="jumbotron">
+  <div class="container-md">
+    <% if(error) { %> <%- include('includes/err.ejs') %> <% } %>
+
+    <div id="app">
+      <h2>Categories</h2>
+      <form @submit.prevent @submit="addSiteData('category')">
+        <div data-toggle="collapse" data-target="#catRow" style="cursor:pointer;">Show Categories</div>
+        <div class="collapse" id="catRow">
+            <ul class="list-group">
+                <% for(var i=0; i < data.cats.length; i++) { %>
+                    <li class="list-group-item"><%= data.cats[i].name %>
+                      &nbsp;&nbsp;
+                      <i class="fas fa-trash text-danger" style="cursor: pointer;" @click="deleteSiteData('category', '<%= data.cats[i].id %>')"></i>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+
+        <input
+          type="text"
+          id="cat"
+          v-model="cat"
+          placeholder="Category Name"
+          name="cat"
+          class="form-control mb-3 mt-3"
+        />
+
+        <input
+          type="submit"
+          name="submit"
+          value="Add Category"
+          class="btn btn-primary btn-block mt-3"
+        />
+      </form>
+
+      <h2 class="mt-5">OS</h2>
+      <form @submit.prevent @submit="addSiteData('os')">
+        <div data-toggle="collapse" data-target="#osRow" style="cursor:pointer;">Show OS</div>
+        <div class="collapse" id="osRow">
+            <ul class="list-group">
+                <% for(var i=0; i < data.os.length; i++) { %>
+                    <li class="list-group-item"><%= data.os[i].name %>&nbsp;<%= data.os[i].version %>
+                      &nbsp;&nbsp;
+                      <i class="fas fa-trash text-danger" style="cursor: pointer;" @click="deleteSiteData('os', '<%= data.os[i].id %>')"></i>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+
+        <div data-toggle="collapse" data-target="#osNames" style="cursor:pointer;">Show Possible OS</div>
+        <div class="collapse" id="osNames">
+          AIX, Amiga OS, Android, Arch, Bada, BeOS, BlackBerry, CentOS, Chromium OS,
+          Contiki, Fedora, Firefox OS, FreeBSD, Debian, DragonFly, Fuchsia, Gentoo, GNU,
+          Haiku, Hurd, iOS, Joli, KaiOS, Linpus, Linux, Mac OS, Mageia, Mandriva, MeeGo,
+          Minix, Mint, Morph OS, NetBSD, Nintendo, OpenBSD, OpenVMS, OS/2, Palm, PC-BSD,
+          PCLinuxOS, Plan9, PlayStation, QNX, Raspbian, RedHat, RIM Tablet OS, RISC OS,
+          Sailfish, Series40, Slackware, Solaris, SUSE, Symbian, Tizen, Ubuntu, Unix, 
+          VectorLinux, WebOS, Windows [Phone/Mobile], Zenwalk<br>
+          <code>OS Version is determined dynamically</code>
+        </div>
+
+        <div class="row">
+          <input
+            type="text"
+            id="os"
+            v-model="os"
+            placeholder="Windows"
+            name="os"
+            class="form-control mb-3 mt-3 col-md-6"
+          />
+          <input
+            type="number"
+            step="0.01"
+            id="os_version"
+            v-model="os_version"
+            placeholder="10"
+            name="os_version"
+            class="form-control mb-3 mt-3 col-md-6"
+          />
+        </div>
+
+        <input
+          type="submit"
+          name="submit"
+          value="Add OS"
+          class="btn btn-primary btn-block mt-3"
+        />
+      </form>
+
+      <h2 class="mt-5">Browsers</h2>
+      <form @submit.prevent @submit="addSiteData('browser')">
+        <div data-toggle="collapse" data-target="#browserRow" style="cursor:pointer;">Show Browsers</div>
+        <div class="collapse" id="browserRow">
+            <ul class="list-group">
+                <% for(var i=0; i < data.browsers.length; i++) { %>
+                    <li class="list-group-item"><%= data.browsers[i].name %>
+                      &nbsp;&nbsp;
+                      <i class="fas fa-trash text-danger" style="cursor: pointer;" @click="deleteSiteData('browser', '<%= data.browsers[i].id %>')"></i>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+
+        <div data-toggle="collapse" data-target="#browserNames" style="cursor:pointer;">Show Possible Browsers</div>
+        <div class="collapse" id="browserNames">
+          2345Explorer, 360 Browser, Amaya, Android Browser, Arora, Avant, Avast, AVG,
+          BIDUBrowser, Baidu, Basilisk, Blazer, Bolt, Brave, Bowser, Camino, Chimera,
+          Chrome Headless, Chrome WebView, Chrome, Chromium, Comodo Dragon, Dillo,
+          Dolphin, Doris, Edge, Electron, Epiphany, Facebook, Falkon, Fennec, Firebird,
+          Firefox [Reality], Flock, Flow, GSA, GoBrowser, ICE Browser, IE, IEMobile, IceApe, 
+          IceCat, IceDragon, Iceweasel, Instagram, Iridium, Iron, Jasmine, K-Meleon,
+          Kindle, Konqueror, LBBROWSER, Line, Links, Lunascape, Lynx, MIUI Browser,
+          Maemo Browser, Maemo, Maxthon, MetaSr Midori, Minimo, Mobile Safari, Mosaic,
+          Mozilla, NetFront, NetSurf, Netfront, Netscape, NokiaBrowser, Oculus Browser,
+          OmniWeb, Opera Coast, Opera [Mini/Mobi/Tablet], PaleMoon, PhantomJS, Phoenix, 
+          Polaris, Puffin, QQ, QQBrowser, QQBrowserLite, Quark, QupZilla, RockMelt, Safari, 
+          Sailfish Browser, Samsung Browser, SeaMonkey, Silk, Skyfire, Sleipnir, Slim, 
+          SlimBrowser, Swiftfox, Tesla, Tizen Browser, UCBrowser, Vivaldi, Waterfox, WeChat,
+          Weibo, Yandex, baidu, iCab, w3m, Whale Browser
+        </div>
+
+        <input
+          type="text"
+          id="browser"
+          v-model="browser"
+          placeholder="Chrome"
+          name="browser"
+          class="form-control mb-3 mt-3"
+        />
+
+        <input
+          type="submit"
+          name="submit"
+          value="Add browser"
+          class="btn btn-primary btn-block mt-3"
+        />
+      </form>
+
+      <h2 class="mt-5">Languages</h2>
+      <form @submit.prevent @submit="addSiteData('language')">
+        <div data-toggle="collapse" data-target="#langRow" style="cursor:pointer;">Show Languages</div>
+        <div class="collapse" id="langRow">
+            <ul class="list-group">
+                <% for(var i=0; i < data.languages.length; i++) { %>
+                    <li class="list-group-item"><%= data.languages[i].name %>
+                      &nbsp;&nbsp;
+                      <i class="fas fa-trash text-danger" style="cursor: pointer;" @click="deleteSiteData('language', '<%= data.languages[i].id %>')"></i>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+
+        <input
+          type="text"
+          id="lang"
+          v-model="lang"
+          placeholder="Spanish"
+          name="lang"
+          class="form-control mb-3 mt-3"
+        />
+
+        <input
+          type="submit"
+          name="submit"
+          value="Add Language"
+          class="btn btn-primary btn-block mt-3"
+        />
+      </form>
+
+      <h2 class="mt-5">Timezones</h2>
+      <form @submit.prevent @submit="addSiteData('tz')">
+        <div data-toggle="collapse" data-target="#tzRow" style="cursor:pointer;">Show Timezones</div>
+        <div class="collapse" id="tzRow">
+            <ul class="list-group">
+                <% for(var i=0; i < data.timezones.length; i++) { %>
+                    <li class="list-group-item"><%= data.timezones[i].zone %>
+                      &nbsp;&nbsp;
+                      <i class="fas fa-trash text-danger" style="cursor: pointer;" @click="deleteSiteData('tz', '<%= data.timezones[i].id %>')"></i>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+
+        <input
+          type="text"
+          id="tz"
+          v-model="tz"
+          placeholder="Asia/Kolkata"
+          name="tz"
+          class="form-control mb-3 mt-3"
+        />
+
+        <input
+          type="submit"
+          name="submit"
+          value="Add Timezone"
+          class="btn btn-primary btn-block mt-3"
+        />
+      </form>
+
+      <h2 class="mt-5">Banner Sizes</h2>
+      <form @submit.prevent @submit="addSiteData('banner_size')">
+        <div data-toggle="collapse" data-target="#bsRow" style="cursor:pointer;">Show Banner Sizes</div>
+        <div class="collapse" id="bsRow">
+            <ul class="list-group">
+                <% for(var i=0; i < data.banner_sizes.length; i++) { %>
+                    <li class="list-group-item"><%= data.banner_sizes[i].size %>
+                      &nbsp;&nbsp;
+                      <i class="fas fa-trash text-danger" style="cursor: pointer;" @click="deleteSiteData('banner_size', '<%= data.banner_sizes[i].id %>')"></i>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+
+        <input
+          type="text"
+          id="banner_size"
+          v-model="banner_size"
+          placeholder="300x250"
+          name="banner_size"
+          class="form-control mb-3 mt-3"
+        />
+
+        <input
+          type="submit"
+          name="submit"
+          value="Add Banner Size"
+          class="btn btn-primary btn-block mt-3"
+        />
+      </form>
+
+      
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/vue@next"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+  const keysApp = {
+    data() {
+      return {
+        cat: null,
+        os: null,
+        os_version: null,
+        browser: null,
+        lang: null,
+        tz: null,
+        banner_size: null
+      };
+    },
+    methods: {
+      async addSiteData(type) {
+        try {
+          const postData = {}
+          if(type == 'category') postData.category = this.cat;
+          if(type == 'os') {
+            postData.os = this.os;
+            postData.version = this.os_version;
+          }
+          if(type == 'browser') postData.browser = this.browser;
+          if(type == 'language') postData.language = this.lang;
+          if(type == 'tz') postData.tz = this.tz;
+          if(type == 'banner_size') postData.banner_size = this.banner_size;
+          const res = await axios.post(`/admin/site-data?type=${type}`, postData);
+          alert(res.data.msg);
+          location.reload();
+        } catch (err) {
+          alert(err);
+          console.log(err);
+        }
+      },
+      async deleteSiteData(type, id) {
+        try {
+          const hasConfirm = confirm('Deleting this data could break crucial site functions! Are you sure?');
+          if(!hasConfirm) return;
+          const res = await axios.delete(`/admin/site-data?type=${type}&id=${id}`);
+          alert(res.data.msg);
+          location.reload();
+        } catch (err) {
+          alert(err);
+          console.log(err);
+        }
+      },
+    },
+  };
+
+  Vue.createApp(keysApp).mount("#app");
+</script>
+
+<%- include('includes/end.ejs') %>
