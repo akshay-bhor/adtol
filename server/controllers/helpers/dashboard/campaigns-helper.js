@@ -899,7 +899,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes) => 
             }
         }
 
-        const has_widget = false;
+        let has_widget = false;
         for(let user_banner of user_banners) {
             if(user_banner.dataValues.size === widget_banner_id) {
                 has_widget = true;
