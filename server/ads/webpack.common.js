@@ -1,4 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require('webpack'); 
+
+require('dotenv').config(); 
 
 module.exports = {
     entry: {
@@ -30,6 +33,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: 'index.html',
             inject: 'body'
-        })
+        }),
+        new webpack.DefinePlugin({
+            "process.env": JSON.stringify(process.env)
+        }),
     ]
 }

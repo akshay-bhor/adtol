@@ -1,4 +1,4 @@
-const baseURL = "https://dev.adtol.com";
+const baseURL = process.env.ORIGIN;
 
 const randomId = (length) => {
   let result = [];

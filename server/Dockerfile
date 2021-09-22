@@ -12,6 +12,12 @@ RUN npm install -g sequelize-cli
 
 COPY . .
 
+RUN cd ads/ && npm install && npm run build
+
+COPY ./ads/dist ./public/js/
+
+RUN cd ..
+
 EXPOSE 4000
 
 COPY ./docker-entrypoint-prod.sh /docker-entrypoint-prod.sh
