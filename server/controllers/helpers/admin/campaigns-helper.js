@@ -190,3 +190,35 @@ exports.getCampaignBannersHelper = async (req) => {
         throw err;
     }
 }
+
+exports.getToggleProHelper = async (req) => {
+    if (!req.userInfo || req.userInfo.rank != 1) {
+        const err = new Error("Not allowed!");
+        err.statusCode = 401;
+        throw err;
+    }
+
+    try {
+        const campid = req.query.id;
+
+        const campInfo = await sequelize.query('SELECT pro FROM campaigns WHERE id = ?', {
+            type: QueryTypes.SELECT,
+            replacements: [campid]
+        });
+
+        const pro = campInfo[0].pro === 1 ? 0:1;
+
+        const update = await sequelize.query('UPDATE campaigns SET pro = ? WHERE id = ?', {
+            type: QueryTypes.UPDATE,
+            replacements: [pro, campid]
+        });
+
+        return {
+            msg: 'success'
+        }
+
+    } catch (err) {
+        if (!err.statusCode) err.statusCode = 500;
+        throw err;
+    }
+}

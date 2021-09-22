@@ -68,3 +68,19 @@ exports.getCampaignBanners = async (req, res, next) => {
         next(err);
     }
 }
+
+exports.getTogglePro = async (req, res, next) => {
+    if(!req.userInfo || req.userInfo.rank != 1) {
+        res.redirect('/admin/login');
+        return;
+    }
+
+    try {
+        const result = await campaignsDataHelper.getToggleProHelper(req);
+
+        res.status(200).json(result);
+
+    } catch(err) {
+        next(err);
+    }
+}

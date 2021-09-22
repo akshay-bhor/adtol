@@ -79,7 +79,11 @@
                         <td>
                             <span class="badge" :class="{ 'badge-danger': res.adult == 'Adult', 'badge-success':res.adult == 'Non-Adult' }">{{res.adult}}</span><br>
                             <span class="badge badge-primary">{{res.campaign_type}}</span><br>
-                            <span class="badge" :class="{ 'badge-danger': res.pro == 1, 'badge-success': res.pro == 0 }">{{res.pro ? 'Pro':'Non-Pro'}}</span>
+                            <span class="badge"
+                              style="cursor: pointer;"
+                              :class="{ 'badge-danger': res.pro == 1, 'badge-success': res.pro == 0 }"
+                              @click="togglePro(res.id)"
+                            >{{res.pro ? 'Pro':'Non-Pro'}}</span>
                         </td>
                         <td>
                             <span class="badge" :class="{ 
@@ -199,6 +203,18 @@
                     this.banners = [];
                     const res = await axios.get(`/admin/campaigns/banners?id=${id}`);
                     this.banners = res.data;
+                } catch (err) {
+                    alert(err);
+                    console.log(err);
+                }
+            },
+            async togglePro(id) {
+              const cValue = confirm('Are you sure?');
+              if(!cValue) return;
+              try {
+                    const res = await axios.get(`/admin/campaigns/toggle-pro?id=${id}`);
+                    alert('Success');
+                    this.fetchCampaigns();
                 } catch (err) {
                     alert(err);
                     console.log(err);

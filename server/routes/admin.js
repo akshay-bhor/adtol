@@ -42,5 +42,6 @@ router.get('/campaigns', isAuth, adminCampaignsData.getCampaignsData);
 router.post('/campaigns', isAuth, adminCampaignsData.postCampaignsData);
 router.post('/campaigns/set-status', isAuth, adminCampaignsData.setCampaignStatus);
 router.get('/campaigns/banners', isAuth, adminCampaignsData.getCampaignBanners);
+router.get('/campaigns/toggle-pro', isAuth, adminCampaignsData.getTogglePro);
 
 module.exports = router;
