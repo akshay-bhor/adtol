@@ -19,8 +19,6 @@ services:
             - "host.docker.internal:host-gateway"
         volumes: 
             - /server/node_modules
-            - /server/ads/dist
-            - /server/public
             - ./server:/server
         ports: 
             - "4000:4000"
