@@ -4,6 +4,7 @@ const Os = require("../../../models/os");
 const Timezones = require("../../../models/timezones");
 const Banner_Sizes = require("../../../models/banner_sizes");
 const Languages = require("../../../models/languages");
+const Btns = require("../../../models/btn");
 const sequelize = require("../../../utils/db");
 const { QueryTypes } = require("sequelize");
 
@@ -70,13 +71,23 @@ exports.getSiteDataHelper = async (req) => {
             }
         });
 
+        // Get Btns
+        const btnData = await Btns.findAll();
+        const btns = btnData.map(data => {
+            return {
+                id: data.dataValues.id,
+                name: data.dataValues.name
+            }
+        });
+
         return {
             cats,
             os,
             browsers,
             languages,
             timezones,
-            banner_sizes
+            banner_sizes,
+            btns
         }
 
     } catch (err) {
@@ -186,6 +197,21 @@ exports.addSiteDataHelper = async (req) => {
             });
         }
 
+        if(type == 'button') {
+            // Get max id
+            const query = await sequelize.query('SELECT id FROM btns ORDER BY id DESC LIMIT 1', {
+                type: QueryTypes.SELECT,
+                mapToModel: Btns
+            });
+            const maxId = query[0].id;
+            const newId = (maxId + 1);
+
+            await Btns.create({
+                id: newId,
+                name: req.body.button
+            });
+        }
+
         return {
             msg: 'success'
         }
@@ -248,6 +274,14 @@ exports.deleteSiteDataHelper = async (req) => {
 
         if(type == 'banner_size') {
             await Banner_Sizes.destroy({
+                where: {
+                    id: id
+                }
+            });
+        }
+
+        if(type == 'button') {
+            await Btns.destroy({
                 where: {
                     id: id
                 }
