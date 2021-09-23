@@ -232,6 +232,37 @@
         />
       </form>
 
+      <h2 class="mt-5">Buttons</h2>
+      <form @submit.prevent @submit="addSiteData('button')">
+        <div data-toggle="collapse" data-target="#btnRow" style="cursor:pointer;">Show Buttons</div>
+        <div class="collapse" id="btnRow">
+            <ul class="list-group">
+                <% for(var i=0; i < data.btns.length; i++) { %>
+                    <li class="list-group-item"><%= data.btns[i].name %>
+                      &nbsp;&nbsp;
+                      <i class="fas fa-trash text-danger" style="cursor: pointer;" @click="deleteSiteData('button', '<%= data.btns[i].id %>')"></i>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+
+        <input
+          type="text"
+          id="button"
+          v-model="button"
+          placeholder="Buy Now"
+          name="button"
+          class="form-control mb-3 mt-3"
+        />
+
+        <input
+          type="submit"
+          name="submit"
+          value="Add Button"
+          class="btn btn-primary btn-block mt-3"
+        />
+      </form>
+
       
     </div>
   </div>
@@ -250,7 +281,8 @@
         browser: null,
         lang: null,
         tz: null,
-        banner_size: null
+        banner_size: null,
+        button: null
       };
     },
     methods: {
@@ -266,6 +298,7 @@
           if(type == 'language') postData.language = this.lang;
           if(type == 'tz') postData.tz = this.tz;
           if(type == 'banner_size') postData.banner_size = this.banner_size;
+          if(type == 'button') postData.button = this.button;
           const res = await axios.post(`/admin/site-data?type=${type}`, postData);
           alert(res.data.msg);
           location.reload();
