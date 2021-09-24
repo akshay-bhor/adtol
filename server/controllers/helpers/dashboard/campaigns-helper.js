@@ -47,7 +47,7 @@ exports.campaignsHelper = async(req) => {
         campaigns.forEach(data => {
             let campData = {};
             campData.id = data.id;
-            campData.name = data.campaign_title;
+            campData.name = decodeURI(data.campaign_title);
             campData.cpc = data.cpc;
             campData.views = data.views;
             campData.clicks = data.clicks;
@@ -598,6 +598,9 @@ exports.getCampaignInfoHelper = async (req) => {
 
         // Modify resposne
         delete campaignData.banner_id;
+        campaignData.title = decodeURI(campaignData.title);
+        campaignData.campaign_name = decodeURI(campaignData.campaign_name);
+        campaignData.desc = decodeURI(campaignData.desc);
         campaignData.banners = banner_ids;
         campaignData.category = campaignData.category.split('|').map(d => +d);
         campaignData.country = campaignData.country.split('|').map(d => +d);

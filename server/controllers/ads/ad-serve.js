@@ -1,6 +1,6 @@
 const psl = require('psl');
 const { QueryTypes } = require('sequelize');
-const { tinify, extractHostname } = require('../../common/util');
+const { tinify, extractHostname, extractURL } = require('../../common/util');
 const sequelize = require('../../utils/db');
 const Pub_Sites = require('../../models/publisher_sites');
 const { encryptAES } = require('../../common/encrypt');
@@ -48,12 +48,12 @@ exports.adServe = async (req, res, next) => {
         
         // Construct domain hash from ref url
         const match_hash = req.match_hash;
-        const ref_url = extractHostname(req.get('Referrer'));
+        const ref_url = extractURL(req.get('Referrer'));
         const origin = extractHostname(req.get('origin'));
         // const ref_url = "https://example.com/test.html".split('//')[1];
         // const origin = "https://example.com".split('//')[1];
         let parsed = psl.parse(origin); 
-        const domain = parsed.domain; console.log(domain);
+        const domain = parsed.domain;
         const domain_hash = tinify(domain);
 
         // Match domain hash with token hash

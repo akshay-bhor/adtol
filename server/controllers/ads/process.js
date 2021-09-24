@@ -2,7 +2,7 @@ const { decryptAES } = require("../../common/encrypt");
 const Campaigns = require("../../models/campaigns");
 const Pub_Sites = require("../../models/publisher_sites");
 const psl = require('psl');
-const { tinify, extractHostname } = require("../../common/util");
+const { tinify, extractHostname, extractURL } = require("../../common/util");
 const Clicks = require("../../models/clicks");
 const sequelize = require("../../utils/db");
 const { QueryTypes } = require("sequelize");
@@ -27,7 +27,7 @@ exports.processClick = async (req, res, next) => {
         // Validate Type
         if(tData.type != 'serve') {
             // Redirect to adtol
-            res.redirect('https://' + req.get('host'));
+            res.redirect(process.env.ORIGIN);
             res.end();
             return next();
         } 
@@ -40,7 +40,7 @@ exports.processClick = async (req, res, next) => {
         // Check time validity
         if(time_unix > tData.time_unix) {
             // Redirect to adtol
-            res.redirect('https://' + req.get('host'));
+            res.redirect(process.env.ORIGIN);
             res.end();
             return next();
         }
@@ -50,8 +50,14 @@ exports.processClick = async (req, res, next) => {
         const userData = tData.userData; 
 
         // Create domain hash
-        const ref_url = extractHostname(req.get('Referrer'));
-        const origin = extractHostname(req.get('origin'));
+        const ref_url = extractURL(req.get('Referrer')) || null;
+        // If ref url null
+        if(!ref_url) {
+            res.redirect(process.env.ORIGIN);
+            res.end();
+            return next();
+        }
+        const origin = extractHostname(ref_url);
         // const ref_url = "https://example.com/test.html".split('//')[1];
         // const origin = "https://example.com".split('//')[1];
         let parsed = psl.parse(origin);
@@ -73,7 +79,7 @@ exports.processClick = async (req, res, next) => {
         // Check if campaign and publisher exist (this will never happen)
         if(campData == null || pubData == null) {
             // Redirect to adtol
-            res.redirect('https://' + req.get('host'));
+            res.redirect(process.env.ORIGIN);
             res.end();
             return next();
         }
@@ -142,7 +148,7 @@ exports.processClick = async (req, res, next) => {
         }
 
         // Redirect to ad url
-        res.redirect('http://' + ad_url);
+        res.redirect(ad_url);
         res.end();
 
         // If NOT adValidClick then we don't count anything

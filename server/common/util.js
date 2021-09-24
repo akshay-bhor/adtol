@@ -38,7 +38,7 @@ exports.createUniquePaymentId = (prefix) => {
 }
 
 exports.extractHostname = (url) => {
-    var hostname;
+    let hostname;
     //find & remove protocol (http, ftp, etc.) and get hostname
 
     if (url.indexOf("//") > -1) {
@@ -54,6 +54,23 @@ exports.extractHostname = (url) => {
     hostname = hostname.split('?')[0];
 
     return hostname;
+}
+
+exports.extractURL = (url) => {
+    let hosturl;
+    //find & remove protocol (http, ftp, etc.) and get hostname
+
+    if (url.indexOf("//") > -1) {
+        hosturl = url.split('//')[1];
+    }
+    else {
+        hosturl = url;
+    }
+    
+    //find & remove "?"
+    hosturl = hosturl.split('?')[0];
+
+    return hosturl;
 }
 
 executeQueryAsync = async (query) => {
