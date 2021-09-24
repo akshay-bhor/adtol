@@ -11,7 +11,8 @@ const parent = currScript.parentNode;
 // Check if parent is hidden
 if (!isHidden(parent)) {
   // Get token
-  const token = currScript.getAttribute("id");
+  const scriptId = currScript.getAttribute("id");
+  const token = window[`adtol_ad_client_${scriptId}`];
 
   // Create element
   let childEle = document.createElement("div");

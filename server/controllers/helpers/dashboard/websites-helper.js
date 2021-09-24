@@ -315,6 +315,10 @@ exports.getAdcodeHelper = async (req) => {
         const webid = req.body.webid;
         let adult = req.body.adult ? 1:0;
 
+        // Script extension based on env
+        let scriptEXT = 'js';
+        if(process.env.NODE_ENV === 'development') scriptEXT = 'dev.js';
+
         // Check ownershipt and get data
         const webInfo = await Pub_Sites.findOne({ where: { uid: userid, id: webid }, attributes: ['hash', 'category', 'language', 'adult', 'status'] });
         
@@ -363,7 +367,7 @@ exports.getAdcodeHelper = async (req) => {
             bannerAdCodes[b.size] = `<script type="text/javascript">
                 var adtol_ad_client_${randId} = '${code}';
             </script>
-            <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/banner.js" async defer></script>`;
+            <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/banner.${scriptEXT}" async defer></script>`;
         });
         bannerAdCodes = {...bannerAdCodes};
 
@@ -376,7 +380,7 @@ exports.getAdcodeHelper = async (req) => {
         const textAdCode = `<script type="text/javascript">
             var adtol_ad_client_${randId} = '${code}';
         </script>
-        <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/text.js" async defer></script>`;
+        <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/text.${scriptEXT}" async defer></script>`;
 
         // Create Ad Code for native ad
         webInfoObj.ad_type = 3;
@@ -394,7 +398,7 @@ exports.getAdcodeHelper = async (req) => {
         const nativeAdCode = `<script type="text/javascript">
             var adtol_ad_client_${randId} = '${code}';
         </script>
-        <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/native.js" async defer></script>`;
+        <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/native.${scriptEXT}" async defer></script>`;
 
         // Create Ad Code for pop ad
         webInfoObj.ad_type = 5;
@@ -405,7 +409,7 @@ exports.getAdcodeHelper = async (req) => {
         const popAdCode = `<script type="text/javascript">
             var adtol_ad_client_${randId} = '${code}';
         </script>
-        <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/pop.js" async defer></script>`;
+        <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/pop.${scriptEXT}" async defer></script>`;
 
         // Create Ad Code for feed ad
         webInfoObj.ad_type = 4;
@@ -417,7 +421,7 @@ exports.getAdcodeHelper = async (req) => {
         const feedAdCode = `<script type="text/javascript">
             var adtol_ad_client_${randId} = '${code}';
         </script>
-        <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/feed.js" async defer></script>`;
+        <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/feed.${scriptEXT}" async defer></script>`;
 
 
         // Return

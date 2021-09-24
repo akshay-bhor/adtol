@@ -109,7 +109,8 @@ function makePopunder(pUrl) {
 const currScript = document.currentScript;
 
 
-  // Get token
-const token = currScript.getAttribute("id");
+// Get token
+const scriptId = currScript.getAttribute("id");
+const token = window[`adtol_ad_client_${scriptId}`];
 
 makePopunder(`${baseURL}/api/ads/pop/${token}`);    
