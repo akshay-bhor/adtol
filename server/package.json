@@ -23,7 +23,7 @@
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-validator": "^6.9.2",
-    "geoip-country": "^4.0.56",
+    "geoip-country": "^4.0.87",
     "google-auth-library": "^7.0.4",
     "helmet": "^4.6.0",
     "image-size": "^1.0.0",
