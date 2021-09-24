@@ -398,7 +398,7 @@ exports.forgetPassHelper = async (req) => {
             html: `
                 <p>We received a password reset request for your account associated with this email.
                 Click below to reset your password</p>
-                <a href="https://${process.env.ORIGIN}/reset-password/${rand}" 
+                <a href="${process.env.ORIGIN}/reset-password/${rand}" 
                 style="box-sizing:border-box;-webkit-appearance:none;-moz-appearance:none;appearance:none;
                 background-color:#3f51b5;border-radius:4px;
                 color:#fff;cursor:pointer;display:inline-block;font-size:14px;font-weight:400;

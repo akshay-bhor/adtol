@@ -367,7 +367,7 @@ exports.getAdcodeHelper = async (req) => {
             bannerAdCodes[b.size] = `<script type="text/javascript">
                 var adtol_ad_client_${randId} = '${code}';
             </script>
-            <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/banner.${scriptEXT}" async defer></script>`;
+            <script id="${randId}" type="text/javascript" src="${process.env.ORIGIN}/js/banner.${scriptEXT}" async defer></script>`;
         });
         bannerAdCodes = {...bannerAdCodes};
 
@@ -380,7 +380,7 @@ exports.getAdcodeHelper = async (req) => {
         const textAdCode = `<script type="text/javascript">
             var adtol_ad_client_${randId} = '${code}';
         </script>
-        <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/text.${scriptEXT}" async defer></script>`;
+        <script id="${randId}" type="text/javascript" src="${process.env.ORIGIN}/js/text.${scriptEXT}" async defer></script>`;
 
         // Create Ad Code for native ad
         webInfoObj.ad_type = 3;
@@ -398,7 +398,7 @@ exports.getAdcodeHelper = async (req) => {
         const nativeAdCode = `<script type="text/javascript">
             var adtol_ad_client_${randId} = '${code}';
         </script>
-        <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/native.${scriptEXT}" async defer></script>`;
+        <script id="${randId}" type="text/javascript" src="${process.env.ORIGIN}/js/native.${scriptEXT}" async defer></script>`;
 
         // Create Ad Code for pop ad
         webInfoObj.ad_type = 5;
@@ -409,7 +409,7 @@ exports.getAdcodeHelper = async (req) => {
         const popAdCode = `<script type="text/javascript">
             var adtol_ad_client_${randId} = '${code}';
         </script>
-        <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/pop.${scriptEXT}" async defer></script>`;
+        <script id="${randId}" type="text/javascript" src="${process.env.ORIGIN}/js/pop.${scriptEXT}" async defer></script>`;
 
         // Create Ad Code for feed ad
         webInfoObj.ad_type = 4;
@@ -421,7 +421,7 @@ exports.getAdcodeHelper = async (req) => {
         const feedAdCode = `<script type="text/javascript">
             var adtol_ad_client_${randId} = '${code}';
         </script>
-        <script id="${randId}" type="text/javascript" src="https://${process.env.ORIGIN}/js/feed.${scriptEXT}" async defer></script>`;
+        <script id="${randId}" type="text/javascript" src="${process.env.ORIGIN}/js/feed.${scriptEXT}" async defer></script>`;
 
 
         // Return
