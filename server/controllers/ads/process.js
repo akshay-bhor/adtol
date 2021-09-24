@@ -50,10 +50,10 @@ exports.processClick = async (req, res, next) => {
         const userData = tData.userData; 
 
         // Create domain hash
-        // const ref_url = req.get('Referrer').split('//')[1];
-        // const origin = req.get('origin').split('//')[1];
-        const ref_url = "https://example.com/test.html".split('//')[1];
-        const origin = "https://example.com".split('//')[1];
+        const ref_url = extractHostname(req.get('Referrer'));
+        const origin = extractHostname(req.get('origin'));
+        // const ref_url = "https://example.com/test.html".split('//')[1];
+        // const origin = "https://example.com".split('//')[1];
         let parsed = psl.parse(origin);
         const domain = parsed.domain;
         const domain_hash = tinify(domain);

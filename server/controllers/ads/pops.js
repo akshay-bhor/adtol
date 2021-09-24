@@ -2,7 +2,7 @@ const Campaigns = require("../../models/campaigns");
 const Pub_Sites = require("../../models/publisher_sites");
 const Pops = require("../../models/pops");
 const psl = require('psl');
-const { tinify } = require("../../common/util");
+const { tinify, extractHostname } = require("../../common/util");
 const sequelize = require("../../utils/db");
 const { QueryTypes } = require("sequelize");
 const User = require("../../models/users");
@@ -30,12 +30,12 @@ exports.processPop = async (req, res, next) => {
         const ad_hash = req.webInfo.ad_hash;
         
         // Create match_hash bot|status|type|adult|run
-        let match_hash = req.match_hash;
+        const match_hash = req.match_hash;
         // Construct domain hash
-        // const ref_url = req.get('Referrer').split('//')[1];
-        // const origin = req.get('origin').split('//')[1];
-        const ref_url = "https://example.com/test.html".split('//')[1];
-        const origin = "https://example.com".split('//')[1];
+        const ref_url = extractHostname(req.get('Referrer'));
+        const origin = extractHostname(req.get('origin'));
+        // const ref_url = "https://example.com/test.html".split('//')[1];
+        // const origin = "https://example.com".split('//')[1];
         let parsed = psl.parse(origin);
         const domain = parsed.domain;
         const domain_hash = tinify(domain);
