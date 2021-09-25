@@ -22,6 +22,7 @@ export const registerValidationSchema = yup.object({
     ac_type: yup
       .string("Select account type")
       .required("Account type is required"),
+    agreement: yup.boolean().oneOf([true], 'You must agree to guildlines and terms of service'),
   });
 
   export const googleRegisterValidationSchema = yup.object({
@@ -38,4 +39,5 @@ export const registerValidationSchema = yup.object({
     ac_type: yup
       .string("Select account type")
       .required("Account type is required"),
+    agreement: yup.boolean().oneOf([true], 'You must agree to guildlines and terms of service'),
   });

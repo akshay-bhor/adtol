@@ -123,7 +123,7 @@ matchAd = (resObj, req) => {
     // Get user os and version
     const ua = parser(req.get('user-agent'));
     const usrOs = ua.os.name || 'unknown';
-    const usrOsVer = ua.os.version.split('.')[0] || 0;
+    const usrOsVer = ua.os.version?.split('.')[0] || 0;
 
     // Find os code
     let osCodeArr = [];

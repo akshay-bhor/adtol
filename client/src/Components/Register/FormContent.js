@@ -4,7 +4,7 @@ import styles from "./Register.module.css";
 import { useSelector } from "react-redux";
 import { Button, makeStyles, MenuItem } from "@material-ui/core";
 import GoogleSignIn from "../GoogleSignIn/GoogleSignIn";
-import { MyTextField, MySelectField } from "../FormUtils/FormUtils";
+import { MyTextField, MySelectField, MyCheckboxField } from "../FormUtils/FormUtils";
 
 const useStyles = makeStyles({
   block: {
@@ -82,6 +82,18 @@ const FormContent = (props) => {
               name="company_name"
               type="text"
               label="Company Name"
+              className={muiStyle.block}
+            />
+            <MyTextField
+              name="ref_by"
+              type="text"
+              label="Have a Referrel Code?"
+              className={muiStyle.block}
+            />
+            <MyCheckboxField
+              name="agreement"
+              type="checkbox"
+              label="I have read and agree to guidelines and terms of service"
               className={muiStyle.block}
             />
             <div className={[styles.submitContainer, 'w-60'].join(' ')}>

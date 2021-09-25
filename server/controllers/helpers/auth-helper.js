@@ -1,6 +1,8 @@
 const User = require('../../models/users');
 const {  validationResult, check, oneOf } = require('express-validator');
 const bcrypt = require('bcryptjs');
+const Filter = require('bad-words');
+const base62 = require('base62');
 const Token = require('../../common/token');
 const { Op, QueryTypes } = require('sequelize');
 const sequelize = require('../../utils/db');
@@ -8,6 +10,7 @@ const crypto = require('crypto');
 const User_Info = require('../../models/user_info');
 const { EmailTransporter } = require('../../common/emailTransporter');
 const { App_Settings } = require('../../common/settings');
+const filter = new Filter();
 
 exports.registerHelper = async (req) => { 
     // Check if logged in ?
@@ -29,6 +32,7 @@ exports.registerHelper = async (req) => {
     await check('ac_type').exists().isInt().withMessage('Invalid Account Type!').run(req);
     if(req.body.ac_type != 1)
         await check('company_name').exists().isString().withMessage('Plaese enter valid company name').run(req);
+    if(req.body.ref_by) await check('ref_by').exists().isAlphanumeric().withMessage('Invalid Referrel').escape().run(req);
     
     try {
         const errs = validationResult(req);
@@ -43,6 +47,13 @@ exports.registerHelper = async (req) => {
         if(req.body.ac_type != 1 && req.body.ac_type != 2) {
             throw new Error('Invaid Account Type!');
         }
+
+        // Check for profanify
+        if(filter.isProfane(`${req.body.user} ${req.body.name} ${req.body.surname} ${req.body.mail}`)) {
+            const err = new Error('Name, Username, and Emails containing profanity are prohibited!');
+            err.statusCode = 422;
+            throw err;
+        }
     
         // Check if Username exists
         const unameExist = await User.findOne({ where: { user: req.body.user } })
@@ -54,6 +65,12 @@ exports.registerHelper = async (req) => {
         const emailExists = await User.findOne({ where: { mail: req.body.mail } });
         if(emailExists) {
             throw new Error('Email Already Exist!');
+        }
+        // Check referrel
+        let ref_by = base62.decode(req.body.ref_by);
+        const refExist = await User.findOne({ where: { id: ref_by } });
+        if(!refExist) {
+            ref_by = null;
         }
 
         // Name & surname
@@ -82,7 +99,8 @@ exports.registerHelper = async (req) => {
             name: req.body.name,
             surname: req.body.surname,
             ac_type: req.body.ac_type,
-            company_name: req.body.company_name
+            company_name: req.body.company_name,
+            ref_by
         });
 
         //Create token

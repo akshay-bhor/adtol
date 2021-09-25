@@ -32,6 +32,7 @@ exports.updateReferrelStats = async () => {
         yesterdayPayments.forEach(async(data) => { 
             if(data.ref_by != null) {
                 const ref_uid = data.ref_by;
+                if(!ref_uid) return;
                 // Calculate ref Earnings
                 const earnings = Math.floor(((refCommision / 100) * data.amount) * 10000) / 10000;
             

@@ -83,6 +83,7 @@ const RegisterForm = () => {
             mobile: "",
             ac_type: "",
             company_name: "",
+            agreement: false
           }}
           validationSchema={registerValidationSchema}
           onSubmit={(values, actions) => {
