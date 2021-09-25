@@ -20,13 +20,19 @@ module.exports = async (req, res, next) => {
         
         // Find user os
         const usrOs = ua.os.name || 'unknown';
-        const usrOsVer = ua.os.version.split('.')[0] || 0;
+        const usrOsVer = ua.os.version?.split('.')[0];
         
         // Find os Code
         let oCode = 1;
+        let osFound = 0;
         Object.keys(App_Settings.os).forEach(key => {
-            if(App_Settings.os[key][0] == usrOs && App_Settings.os[key][1] == usrOsVer)
+            if(osFound === 0 && App_Settings.os[key][0] == usrOs) {
                 oCode = key;
+            }
+            if(App_Settings.os[key][0] == usrOs && App_Settings.os[key][1] == usrOsVer) {
+                oCode = key;
+                osFound = 1;
+            }
         });
         req.oCode = +oCode;
         
