@@ -22,9 +22,9 @@ const mapRows = (colName, propData) => {
             earned = '$'+data[key].earned;
         else
             spent = '$'+data[key].spent;
-        const views = data[key].views;
-        const clicks = data[key].clicks;
-        const pops = data[key].pops;
+        const views = +data[key].views;
+        const clicks = +data[key].clicks;
+        const pops = +data[key].pops;
         const country = key;
         let ctr = data[key].ctr ? data[key].ctr + "%" : "NA";
 

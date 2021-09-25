@@ -6,6 +6,7 @@ const User = require("../../../models/users");
 const { check, validationResult } = require("express-validator");
 const { uploadImageS3 } = require("../../../common/upload-s3");
 const { v4: uuidv4 } = require('uuid');
+const he = require('he');
 const psl = require('psl');
 const Banners = require("../../../models/banners");
 const Timezones = require("../../../models/timezones");
@@ -598,9 +599,9 @@ exports.getCampaignInfoHelper = async (req) => {
 
         // Modify resposne
         delete campaignData.banner_id;
-        campaignData.title = decodeURI(campaignData.title);
-        campaignData.campaign_name = decodeURI(campaignData.campaign_name);
-        campaignData.desc = decodeURI(campaignData.desc);
+        campaignData.title = he.decode(campaignData.title);
+        campaignData.campaign_name = he.decode(campaignData.campaign_name);
+        campaignData.desc = he.decode(campaignData.desc);
         campaignData.banners = banner_ids;
         campaignData.category = campaignData.category.split('|').map(d => +d);
         campaignData.country = campaignData.country.split('|').map(d => +d);

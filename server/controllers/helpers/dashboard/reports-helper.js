@@ -110,11 +110,11 @@ exports.reportsHelper = async (req) => {
 
             { "name": "countrystats", "query": "SELECT SUM(views) as cviews, SUM(clicks) as cclicks, SUM(pops) as cpops, SUM(cost) as ccost, country FROM summary_country WHERE "+ cond +" GROUP BY country" },
 
-            { "name": "devicestats", "query": "SELECT SUM(views) as dviews, SUM(clicks) as dclicks, SUM(pops) as dpops, SUM(cost) as ccost, device FROM summary_device WHERE "+ cond +" GROUP BY device" },
+            { "name": "devicestats", "query": "SELECT SUM(views) as dviews, SUM(clicks) as dclicks, SUM(pops) as dpops, SUM(cost) as dcost, device FROM summary_device WHERE "+ cond +" GROUP BY device" },
 
             { "name": "osstats", "query": "SELECT SUM(views) as osviews, SUM(clicks) as osclicks, SUM(pops) as ospops, SUM(cost) as oscost, os FROM summary_os WHERE "+ cond +" GROUP BY os" },
 
-            { "name": "browserstats", "query": "SELECT SUM(views) as vviews, SUM(clicks) as bclicks, SUM(pops) as bpops, SUM(cost) as bcost, browser FROM summary_browser WHERE "+ cond +" GROUP BY browser" },
+            { "name": "browserstats", "query": "SELECT SUM(views) as bviews, SUM(clicks) as bclicks, SUM(pops) as bpops, SUM(cost) as bcost, browser FROM summary_browser WHERE "+ cond +" GROUP BY browser" },
         ];
 
         // Append to query array according to report type

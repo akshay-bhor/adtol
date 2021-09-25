@@ -12,8 +12,8 @@ const flattenData = (data) => {
   if(typeof data !== 'object') return null;
   return Object.keys(data).map((key) => [
     key,
-    data[key].views,
-    data[key].clicks,
+    +data[key].views,
+    +data[key].clicks,
   ]);
 };
 

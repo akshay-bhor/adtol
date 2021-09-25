@@ -23,7 +23,7 @@ module.exports = async (req, res, next) => {
         const usrOsVer = ua.os.version.split('.')[0] || 0;
         
         // Find os Code
-        let oCode = 0;
+        let oCode = 1;
         Object.keys(App_Settings.os).forEach(key => {
             if(App_Settings.os[key][0] == usrOs && App_Settings.os[key][1] == usrOsVer)
                 oCode = key;
@@ -38,7 +38,7 @@ module.exports = async (req, res, next) => {
         req.bCode = +bCode;
         
         // Get user country
-        req.ip = (req.get('x-forwarded-for') || req.connection.remoteAddress).split(',')[0].trim() || req.ip;
+        req.ip = getReqIP(req);
         const { country } = { country: req.get('cf-ipcountry') } || geoip.lookup(req.ip) || { country: 'IN' };
         
         // Find country code
@@ -59,4 +59,10 @@ module.exports = async (req, res, next) => {
             err.statusCode = 500;
         next(err);
     }
+}
+
+const getReqIP = (req) => {
+    const ip = req.get('x-forwarded-for') || req.connection.remoteAddress;
+    if(ip) return ip.split(',')[0].trim();
+    else throw new Error('IP Lookup Failed!');
 }

@@ -34,8 +34,8 @@ const mapRows = (data, path, colName) => {
 
     // Calculate CTR
     if (returnObj.ctr === "NA") {
-      if (returnObj.clicks !== 0) {
-        returnObj.ctr = "$" + (returnObj.views / returnObj.clicks).toFixed(2);
+      if (+returnObj.clicks !== 0) {
+        returnObj.ctr = (returnObj.views / returnObj.clicks).toFixed(2) + '%';
       }
     }
 

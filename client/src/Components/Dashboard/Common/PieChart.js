@@ -8,14 +8,14 @@ const chartContent = {
   margin: "20px 10px",
 };
 
-const flattenData = (data) => {
+const flattenData = (data) => { console.log(data);
   // Check if not all zero
   if(typeof data !== 'object') return [];
   const check = Object.keys(data).filter((key) => data[key].clicks > 0);
   if(check.length === 0) return [];
   return Object.keys(data).map((key) => [
     key,
-    data[key].clicks,
+    +data[key].clicks,
   ]);
 };
 

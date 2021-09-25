@@ -19,9 +19,9 @@ const mapRows = (data) => {
         {
             id: key,
             website: data[key].url,
-            views: data[key].views,
-            clicks: data[key].clicks,
-            pops: data[key].pops,
+            views: +data[key].views,
+            clicks: +data[key].clicks,
+            pops: +data[key].pops,
             earned: '$'+ parseFloat(data[key].earned).toFixed(2),
             ctr: data[key].ctr ? data[key].ctr+'%': 'NA'
         }

@@ -11,7 +11,7 @@ const chartContent = {
 const flattenData = (data) => {
   return Object.keys(data).map((key) => [
     key,
-    data[key].earned,
+    +data[key].earned,
   ]);
 };
 

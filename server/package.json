@@ -25,6 +25,7 @@
     "express-validator": "^6.9.2",
     "geoip-country": "^4.0.87",
     "google-auth-library": "^7.0.4",
+    "he": "^1.2.0",
     "helmet": "^4.6.0",
     "image-size": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
