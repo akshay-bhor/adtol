@@ -74,7 +74,7 @@ exports.adServe = async (req, res, next) => {
         const bCode = req.bCode;
 
         // Find country code
-        let cCode = req.cCode;
+        const cCode = req.cCode;
 
         /**
          * Ad serve constraint to match via db => match_hash(bot,status,type,adult,run), today_budget_rem, domain_hash, size
@@ -194,7 +194,7 @@ exports.adServe = async (req, res, next) => {
                     const pub_url_tiny = tinify(ref_url);
 
                     // Get day time
-                    const date = new Date().toISOString(0, 10);
+                    const date = new Date().toISOString().slice(0, 10);
                     const today_unix = Math.floor(new Date(date).getTime() / 1000);
                     const time_unix = Math.floor(new Date().getTime() / 1000);
 

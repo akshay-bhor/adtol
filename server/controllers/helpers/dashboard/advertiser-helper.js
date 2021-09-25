@@ -17,7 +17,7 @@ exports.advertiserHelper = async(req) => {
         const userRes = await User.findOne({ where: { id: userid }, attributes: ['ad_spending', 'ad_balance', 'ad_views', 'ad_clicks', 'ad_pops'] });
         
         // Last 7 days
-        const today = new Date('2021-02-26').toISOString().slice(0, 10);
+        const today = new Date().toISOString().slice(0, 10);
         const today_unix = Math.floor(new Date(today).getTime() / 1000);
         const week_before_unix = (today_unix - (60*60*24*7)); 
 

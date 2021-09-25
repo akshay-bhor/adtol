@@ -36,10 +36,10 @@ module.exports = async (req, res, next) => {
         // Get Browser Code
         const bCode = Object.keys(App_Settings.browsers).find(key => App_Settings.browsers[key] == usrBrowser) || 0;
         req.bCode = +bCode;
-        console.log(JSON.stringify(req.headers));
+        
         // Get user country
-        req.ip = (req.get['x-forwarded-for'] || req.connection.remoteAddress).split(',')[0].trim() || req.ip;
-        const { country } = req.get('cf-ipcountry') || geoip.lookup(req.ip) || { country: 'IN' };
+        req.ip = (req.get('x-forwarded-for') || req.connection.remoteAddress).split(',')[0].trim() || req.ip;
+        const { country } = { country: req.get('cf-ipcountry') } || geoip.lookup(req.ip) || { country: 'IN' };
         
         // Find country code
         let cCode = Object.keys(App_Settings.countries).find(key => App_Settings.countries[key][0] == country) || 0;

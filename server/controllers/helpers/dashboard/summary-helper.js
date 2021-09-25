@@ -13,8 +13,7 @@ exports.summaryHelper = async(req) => {
         const userid = req.userInfo.id;
        
         // Todays Date in Unix
-        // let today = new Date().toISOString().slice(0, 10);
-        let today = '2021-02-25';
+        let today = new Date().toISOString().slice(0, 10);
         let today_unix = Math.floor(new Date(today).getTime() / 1000);
         // Yesterday
         const yesterday_unix = today_unix - (60*60*24);
