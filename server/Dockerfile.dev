@@ -4,11 +4,11 @@ WORKDIR "/server"
 
 COPY ./package.json .
 
-# COPY ./package-lock.json .
+COPY ./package-lock.json .
 
 RUN npm install
 
-RUN npm install -g sequelize-cli
+RUN npm install -g sequelize-cli@6.2.0
 
 COPY . .
 

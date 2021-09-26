@@ -6,7 +6,6 @@ const summarySlice = createSlice({
         loading: true,
         data: null,
         userStatus: null,
-        notified: false,
         error: null
     },
     reducers: {
@@ -15,9 +14,6 @@ const summarySlice = createSlice({
         },
         setUserStatus(state, action) {
             state.userStatus = action.payload;
-        },
-        setNotified(state, action) {
-            state.notified = action.payload;
         },
         setLoading(state, action) {
             state.loading = action.payload;

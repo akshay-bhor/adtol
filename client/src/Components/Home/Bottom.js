@@ -1,20 +1,15 @@
 import { Fragment } from "react";
 import styles from './Content.module.css';
-import FlashOnRoundedIcon from '@material-ui/icons/FlashOnRounded';
-import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
-import DashboardRoundedIcon from '@material-ui/icons/DashboardRounded';
-import ContactSupportRoundedIcon from '@material-ui/icons/ContactSupportRounded';
-import PublicRoundedIcon from '@material-ui/icons/PublicRounded';
-import SpeedRoundedIcon from '@material-ui/icons/SpeedRounded';
-import { makeStyles } from "@material-ui/core";
+import { Icon, makeStyles } from "@material-ui/core";
 
-const useStyle = makeStyles({
+const useStyle = makeStyles(theme => ({
     bigicon: {
-        fontSize: '36px'
+        fontSize: '36px',
+        color: theme.palette.primary.main
     }
-});
+}));
 
-const Bottom = (props) => {
+const Bottom = () => {
     const muistyles = useStyle();
 
     return (
@@ -25,7 +20,7 @@ const Bottom = (props) => {
 
                     <div className={styles.adv_container}>
                         <div className={styles.icon}>
-                            <FlashOnRoundedIcon className={muistyles.bigicon} color="primary" />
+                            <Icon className={muistyles.bigicon}>flash_on</Icon>
                         </div>
                         <div className={styles.adv_content}>
                             <div className={styles.bold}>Fast Payments</div>
@@ -35,7 +30,7 @@ const Bottom = (props) => {
 
                     <div className={styles.adv_container}>
                         <div className={styles.icon}>
-                            <SettingsRoundedIcon className={muistyles.bigicon} color="primary" />
+                            <Icon className={muistyles.bigicon}>settings</Icon>
                         </div>
                         <div className={styles.adv_content}>
                             <div className={styles.bold}>Unparalleled Service Quality</div>
@@ -45,7 +40,7 @@ const Bottom = (props) => {
 
                     <div className={styles.adv_container}>
                         <div className={styles.icon}>
-                            <DashboardRoundedIcon className={muistyles.bigicon} color="primary" />
+                            <Icon className={muistyles.bigicon}>dashboard</Icon>
                         </div>
                         <div className={styles.adv_content}>
                             <div className={styles.bold}>Friendly Interface</div>
@@ -55,7 +50,7 @@ const Bottom = (props) => {
 
                     <div className={styles.adv_container}>
                         <div className={styles.icon}>
-                            <ContactSupportRoundedIcon className={muistyles.bigicon} color="primary" />
+                            <Icon className={muistyles.bigicon}>contact_support</Icon>
                         </div>
                         <div className={styles.adv_content}>
                             <div className={styles.bold}>Dedicated Support</div>
@@ -65,7 +60,7 @@ const Bottom = (props) => {
 
                     <div className={styles.adv_container}>
                         <div className={styles.icon}>
-                            <PublicRoundedIcon className={muistyles.bigicon} color="primary" />
+                            <Icon className={muistyles.bigicon}>public</Icon>
                         </div>
                         <div className={styles.adv_content}>
                             <div className={styles.bold}>Worldwide Coverage</div>
@@ -75,7 +70,7 @@ const Bottom = (props) => {
 
                     <div className={styles.adv_container}>
                         <div className={styles.icon}>
-                            <SpeedRoundedIcon className={muistyles.bigicon} color="primary" />
+                            <Icon className={muistyles.bigicon}>speed</Icon>
                         </div>
                         <div className={styles.adv_content}>
                             <div className={styles.bold}>Performance</div>

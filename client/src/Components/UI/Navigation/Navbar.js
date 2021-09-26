@@ -9,9 +9,9 @@ import styles from "./Navbar.module.css";
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItems from './MenuItems';
 import IconButton from '@material-ui/core/IconButton';
-import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
 import Sidebar from './Sidebar';
 import { Link, useLocation } from "react-router-dom";
+import { Icon } from "@material-ui/core";
 
 function HideOnScroll(props) {
   const { children, window } = props;
@@ -82,7 +82,7 @@ const Navbar = (props) => {
         <AppBar className={muistyle.navbar}>
           <Toolbar className={muistyle.container}>
             <IconButton edge="start" className={muistyle.menuButton} onClick={toggleDrawer} color="inherit" aria-label="menu">
-              <MenuRoundedIcon />
+              <Icon>menu</Icon>
             </IconButton>
               <Link to='/'><div className={styles.brand_name}>{props.name}</div></Link>
               <MenuItems path={currPath}></MenuItems>
