@@ -4,12 +4,20 @@ const summarySlice = createSlice({
     name: 'summary',
     initialState: {
         loading: true,
-        data: {},
+        data: null,
+        userStatus: null,
+        notified: false,
         error: null
     },
     reducers: {
         setData(state, action) {
             state.data = action.payload;
+        },
+        setUserStatus(state, action) {
+            state.userStatus = action.payload;
+        },
+        setNotified(state, action) {
+            state.notified = action.payload;
         },
         setLoading(state, action) {
             state.loading = action.payload;

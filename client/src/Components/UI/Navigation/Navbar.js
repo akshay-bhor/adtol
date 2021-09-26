@@ -36,12 +36,12 @@ HideOnScroll.propTypes = {
   window: PropTypes.func,
 };
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   container: {
     width: '80%',
     margin: 'auto',
     fontSize: '18px',
-    color: 'rgba(0, 0, 0, 0.54)',
+    color: '#fff',
     minHeight: '54px',
     justifyContent: 'flex-start',
     ['@media(max-width:780px)']: {
@@ -49,7 +49,7 @@ const useStyles = makeStyles({
     }
   },
   navbar: {
-    backgroundColor: '#fff',
+    backgroundColor: theme.palette.primary.main,
     boxShadow: 'none',
     borderBottom: '1px solid #ccc'  
   },
@@ -59,7 +59,7 @@ const useStyles = makeStyles({
       display: 'none'
     }
   }
-});
+}));
 
 const Navbar = (props) => {
   const [drawerState, setDrawerState] = useState(false);

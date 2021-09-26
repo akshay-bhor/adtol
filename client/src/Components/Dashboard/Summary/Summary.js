@@ -5,12 +5,13 @@ import AdUnits from "./AdUnits/AdUnits";
 import Estimates from "./Estimates/Estimates"
 import Performance from "./Performance/Performance";
 import styles from '../Dashboard.module.css';
-import { abortSummaryRequest, fetchSummaryData } from "../../../store/actions/summary.action";
+import { abortSummaryRequest, fetchSummaryData, fetchUserStatus } from "../../../store/actions/summary.action";
 import CountryTable from "./CountryTable/CountryTable";
 import { countryColumnsAd, countryColumnsPub } from "../../../constants/common";
 import classes from './Summary.module.css';
 import { Button } from "@material-ui/core";
 import ShowError from "../../UI/ShowError";
+import UserStatusNotification from "./UserStatusNotification/UserStatusNotification";
 
 const mapRows = (colName, propData) => {
     let data = colName === 'Earned' ? propData.pub_countries:propData.ad_countries;
@@ -51,6 +52,7 @@ const mapRows = (colName, propData) => {
 const Summary = () => {
     const isLoading = useSelector((state) => state.summary.loading);
     const data = useSelector((state) => state.summary.data);
+    const userStatus = useSelector((state) => state.summary.userStatus);
     const err = useSelector((state) => state.summary.error);
     const [selected, setSelected] = useState(1);
     const dispatch = useDispatch();
@@ -59,6 +61,7 @@ const Summary = () => {
 
     useEffect(() => {
         dispatch(fetchSummaryData());
+        dispatch(fetchUserStatus());
 
         return () => {
             abortSummaryRequest();
@@ -73,28 +76,37 @@ const Summary = () => {
     return (
         <Fragment>
             {isLoading && !err && <div className={styles.loader}><Loading /></div>}
-            {!isLoading && !err && 
+            {!isLoading && !err && data &&
                 <Fragment>
                     <div className={classes.btnContainer}>
-                        <Button color="primary" className={'fright pointer'} onClick={
-                            () => {
-                                setSelected(s => s === 1 ? 2 : 1);
-                            }
-                        }>{selected == 1 ? 'Advertiser':'Publisher'}</Button>
+                        <Button 
+                            color={selected === 1 ? 'primary':'default'}
+                            className={'fright pointer'} 
+                            onClick={() => setSelected(1) }>
+                                Advertiser
+                        </Button>
+                        <Button 
+                            color={selected === 2 ? 'primary':'default'}
+                            className={'fright pointer'} 
+                            onClick={() => setSelected(2) }>
+                                Publisher
+                        </Button>
                     </div>
+        
                     {selected === 1 && <Fragment>
+                    <Estimates data={data.ad_estimates} balance={data.ad_balance} />
+                    <Performance data={data.ad_performance} />
+                    <AdUnits data={data.ad_ad_units} />
+                    <CountryTable data={data.ad_countries} rows={adRows} columns={countryColumnsAd()} /></Fragment>}
+                    
+                    {selected === 2 && <Fragment>
                     <Estimates data={data.pub_estimates} balance={data.pub_balance} />
                     <Performance data={data.pub_performance} />
                     <AdUnits data={data.pub_ad_units} />
                     <CountryTable data={data.pub_countries} rows={pubRows} columns={countryColumnsPub()} /></Fragment>}
 
-                    {selected !== 1 && <Fragment>
-                    <Estimates data={data.ad_estimates} balance={data.ad_balance} />
-                    <Performance data={data.ad_performance} />
-                    <AdUnits data={data.ad_ad_units} />
-                    <CountryTable data={data.ad_countries} rows={adRows} columns={countryColumnsAd()} /></Fragment>}
-                
                 </Fragment>}
+                {!isLoading && !err && userStatus && <UserStatusNotification />}
                 {err && <ShowError />}
         </Fragment>
     );

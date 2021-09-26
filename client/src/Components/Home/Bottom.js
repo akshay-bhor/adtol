@@ -25,7 +25,7 @@ const Bottom = (props) => {
 
                     <div className={styles.adv_container}>
                         <div className={styles.icon}>
-                            <FlashOnRoundedIcon className={muistyles.bigicon} />
+                            <FlashOnRoundedIcon className={muistyles.bigicon} color="primary" />
                         </div>
                         <div className={styles.adv_content}>
                             <div className={styles.bold}>Fast Payments</div>
@@ -35,7 +35,7 @@ const Bottom = (props) => {
 
                     <div className={styles.adv_container}>
                         <div className={styles.icon}>
-                            <SettingsRoundedIcon className={muistyles.bigicon} />
+                            <SettingsRoundedIcon className={muistyles.bigicon} color="primary" />
                         </div>
                         <div className={styles.adv_content}>
                             <div className={styles.bold}>Unparalleled Service Quality</div>
@@ -45,7 +45,7 @@ const Bottom = (props) => {
 
                     <div className={styles.adv_container}>
                         <div className={styles.icon}>
-                            <DashboardRoundedIcon className={muistyles.bigicon} />
+                            <DashboardRoundedIcon className={muistyles.bigicon} color="primary" />
                         </div>
                         <div className={styles.adv_content}>
                             <div className={styles.bold}>Friendly Interface</div>
@@ -55,7 +55,7 @@ const Bottom = (props) => {
 
                     <div className={styles.adv_container}>
                         <div className={styles.icon}>
-                            <ContactSupportRoundedIcon className={muistyles.bigicon} />
+                            <ContactSupportRoundedIcon className={muistyles.bigicon} color="primary" />
                         </div>
                         <div className={styles.adv_content}>
                             <div className={styles.bold}>Dedicated Support</div>
@@ -65,7 +65,7 @@ const Bottom = (props) => {
 
                     <div className={styles.adv_container}>
                         <div className={styles.icon}>
-                            <PublicRoundedIcon className={muistyles.bigicon} />
+                            <PublicRoundedIcon className={muistyles.bigicon} color="primary" />
                         </div>
                         <div className={styles.adv_content}>
                             <div className={styles.bold}>Worldwide Coverage</div>
@@ -75,7 +75,7 @@ const Bottom = (props) => {
 
                     <div className={styles.adv_container}>
                         <div className={styles.icon}>
-                            <SpeedRoundedIcon className={muistyles.bigicon} />
+                            <SpeedRoundedIcon className={muistyles.bigicon} color="primary" />
                         </div>
                         <div className={styles.adv_content}>
                             <div className={styles.bold}>Performance</div>

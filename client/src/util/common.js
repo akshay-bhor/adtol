@@ -22,6 +22,7 @@ export const parseAuthToken = () => {
 export const removeToken = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("expiration");
+    localStorage.removeItem("hideUserStatusNotification");
 };
 
 const calcRemTime = (time) => {

@@ -9,7 +9,7 @@ let cancelToken = [];
 let source = [];
 
 const conn = axios.create({
-  baseURL: ``,
+  baseURL: `/api`,
   timeout: 10000,
 });
 
@@ -64,78 +64,80 @@ export const abortRequest = () => {
     }
 }
 
-export const registerApi = (data) => conn.post('/api/auth/register', data);
+export const registerApi = (data) => conn.post('/auth/register', data);
 
-export const loginApi = (data) => conn.post('/api/auth/login', data);
+export const loginApi = (data) => conn.post('/auth/login', data);
 
-export const gloginApi = (data) => conn.post('/api/auth/glogin', data);
+export const gloginApi = (data) => conn.post('/auth/glogin', data);
 
-export const changePassApi = (data) => conn.post('/api/auth/change-pass', data);
+export const changePassApi = (data) => conn.post('/auth/change-pass', data);
 
-export const forgotPassApi = (data) => conn.post('/api/auth/forgot-pass', data);
+export const forgotPassApi = (data) => conn.post('/auth/forgot-pass', data);
 
-export const resetPassApi = (data) => conn.post('/api/auth/reset-pass', data);
+export const resetPassApi = (data) => conn.post('/auth/reset-pass', data);
 
-export const getAccountInfo = () => conn.get('/api/account');
+export const getAccountInfo = () => conn.get('/account');
 
-export const editAccountInfo = (data) => conn.post('/api/account/edit-details', data);
+export const editAccountInfo = (data) => conn.post('/account/edit-details', data);
 
-export const editPaymentInfo = (data) => conn.post('/api/account/edit-payment', data);
+export const editPaymentInfo = (data) => conn.post('/account/edit-payment', data);
 
-export const getCountries = () => conn.get('/api/auth/get-countries');
+export const getCountries = () => conn.get('/auth/get-countries');
 
-export const getSummaryData = () => conn.get('/api/dashboard/summary');
+export const getSummaryData = () => conn.get('/dashboard/summary');
 
-export const getAdvertiserData = () => conn.get('/api/dashboard/advertiser');
+export const getUserStatus = () => conn.get('/dashboard/user-status');
 
-export const getCampaignsList = () => conn.get('/api/dashboard/campaigns');
+export const getAdvertiserData = () => conn.get('/dashboard/advertiser');
 
-export const getCampaignTypes = () => conn.get('/api/dashboard/campaigns/get-campaign-types');
+export const getCampaignsList = () => conn.get('/dashboard/campaigns');
 
-export const getCampaignBanners = () => conn.get('/api/dashboard/campaigns/get-banners');
+export const getCampaignTypes = () => conn.get('/dashboard/campaigns/get-campaign-types');
 
-export const getCampaignFormData = () => conn.get('/api/dashboard/campaigns/formdata');
+export const getCampaignBanners = () => conn.get('/dashboard/campaigns/get-banners');
 
-export const getCampaignData = (data) => conn.get(`/api/dashboard/campaigns/get-info/${data.campid}`);
+export const getCampaignFormData = () => conn.get('/dashboard/campaigns/formdata');
 
-export const createCampaignApi = (data) => conn.post(`/api/dashboard/campaigns/create?type=${data.params.type}`, data);
+export const getCampaignData = (data) => conn.get(`/dashboard/campaigns/get-info/${data.campid}`);
 
-export const editCampaignApi = (data) => conn.post(`/api/dashboard/campaigns/edit/${data.params.campaign_id}?type=${data.params.type}`, data);
+export const createCampaignApi = (data) => conn.post(`/dashboard/campaigns/create?type=${data.params.type}`, data);
 
-export const uploadBannersApi = (data) => conn.post('/api/dashboard/campaigns/upload-banners', data);
+export const editCampaignApi = (data) => conn.post(`/dashboard/campaigns/edit/${data.params.campaign_id}?type=${data.params.type}`, data);
 
-export const changeCampaignStatus = (data) => conn.post('/api/dashboard/campaigns/change-status/' + data.id, data.data);
+export const uploadBannersApi = (data) => conn.post('/dashboard/campaigns/upload-banners', data);
 
-export const changeCampaignBudget = (data) => conn.post('/api/dashboard/campaigns/change-budget/' + data.id, data.data);
+export const changeCampaignStatus = (data) => conn.post('/dashboard/campaigns/change-status/' + data.id, data.data);
 
-export const getPublisherData = () => conn.get('/api/dashboard/publisher');
+export const changeCampaignBudget = (data) => conn.post('/dashboard/campaigns/change-budget/' + data.id, data.data);
 
-export const getWebsitesList = () => conn.get('/api/dashboard/websites');
+export const getPublisherData = () => conn.get('/dashboard/publisher');
 
-export const getWebsiteFormData = () => conn.get('/api/dashboard/websites/formdata');
+export const getWebsitesList = () => conn.get('/dashboard/websites');
 
-export const addWebsite = (data) => conn.post('/api/dashboard/websites/add', data);
+export const getWebsiteFormData = () => conn.get('/dashboard/websites/formdata');
 
-export const editWebsite = (data) => conn.post('/api/dashboard/websites/edit/' + data.id, data.data);
+export const addWebsite = (data) => conn.post('/dashboard/websites/add', data);
 
-export const getAdcode = (data) => conn.post('/api/dashboard/websites/get-adcode', data);
+export const editWebsite = (data) => conn.post('/dashboard/websites/edit/' + data.id, data.data);
 
-export const getReferralStats = () => conn.get('/api/dashboard/referrals');
+export const getAdcode = (data) => conn.post('/dashboard/websites/get-adcode', data);
 
-export const getPaymentHistory = () => conn.get('/api/dashboard/billing/payment-history');
+export const getReferralStats = () => conn.get('/dashboard/referrals');
 
-export const getWithdrawHistory = () => conn.get('/api/dashboard/billing/withdraw-history');
+export const getPaymentHistory = () => conn.get('/dashboard/billing/payment-history');
 
-export const createWithdraw = (data) => conn.post('/api/dashboard/billing/withdraw', data);
+export const getWithdrawHistory = () => conn.get('/dashboard/billing/withdraw-history');
 
-export const getBillingFormData = () => conn.get('/api/dashboard/billing/formdata');
+export const createWithdraw = (data) => conn.post('/dashboard/billing/withdraw', data);
 
-export const convertPubBalanceApi = (data) => conn.post('/api/dashboard/billing/convert-pub-balance', data);
+export const getBillingFormData = () => conn.get('/dashboard/billing/formdata');
 
-export const createOrderApi = (data) => conn.post('/api/dashboard/payment/create-order', data);
+export const convertPubBalanceApi = (data) => conn.post('/dashboard/billing/convert-pub-balance', data);
 
-export const verifyPaymentApi = (data) => conn.post('/api/dashboard/payment/verify-payment', data);
+export const createOrderApi = (data) => conn.post('/dashboard/payment/create-order', data);
 
-export const getAdvertiserReports = (data) => conn.post('/api/dashboard/reports/advertiser', data);
+export const verifyPaymentApi = (data) => conn.post('/dashboard/payment/verify-payment', data);
 
-export const getPublisherReports = (data) => conn.post('/api/dashboard/reports/publisher', data);
+export const getAdvertiserReports = (data) => conn.post('/dashboard/reports/advertiser', data);
+
+export const getPublisherReports = (data) => conn.post('/dashboard/reports/publisher', data);

@@ -8,11 +8,13 @@ import { Button, Icon, makeStyles } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import Tooltip from '@material-ui/core/Tooltip';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     navBtn: {
-        marginLeft: '5px'
+        marginLeft: '5px',
+        borderColor: theme.palette.primary.contrast,
+        color: theme.palette.primary.contrast,
     }
-});
+}));
 
 const MenuItems = (props) => {
     const isAuth = useSelector(state => state.auth.loggedIn);
@@ -27,12 +29,12 @@ const MenuItems = (props) => {
                     </Link>
                 })}
                 {!onDashboard && isAuth && AuthMenuItemsList.map(item => { 
-                    return <Button key={item.id} to={item.url} component={Link} className={muistyle.navBtn} variant="outlined" color="primary">
+                    return <Button key={item.id} to={item.url} component={Link} className={muistyle.navBtn} variant="outlined">
                         {item.title}
                     </Button>
                 })}
                 {!onDashboard && !isAuth && UnAuthMenuItemsList.map(item => { 
-                    return <Button key={item.id} to={item.url} component={Link} className={muistyle.navBtn} variant="outlined" color="primary">
+                    return <Button key={item.id} to={item.url} component={Link} className={muistyle.navBtn} variant="outlined">
                         {item.title}
                     </Button>
                 })}

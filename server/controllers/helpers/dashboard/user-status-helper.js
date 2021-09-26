@@ -33,7 +33,7 @@ exports.userStatusHelper = async (req) => {
     if (check_1[0].pid != undefined) hasPay = true;
     if (check_1[0].wid != undefined) hasWeb = true;
 
-    // check if has camo
+    // check if has camp
     const has_camp = await Campaigns.findOne({
       where: { uid: userid },
       attributes: ["id"],

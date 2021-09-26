@@ -6,11 +6,22 @@ import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { Provider } from "react-redux";
 import store from "./store/store";
 import { BrowserRouter } from "react-router-dom";
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 const theme = createMuiTheme({
   typography: {
     fontFamily: ["Lato", "sans-serif"].join(","),
   },
+  palette: {
+    primary: {
+      main: '#531f8b',
+      contrast: '#fff'
+    },
+    secondary: {
+      main: '#531f8b',
+      contrast: '#fff'
+    },
+  }
 });
 
 ReactDOM.render(
@@ -23,3 +34,5 @@ ReactDOM.render(
   </Provider>,
   document.getElementById("root")
 );
+
+serviceWorkerRegistration.register();

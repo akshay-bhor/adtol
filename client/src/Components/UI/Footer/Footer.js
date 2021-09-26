@@ -1,9 +1,18 @@
 import styles from "./Footer.module.css";
 import { Link } from 'react-router-dom';
+import { makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  footer: {
+    background: theme.palette.primary.main,
+  }
+}))
 
 const Footer = () => {
+  const muiStyles = useStyles();
+
   return (
-    <div className={styles.footer}>
+    <div className={`${muiStyles.footer} ${styles.footer}`}>
       <div className={styles.footer_content}>
         <div className={styles.footer_item}>
           <h3>Network</h3>

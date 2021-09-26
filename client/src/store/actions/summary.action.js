@@ -1,7 +1,7 @@
 import { summaryActions } from "../reducers/summary.reducer";
-import { abortRequest, getSummaryData } from "../../services/apiService";
+import { abortRequest, getSummaryData, getUserStatus } from "../../services/apiService";
 
-const _summaryAPIRequest = (sendRequest) => {
+const _summaryAPIRequest = (sendRequest, which) => {
     return async (dispatch) => {
         dispatch(summaryActions.setLoading(true));
     
@@ -10,7 +10,8 @@ const _summaryAPIRequest = (sendRequest) => {
           const getData = await sendRequest();
     
           if (getData) {
-            dispatch(summaryActions.setData(getData.data));
+            if(which === 'data') dispatch(summaryActions.setData(getData.data));
+            if(which === 'userStatus') dispatch(summaryActions.setUserStatus(getData.data));
           }
     
           dispatch(summaryActions.setLoading(false));
@@ -22,7 +23,11 @@ const _summaryAPIRequest = (sendRequest) => {
 }
 
 export const fetchSummaryData = () => {
-  return async (dispatch) => dispatch(_summaryAPIRequest(getSummaryData));
+  return async (dispatch) => dispatch(_summaryAPIRequest(getSummaryData, 'data'));
+}
+
+export const fetchUserStatus = () => {
+  return async (dispatch) => dispatch(_summaryAPIRequest(getUserStatus, 'userStatus'));
 }
 
 export const abortSummaryRequest = () => {
