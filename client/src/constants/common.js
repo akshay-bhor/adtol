@@ -352,3 +352,17 @@ export const linkRelList = [
     name: "Nofollow Noreferrer Noopener"
   }
 ];
+
+export const advertisingQuotes = [
+  /** DO NOT ADD '-' in QUOTE */
+  "Your brand is a story unfolding across all customer touch points. - Jonah Sachs",
+  "Doing business without advertising is like winking at a girl in the dark. You know what you are doing, but nobody else does - Steuart Henderson Britt",
+  "Advertising is the modern substitute for argument; its function is to make the worse appear the better. - George Santayana",
+  "Many a small thing has been made large by the right kind of advertising. - Mark Twain",
+  "In advertising, not to be different is virtually suicidal - Bill Bernbach",
+  "Stopping advertising to save money is like stopping your watch to save time. - Henry Ford",
+  "There’s an ad for every vice. That’s advice. - Brian Spellman",
+  "Make it simple. Make it memorable. Make it inviting to look at. - Leo Burnett",
+  "One ad is worth more to a paper than forty editorials. - Will Rogers",
+  "If it doesn’t sell, it isn’t creative. - David Ogilvy",
+];

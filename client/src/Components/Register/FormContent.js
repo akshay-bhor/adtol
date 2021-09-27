@@ -2,11 +2,12 @@ import { Form } from "formik";
 import { Fragment } from "react";
 import styles from "./Register.module.css";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { Button, makeStyles, MenuItem } from "@material-ui/core";
 import GoogleSignIn from "../GoogleSignIn/GoogleSignIn";
 import { MyTextField, MySelectField, MyCheckboxField } from "../FormUtils/FormUtils";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme => ({
   block: {
     width: "60%",
     margin: "15px auto",
@@ -18,14 +19,24 @@ const useStyles = makeStyles({
     float:'left',
     minWidth: '190px',
     marginTop: '10px'
+  },
+  link: {
+    color: theme.palette.primary.main
   }
-});
+}));
 
 const FormContent = (props) => { 
   const muiStyle = useStyles();
   const loading = useSelector((state) => state.auth.loading);
   const countries = useSelector((state) => state.formdata.countries);
   const hasRecaptcha = useSelector((state) => state.script.recaptcha);
+
+  const checkboxLabel = (<Fragment>
+      I have read and agree to 
+      <Link to="/guidelines" className={muiStyle.link}> guidelines </Link> 
+      and <Link to="/tos" className={muiStyle.link}>terms of service</Link>
+    </Fragment>
+  );
 
   return (
     <Fragment>
@@ -93,7 +104,7 @@ const FormContent = (props) => {
             <MyCheckboxField
               name="agreement"
               type="checkbox"
-              label="I have read and agree to guidelines and terms of service"
+              label={checkboxLabel}
               className={muiStyle.block}
             />
             <div className={[styles.submitContainer, 'w-60'].join(' ')}>

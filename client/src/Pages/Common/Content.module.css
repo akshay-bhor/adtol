@@ -106,6 +106,13 @@
 .heading {
     flex-basis: 50%;
 }
+
+.contentHeading {
+    font-size: 20px;
+    display: block;
+    margin-bottom: 10px;
+}
+
 .subheading {
     color: #777;
     font-size: 20px;

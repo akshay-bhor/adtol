@@ -1,3 +1,5 @@
+import { advertisingQuotes } from "../constants/common";
+
 export const validAuthToken = () => {
   // Check if token in localstorge
   const token = localStorage.getItem("authToken");
@@ -32,10 +34,18 @@ const calcRemTime = (time) => {
 const intlFormat = (num) => {
   return new Intl.NumberFormat().format(Math.round(num*10)/10);
 }
+
 export const makeFriendly = (num) => {
   if(num >= 1000000)
     return intlFormat(num/1000000)+'M';
   if(num >= 1000)
     return intlFormat(num/1000)+'k';
   return intlFormat(num);
+}
+
+export const getAdQuote = () => {
+  const count = (advertisingQuotes.length - 1);
+  const rand = Math.floor(Math.random() * count);
+
+  return advertisingQuotes[rand].split('-').map(i => i.trim());
 }

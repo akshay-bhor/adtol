@@ -16,32 +16,32 @@ const Footer = () => {
       <div className={styles.footer_content}>
         <div className={styles.footer_item}>
           <h3>Network</h3>
-          <Link to='' className={styles.block}>
+          <Link to='/affiliate' className={styles.block}>
             Affiliates
           </Link>
-          <Link to='' className={styles.block}>
+          <Link to='/advertiser' className={styles.block}>
             Advertisers
           </Link>
-          <Link to='' className={styles.block}>
+          <Link to='/publisher' className={styles.block}>
             Publishers
           </Link>
-          <Link to='' className={styles.block}>
-            Ad-Formats
+          <Link to='/contact' className={styles.block}>
+            Contact
           </Link>
         </div>
         <div className={styles.footer_item}>
           <h3>Quick Links</h3>
-          <Link to='' className={styles.block}>
+          <Link to='/tos' className={styles.block}>
             Terms of Service
           </Link>
-          <Link to='' className={styles.block}>
+          <Link to='/privacy-policy' className={styles.block}>
             Privacy Policy
           </Link>
-          <Link to='' className={styles.block}>
+          <Link to='/refund-policy' className={styles.block}>
             Refund Policy
           </Link>
-          <Link to='' className={styles.block}>
-            Publisher Guidelines
+          <Link to='/guidelines' className={styles.block}>
+            Guidelines
           </Link>
         </div>
         <div className={styles.footer_item}>
@@ -49,10 +49,10 @@ const Footer = () => {
           <span className={styles.block}>College Road</span>
           <span className={styles.block}>Warulwadi, Naryangaon</span>
           <span className={styles.block}>Pune - 410504</span>
-          <span className={styles.block}>Email: email@email.com</span>
+          <span className={styles.block}>Email: adtol.com@gmail.com</span>
         </div>
       </div>
-      <div className={styles.footer_bottom}>&copy; 2021, AdTol Advertising Network, All Rights Reserved.</div>
+      <div className={styles.footer_bottom}>&copy; {new Date().getFullYear()}, AdTol Advertising Network, All Rights Reserved.</div>
     </div>
   );
 };

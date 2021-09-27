@@ -9,7 +9,10 @@ import PrivateRoute from "./util/PrivateRoute";
 /**
  * Lazy Load components
  */
-const Home = lazy(() => import("./Components/Home/Home"));
+const HomePage = lazy(() => import("./Pages/Home/HomePage"));
+const AdvertiserPage = lazy(() => import("./Pages/Advertiser/AdvertiserPage"));
+const PublisherPage = lazy(() => import("./Pages/Publisher/PublisherPage"));
+const AffililatePage = lazy(() => import("./Pages/Affiliate/AffiliatePage"));
 const LoginForm = lazy(() => import("./Components/Login/LoginForm"));
 const Register = lazy(() => import("./Components/Register/Register"));
 const Logout = lazy(() => import("./Components/Logout/Logout"));
@@ -17,6 +20,10 @@ const Dashboard = lazy(() => import("./Components/Dashboard/Dashboard"));
 const Account = lazy(() => import("./Components/Account/Account"));
 const ForgotPassword = lazy(() => import("./Components/Account/ForgotPassword"));
 const ResetPassword = lazy(() => import("./Components/Account/ResetPassword"));
+const TermsPage = lazy(() => import("./Pages/Terms/Terms"));
+const PrivacyPolicyPage = lazy(() => import("./Pages/PrivacyPolicy/PrivacyPolicy"));
+const RefundPolicyPage = lazy(() => import("./Pages/RefundPolicy/RefundPolicy"));
+const GuidelinesPage = lazy(() => import("./Pages/Guidelines/Guidelines"));
 
 function App() {
   const isAuth = useSelector((state) => state.auth.loggedIn);
@@ -26,7 +33,35 @@ function App() {
       <Suspense fallback={<Loading />}>
         <Switch>
           <Route path="/" exact>
-            <Home />
+            <HomePage />
+          </Route>
+
+          <Route path="/advertiser" exact>
+            <AdvertiserPage />
+          </Route>
+
+          <Route path="/publisher" exact>
+            <PublisherPage />
+          </Route>
+
+          <Route path="/affiliate" exact>
+            <AffililatePage />
+          </Route>
+
+          <Route path="/tos" exact>
+            <TermsPage />
+          </Route>
+
+          <Route path="/privacy-policy" exact>
+            <PrivacyPolicyPage />
+          </Route>
+
+          <Route path="/refund-policy" exact>
+            <RefundPolicyPage />
+          </Route>
+
+          <Route path="/guidelines" exact>
+            <GuidelinesPage />
           </Route>
 
           <Route path="/login">

@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import styles from "./Content.module.css";
+import styles from "../Common/Content.module.css";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -21,6 +21,7 @@ const MidContent = (props) => {
             <img src={props.img} alt="Adtol" />
           </div>
           <div className={styles.heading}>
+            {props.subheading && <span className={styles.contentHeading}>{props.subheading}</span>}
             <span className={styles.subheading}>{props.children}</span>
             <div className={[styles.block, styles.mt_5].join(" ")}>
               <Button
@@ -30,7 +31,7 @@ const MidContent = (props) => {
                 variant="outlined"
                 color="primary"
               >
-                Read More...
+                {props.btnText ? props.btnText:'Read More...'}
               </Button>
             </div>
           </div>
