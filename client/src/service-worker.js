@@ -35,6 +35,10 @@ registerRoute(
 
     if (url.pathname.startsWith('/_')) {
       return false;
+    } // If url for admin, skip
+
+    if (url.pathname.startsWith('/admin')) {
+      return false;
     } // If this looks like a URL for a resource, because it contains // a file extension, skip.
 
     if (url.pathname.match(fileExtensionRegexp)) {

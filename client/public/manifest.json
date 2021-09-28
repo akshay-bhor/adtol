@@ -20,7 +20,7 @@
       "pupose": "any maskable"
     }
   ],
-  "start_url": ".",
+  "start_url": "/dashboard",
   "display": "standalone",
   "theme_color": "#531f8b",
   "background_color": "#ffffff"
