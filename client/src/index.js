@@ -2,13 +2,13 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import { Provider } from "react-redux";
 import store from "./store/store";
 import { BrowserRouter } from "react-router-dom";
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
-const theme = createMuiTheme({
+const theme = createTheme({
   typography: {
     fontFamily: ["Lato", "sans-serif"].join(","),
   },

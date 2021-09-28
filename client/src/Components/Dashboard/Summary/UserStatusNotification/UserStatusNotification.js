@@ -34,6 +34,9 @@ const UserStatusNotification = () => {
                 if(!userStatus.hasCamp || !userStatus.hasPay || !userStatus.hasWeb || userStatus.isLow) {
                     setOpen(_ => true);
                 }
+                else {
+                    localStorage.setItem('hideUserStatusNotification', true);
+                }
             }
         }
     }, [userStatus]);

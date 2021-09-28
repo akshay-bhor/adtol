@@ -61,7 +61,10 @@ const Summary = () => {
 
     useEffect(() => {
         dispatch(fetchSummaryData());
-        dispatch(fetchUserStatus());
+
+        // Check weather to check for status
+        const hideNotification = localStorage.getItem('hideUserStatusNotification');
+        if(!hideNotification) dispatch(fetchUserStatus());
 
         return () => {
             abortSummaryRequest();

@@ -66,7 +66,7 @@ const ViewClicksChart = (props) => {
 
   return (
     <PaperBlock heading="By Date" fullWidth={props.fullWidth ? true : false}>
-      <div ref={chartRef} id="ad_view_clicks_chart" style={chartContent}></div>
+      <div ref={chartRef} id="view_clicks_chart" style={chartContent}></div>
     </PaperBlock>
   );
 };

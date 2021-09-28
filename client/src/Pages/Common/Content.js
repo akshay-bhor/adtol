@@ -8,13 +8,11 @@ const useStyles = makeStyles(theme => ({
     heading: {
         fontSize: '30px',
         fontWeight: '600',
-        color: theme.palette.primary.main,
-        textShadow: `
-            0.025em 0.025em 0 #66ffc2,
-            0.05em 0.05em 0 #99c2ff,
-            0.075em 0.075em 0 #ffc61a,
-            0.1em 0.1em 0 #6666ff
-        `,
+        color: 'transparent',
+        backgroundImage: 'linear-gradient(to right, #0000ff, #531f8b)',
+        '-webkit-background-clip': 'text',
+        '-moz-background-clip': 'text',
+        backgroundClip: 'text'
     }
 }));
 

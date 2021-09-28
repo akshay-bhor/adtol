@@ -5,10 +5,11 @@ import PaperBlock from "./PaperBlock";
 const chartContent = {
   display: "block",
   width: "100%",
+  minHeight: '400px',
   margin: "20px 10px",
 };
 
-const flattenData = (data) => { console.log(data);
+const flattenData = (data) => {
   // Check if not all zero
   if(typeof data !== 'object') return [];
   const check = Object.keys(data).filter((key) => data[key].clicks > 0);

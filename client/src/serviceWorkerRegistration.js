@@ -72,6 +72,10 @@ function registerValidSW(swUrl, config) {
                   'tabs for this page are closed. See https://cra.link/PWA.'
               );
 
+              // Force cold boot
+              const loc = window.location;
+              window.location.href = loc + '?force_cold_boot=1';
+
               // Execute callback
               if (config && config.onUpdate) {
                 config.onUpdate(registration);

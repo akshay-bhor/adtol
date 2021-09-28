@@ -5,6 +5,7 @@ import PaperBlock from "./PaperBlock";
 const chartContent = {
   display: "block",
   width: '100%',
+  minHeight: '420px',
   margin: "20px 10px",
 };
 
