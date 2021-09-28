@@ -26,7 +26,7 @@ exports.registerHelper = async (req) => {
     if(!req.body.gid)
         await check('pass').exists().isLength({ min:8 }).withMessage('Minimum Password Length is 8!').run(req);
     await check('country').exists().isInt().withMessage('Invalid Country').run(req);
-    await check('mobile').exists().isInt().isLength({ min:4, max:10 }).withMessage('Invalid Phone no!').run(req);
+    await check('mobile').exists().isInt().isLength({ min:4, max:10 }).withMessage('Min length 4, Max 10').isMobilePhone('Invalid Mobile').withMessage('Invalid Phone no!').run(req);
     await check('name').optional().isAlpha().withMessage('Only letters allowed in name').run(req);
     await check('surname').optional().isAlpha().withMessage('Only letters allowed in surname').run(req);
     await check('ac_type').exists().isInt().withMessage('Invalid Account Type!').run(req);
@@ -314,7 +314,7 @@ exports.changePassHelper = async (req) => {
                     mapToModel: User
                 }
             );
-            console.log(affected);
+            
             if(affected == 1) {
                 // Get userInfo
                 const userObj = await User.findOne({ where: { id: userid } });

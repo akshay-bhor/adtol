@@ -24,6 +24,7 @@ const TermsPage = lazy(() => import("./Pages/Terms/Terms"));
 const PrivacyPolicyPage = lazy(() => import("./Pages/PrivacyPolicy/PrivacyPolicy"));
 const RefundPolicyPage = lazy(() => import("./Pages/RefundPolicy/RefundPolicy"));
 const GuidelinesPage = lazy(() => import("./Pages/Guidelines/Guidelines"));
+const ContactPage = lazy(() => import("./Pages/Contact/Contact"));
 
 function App() {
   const isAuth = useSelector((state) => state.auth.loggedIn);
@@ -62,6 +63,10 @@ function App() {
 
           <Route path="/guidelines" exact>
             <GuidelinesPage />
+          </Route>
+
+          <Route path="/contact" exact>
+            <ContactPage />
           </Route>
 
           <Route path="/login">

@@ -5,7 +5,7 @@ import { registerValidationSchema } from './ValidationSchema';
 import { useDispatch, useSelector } from "react-redux";
 import { handleRegister, abortAuthRequest } from "../../store/actions/auth.action";
 import { abortFormDataRequest, fetchCountries } from "../../store/actions/formdata.action";
-import LoadReCaptcha from "./LoadReCaptcha";
+import LoadReCaptcha from "../Common/LoadReCaptcha";
 import { useHistory } from "react-router";
 import FormContent from "./FormContent";
 import { RECAPTCHA_SITE_KEY } from "../../util/load-scripts";

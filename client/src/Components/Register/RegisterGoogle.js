@@ -5,7 +5,7 @@ import { googleRegisterValidationSchema } from './ValidationSchema';
 import { useDispatch, useSelector } from "react-redux";
 import { handleRegister } from "../../store/actions/auth.action";
 import { abortFormDataRequest, fetchCountries  } from "../../store/actions/formdata.action";
-import LoadReCaptcha from "./LoadReCaptcha";
+import LoadReCaptcha from "../Common/LoadReCaptcha";
 import FormContent from "./FormContent";
 import { abortRequest } from "../../services/apiService";
 

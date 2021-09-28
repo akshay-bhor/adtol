@@ -76,6 +76,8 @@ export const forgotPassApi = (data) => conn.post('/auth/forgot-pass', data);
 
 export const resetPassApi = (data) => conn.post('/auth/reset-pass', data);
 
+export const sendMessageApi = (data) => conn.post('/contact/send-message', data);
+
 export const getAccountInfo = () => conn.get('/account');
 
 export const editAccountInfo = (data) => conn.post('/account/edit-details', data);
