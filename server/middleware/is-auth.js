@@ -4,7 +4,8 @@ const fs = require('fs');
 
 module.exports = async (req, res, next) => {
     // Get Public key
-    const PUB_KEY = fs.readFileSync(__dirname + '/../common/id_rsa_pub.pem', 'utf-8');
+    // const PUB_KEY = fs.readFileSync(__dirname + '/../common/id_rsa_pub.pem', 'utf-8');
+    const PUB_KEY = process.env.RSA_PUB_KEY;
 
     const authHeader = req.get('Authorization') || req.cookies['adminAuth'] || null;
     if(!authHeader) {

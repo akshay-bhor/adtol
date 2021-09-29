@@ -17,7 +17,7 @@ exports.allocateDailyBudget = async () => {
             mapToModel: Campaigns
         });
         
-        camps.forEach(async(data) => { 
+        for(let data in camps) { 
             let id = data.id;
             let budget_rem = data.budget_rem;
             let today_budget = data.today_budget;
@@ -41,7 +41,7 @@ exports.allocateDailyBudget = async () => {
                     replacements: [deficiet, deficiet, id]
                 });
             }
-        });
+        }
 
         cronLogWrite('Allocated daily budgets');
     } catch (err) {

@@ -5,6 +5,7 @@ const Timezones = require("../../../models/timezones");
 const Banner_Sizes = require("../../../models/banner_sizes");
 const Languages = require("../../../models/languages");
 const Btns = require("../../../models/btn");
+const Campaign_types = require("../../../models/campaign_types");
 const sequelize = require("../../../utils/db");
 const { QueryTypes } = require("sequelize");
 
@@ -80,6 +81,16 @@ exports.getSiteDataHelper = async (req) => {
             }
         });
 
+        // Get Btns
+        const campTypesData = await Campaign_types.findAll();
+        const campTypes = campTypesData.map(data => {
+            return {
+                id: data.dataValues.id,
+                name: data.dataValues.name,
+                icon: data.dataValues.icon
+            }
+        });
+
         return {
             cats,
             os,
@@ -87,7 +98,8 @@ exports.getSiteDataHelper = async (req) => {
             languages,
             timezones,
             banner_sizes,
-            btns
+            btns,
+            campTypes
         }
 
     } catch (err) {
@@ -212,6 +224,22 @@ exports.addSiteDataHelper = async (req) => {
             });
         }
 
+        if(type == 'campType') {
+            // Get max id
+            const query = await sequelize.query('SELECT id FROM campaign_types ORDER BY id DESC LIMIT 1', {
+                type: QueryTypes.SELECT,
+                mapToModel: Campaign_types
+            });
+            const maxId = query[0].id;
+            const newId = (maxId + 1);
+
+            await Campaign_types.create({
+                id: newId,
+                name: req.body.camp_type,
+                icon: req.body.camp_type_icon
+            });
+        }
+
         return {
             msg: 'success'
         }
@@ -282,6 +310,14 @@ exports.deleteSiteDataHelper = async (req) => {
 
         if(type == 'button') {
             await Btns.destroy({
+                where: {
+                    id: id
+                }
+            });
+        }
+
+        if(type == 'campType') {
+            await Campaign_types.destroy({
                 where: {
                     id: id
                 }

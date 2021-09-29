@@ -14,7 +14,8 @@ module.exports = class Token {
     issueToken = async (payload, exp, store = 0) => {
         
         // Get private key
-        const PRIV_KEY = fs.readFileSync(__dirname + '/id_rsa_priv.pem', 'utf-8');
+        // const PRIV_KEY = fs.readFileSync(__dirname + '/id_rsa_priv.pem', 'utf-8');
+        const PRIV_KEY = process.env.RSA_PRIV_KEY;
 
         if(store == 1) {
             let storedId = await this.storeToken(payload.id, exp);

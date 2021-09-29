@@ -1,5 +1,8 @@
 <%- include('includes/head.ejs') %>
 
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+
 <div class="jumbotron">
   <div class="container-md">
     <% if(error) { %> <%- include('includes/err.ejs') %> <% } %>
@@ -263,6 +266,51 @@
         />
       </form>
 
+    <h2 class="mt-5">Campaign Types</h2>
+      <form @submit.prevent @submit="addSiteData('campType')">
+        <div data-toggle="collapse" data-target="#campTypeRow" style="cursor:pointer;">Show Campaign Types</div>
+        <div class="collapse" id="campTypeRow">
+            <ul class="list-group">
+                <% for(var i=0; i < data.campTypes.length; i++) { %>
+                    <li class="list-group-item">
+                      <%= data.campTypes[i].name %>
+                      &nbsp;&nbsp;
+                      <span class="material-icons"><%= data.campTypes[i].icon %></span>
+                      &nbsp;&nbsp;
+                      <i class="fas fa-trash text-danger" style="cursor: pointer;" @click="deleteSiteData('campType', '<%= data.campTypes[i].id %>')"></i>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+        <div style="display: block;"><a target="_blank" href="https://fonts.google.com/icons" nofollow>See Icons</a></div>
+
+        <div class="row">
+          <input
+            type="text"
+            id="camp_type"
+            v-model="camp_type"
+            placeholder="App Installs"
+            name="camp_type"
+            class="form-control mb-3 mt-3 col-md-6"
+          />
+          <input
+            type="test"
+            id="camp_type_icon"
+            v-model="camp_type_icon"
+            placeholder="get_app"
+            name="camp_type_icon"
+            class="form-control mb-3 mt-3 col-md-6"
+          />
+        </div>
+
+        <input
+          type="submit"
+          name="submit"
+          value="Add Campaign Type"
+          class="btn btn-primary btn-block mt-3"
+        />
+      </form>
+
       
     </div>
   </div>
@@ -282,7 +330,9 @@
         lang: null,
         tz: null,
         banner_size: null,
-        button: null
+        button: null,
+        camp_type: null,
+        camp_type_icon: null
       };
     },
     methods: {
@@ -299,6 +349,10 @@
           if(type == 'tz') postData.tz = this.tz;
           if(type == 'banner_size') postData.banner_size = this.banner_size;
           if(type == 'button') postData.button = this.button;
+          if(type == 'campType') {
+            postData.camp_type = this.camp_type;
+            postData.camp_type_icon = this.camp_type_icon;
+          }
           const res = await axios.post(`/admin/site-data?type=${type}`, postData);
           alert(res.data.msg);
           location.reload();

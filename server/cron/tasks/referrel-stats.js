@@ -29,7 +29,7 @@ exports.updateReferrelStats = async () => {
         });
 
         // Update
-        yesterdayPayments.forEach(async(data) => { 
+        for(let data in yesterdayPayments) {
             if(data.ref_by != null) {
                 const ref_uid = data.ref_by;
                 if(!ref_uid) return;
@@ -60,7 +60,7 @@ exports.updateReferrelStats = async () => {
                     });
                 }
             }
-        });
+        }
        
         cronLogWrite('Updated referrel stats');
     } catch (err) {

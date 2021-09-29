@@ -11,7 +11,7 @@ exports.processDayParting = async () => {
             type: QueryTypes.SELECT
         });
         
-        adData.forEach(async(data) => {
+        for(let data in adData) {
             if(data.day == 0) {
                 return;
             }
@@ -45,7 +45,7 @@ exports.processDayParting = async () => {
                     });
                 }
             }
-        });
+        }
 
         cronLogWrite('Processed day parting');
     } catch (err) {

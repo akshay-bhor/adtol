@@ -1,2 +1,4 @@
 node_modules
 .env
+/common/id_rsa_pub.pem
+/common/id_rsa_priv.pem
