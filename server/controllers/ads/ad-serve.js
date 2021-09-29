@@ -181,7 +181,8 @@ exports.adServe = async (req, res, next) => {
 
         // Response
         res.status(200).json({
-            ads: resObj
+            ads: resObj,
+            adchoices: `${process.env.CLOUDFRONT_S3_ORIGIN}adchoices.svg`
         });
         res.end();
 

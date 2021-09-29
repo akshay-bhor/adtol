@@ -1,7 +1,7 @@
 import { baseURL } from "./util";
 
 const fetchAd = (token) => {
-    return fetch(`${baseURL}/api/ads/serve/${token}`, {
+    return fetch(`${baseURL}/api/display/serve/${token}`, {
         method: 'GET'
     })
     .then(res => { 

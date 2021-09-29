@@ -37,7 +37,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-nginx-spa-dev:bd2a0c3704fd04137fbe3c7dc9a6b13793c2eeef",
+      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-nginx-spa-dev:fb04467d6f72191d902d432c3a476882f98e1167",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": [
@@ -96,6 +96,22 @@
           "name": "AES_KEY"
         },
         {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_REGION",
+          "name": "AWS_REGION"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_S3_ACCESS_KEY",
+          "name": "AWS_S3_ACCESS_KEY"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_S3_BUCKET_NAME",
+          "name": "AWS_S3_BUCKET_NAME"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_S3_SECRET_KEY",
+          "name": "AWS_S3_SECRET_KEY"
+        },
+        {
           "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_SES_ACCESS_KEY",
           "name": "AWS_SES_ACCESS_KEY"
         },
@@ -104,12 +120,8 @@
           "name": "AWS_SES_SECRET_KEY"
         },
         {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_REGION",
-          "name": "AWS_REGION"
-        },
-        {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_EMAIL_SENDING_RATE",
-          "name": "EMAIL_SENDING_RATE"
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_CLOUDFRONT_S3_ORIGIN",
+          "name": "CLOUDFRONT_S3_ORIGIN"
         },
         {
           "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_DIALECT",
@@ -134,6 +146,10 @@
         {
           "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_USER",
           "name": "DB_USER"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_EMAIL_SENDING_RATE",
+          "name": "EMAIL_SENDING_RATE"
         },
         {
           "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_GOOGLE_CLIENT_ID",
@@ -172,20 +188,12 @@
           "name": "RECAPTCHA_SECRET"
         },
         {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_S3_BUCKET_NAME",
-          "name": "AWS_S3_BUCKET_NAME"
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_RSA_PRIV_KEY",
+          "name": "RSA_PRIV_KEY"
         },
         {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_S3_ACCESS_KEY",
-          "name": "AWS_S3_ACCESS_KEY"
-        },
-        {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_S3_SECRET_KEY",
-          "name": "AWS_S3_SECRET_KEY"
-        },
-        {
-          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_CLOUDFRONT_S3_ORIGIN",
-          "name": "CLOUDFRONT_S3_ORIGIN"
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_RSA_PUB_KEY",
+          "name": "RSA_PUB_KEY"
         }
       ],
       "dockerSecurityOptions": null,
@@ -193,7 +201,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-node-dev:bd2a0c3704fd04137fbe3c7dc9a6b13793c2eeef",
+      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-node-dev:fb04467d6f72191d902d432c3a476882f98e1167",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
@@ -220,7 +228,7 @@
     "EC2",
     "FARGATE"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:205900288504:task-definition/adtol-dev:26",
+  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:205900288504:task-definition/adtol-dev:54",
   "family": "adtol-dev",
   "requiresAttributes": [
     {
@@ -290,7 +298,7 @@
   ],
   "networkMode": "awsvpc",
   "cpu": "512",
-  "revision": 26,
+  "revision": 54,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,

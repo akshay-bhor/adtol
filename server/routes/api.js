@@ -10,7 +10,7 @@ const contactRoutes = require('./contact/contact');
 router.use('/auth', authRoutes);
 router.use('/dashboard', dashRoutes);
 router.use('/account', acRoutes);
-router.use('/ads', adRoutes);
+router.use('/display', adRoutes);
 router.use('/contact', contactRoutes);
 
 module.exports = router;

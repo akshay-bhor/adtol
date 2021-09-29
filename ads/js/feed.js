@@ -54,7 +54,7 @@ if (!isHidden(parent)) {
               />
               <a target="_blank" href="https://www.adtol.com">
                 <img
-                    src="https://www.adtol.com/images/adchoices.svg"
+                    src="${res.adchoices}"
                     alt="ad"
                     title="Ads by AdTol.com"
                     style="position: absolute; top: 0; right: 0; width: 16px"

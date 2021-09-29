@@ -113,4 +113,4 @@ const currScript = document.currentScript;
 const scriptId = currScript.getAttribute("id");
 const token = window[`adtol_ad_client_${scriptId}`];
 
-makePopunder(`${baseURL}/api/ads/pop/${token}`);    
+makePopunder(`${baseURL}/api/display/pop/${token}`);    
