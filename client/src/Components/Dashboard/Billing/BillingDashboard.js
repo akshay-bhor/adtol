@@ -203,7 +203,7 @@ const BillingDashboard = () => {
       );
     }
     if (params.colDef.field == "time") {
-      return DateTime.fromSeconds(params.value, { zone: 'utc' }).toLocaleString(
+      return DateTime.fromSeconds(params.value, { zone: 'utc' }).toLocal().toLocaleString(
         {...DateTime.DATETIME_SHORT, hour12: true}
       );
     }
