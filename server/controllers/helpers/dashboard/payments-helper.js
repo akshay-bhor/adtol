@@ -176,7 +176,10 @@ const capturePayment = async (id, amt, currency) => {
 
 const customMinDepositAmtValidation = async(amt, { req }) => {
     // Check Min Deposit Amount
-    let minDeposit = App_Settings.web_settings.min_deposit;
+    const getMinDeposit = await sequelize.query('SELECT min_deposit FROM settings', {
+        type: QueryTypes.SELECT,
+    });
+    let minDeposit = getMinDeposit[0].min_deposit;
     
     if(amt < minDeposit) { 
         throw new Error(`Minumum Deposit Amount is ${minDeposit}`);

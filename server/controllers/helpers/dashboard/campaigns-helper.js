@@ -48,7 +48,7 @@ exports.campaignsHelper = async(req) => {
         campaigns.forEach(data => {
             let campData = {};
             campData.id = data.id;
-            campData.name = decodeURI(data.campaign_title);
+            campData.name = he.decode(data.campaign_title);
             campData.cpc = data.cpc;
             campData.views = data.views;
             campData.clicks = data.clicks;

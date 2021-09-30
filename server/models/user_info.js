@@ -52,7 +52,7 @@ const User_Info = sequelize.define('user_info', {
     }
 }, 
 {
-    freezeTableName: true,
+    timestamps: true,
     indexes: [
         {
             name: 'verify',

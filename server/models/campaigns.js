@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../utils/db');
 
-const Campaigns = sequelize.define('campaign', {
+const Campaigns = sequelize.define('campaigns', {
     id: { // Campaign Id
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -168,6 +168,11 @@ const Campaigns = sequelize.define('campaign', {
             name: 'today_budget_rem',
             using: 'BTREE',
             fields: ['today_budget_rem']
+        },
+        {
+            name: 'uid',
+            using: 'BTREE',
+            fields: ['uid']
         }
     ]
 });

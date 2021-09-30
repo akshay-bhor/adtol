@@ -1,7 +1,7 @@
 const sequelize = require('../utils/db');
 const { DataTypes } = require('sequelize');
 
-const Clicks = sequelize.define('click', {
+const Clicks = sequelize.define('clicks', {
     id: {
         type: DataTypes.BIGINT(14),
         primaryKey: true,
@@ -96,12 +96,12 @@ const Clicks = sequelize.define('click', {
         allowNull: false
     },
     day_unix: {
-        type: DataTypes.BIGINT(12),
+        type: DataTypes.BIGINT(10),
         allowNull: false,
         defaultValue: 0
     },
     time_unix: {
-        type: DataTypes.BIGINT(12),
+        type: DataTypes.BIGINT(10),
         allowNull: false,
         defaultValue: 0
     },
@@ -110,6 +110,24 @@ const Clicks = sequelize.define('click', {
         allowNull:false,
         defaultValue: 1
     }
+}, {
+    indexes: [
+        {
+            name: 'iptiny',
+            using: 'BTREE',
+            fields: ['ip_tiny']
+        },
+        {
+            name: 'day_unix',
+            using: 'BTREE',
+            fields: ['day_unix']
+        },
+        {
+            name: 'ad_id',
+            using: 'BTREE',
+            fields: ['ad_id']
+        }
+    ]
 });
 
 module.exports = Clicks;

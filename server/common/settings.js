@@ -88,11 +88,11 @@ exports.loadSettings = async () => {
     tmp = [];
 
     // Web settings
-    let web_settings = await Settings.findAll();
-    web_settings.forEach((data) => {
-      tmp = { ...data.dataValues };
-    });
-    App_Settings.web_settings = { ...tmp };
+    // let web_settings = await Settings.findAll();
+    // web_settings.forEach((data) => {
+    //   tmp = { ...data.dataValues };
+    // });
+    // App_Settings.web_settings = { ...tmp };
   } catch (err) {
     console.log(err);
     console.log("Failed to load common web settings");

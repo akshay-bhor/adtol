@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../utils/db');
 
-const Issued_Tokens = sequelize.define('issued_token', {
+const Issued_Tokens = sequelize.define('issued_tokens', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -13,7 +13,7 @@ const Issued_Tokens = sequelize.define('issued_token', {
         allowNull: false
     },
     exp: {
-        type: DataTypes.BIGINT(12),
+        type: DataTypes.BIGINT(10),
         allowNull: false
     },
     blacklisted: {

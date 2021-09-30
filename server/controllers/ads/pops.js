@@ -66,7 +66,7 @@ exports.processPop = async (req, res, next) => {
         const bCode = req.bCode;
 
         // Find country code
-        let cCode = req.cCode;
+        const cCode = req.cCode;
 
         /**
          * Ad serve constraint to match via db => match_hash(bot,status,type,adult,run), today_budget_rem, domain_hash, size
@@ -133,7 +133,7 @@ exports.processPop = async (req, res, next) => {
         }
         else {
             // Check pub pop
-            const pubValid = await Pops.findOne({ where: { day_unix: day_unix, ip_tiny: ip_tiny }, attributes: ['id'] }); console.log(pubValid);
+            const pubValid = await Pops.findOne({ where: { day_unix: day_unix, ip_tiny: ip_tiny }, attributes: ['id'] });
             if(pubValid) {
                 pubValidPop = false;
             }

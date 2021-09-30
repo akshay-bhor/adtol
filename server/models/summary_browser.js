@@ -54,8 +54,6 @@ const Summary_Browser = sequelize.define('summary_browser', {
         defaultValue: 0
     }
 }, {
-    freezeTableName: true,
-    timestamps: false,
     indexes: [
         {
             name: 'aduid_dayunix',

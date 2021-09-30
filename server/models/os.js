@@ -17,9 +17,6 @@ const Os = sequelize.define('os', {
         allowNull: false,
         defaultValue: 0
     }
-}, {
-    // Force sequelize to use singular table name
-    freezeTableName: true
 });
 
 module.exports = Os;

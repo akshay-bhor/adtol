@@ -1,7 +1,7 @@
 const sequelize = require('../utils/db');
 const { DataTypes } = require('sequelize');
 
-const Views = sequelize.define('view', {
+const Views = sequelize.define('views', {
     id: {
         type: DataTypes.BIGINT(15),
         primaryKey: true,
@@ -84,12 +84,12 @@ const Views = sequelize.define('view', {
         defaultValue: 0
     },
     day_unix: {
-        type: DataTypes.BIGINT(12),
+        type: DataTypes.BIGINT(10),
         allowNull: false,
         defaultValue: 0
     },
     time_unix: {
-        type: DataTypes.BIGINT(12),
+        type: DataTypes.BIGINT(10),
         allowNull: false,
         defaultValue: 0
     }

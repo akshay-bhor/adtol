@@ -56,8 +56,6 @@ const Summary_Country = sequelize.define('summary_country', {
         defaultValue: 0
     }
 }, {
-    freezeTableName: true,
-    timestamps: false,
     indexes: [
         {
             name: 'aduid_dayunix',

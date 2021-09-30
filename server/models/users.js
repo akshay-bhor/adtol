@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 
 const sequelize = require('../utils/db');
 
-const User = sequelize.define('user', {
+const User = sequelize.define('users', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -120,6 +120,7 @@ const User = sequelize.define('user', {
     }
 }, 
 {
+    timestamps: true,
     indexes: [
         {
             name: 'mobile',

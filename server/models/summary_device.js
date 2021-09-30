@@ -54,8 +54,6 @@ const Summary_Device = sequelize.define('summary_device', {
         defaultValue: 0
     }
 }, {
-    freezeTableName: true,
-    timestamps: false,
     indexes: [
         {
             name: 'aduid_dayunix',

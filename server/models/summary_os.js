@@ -54,8 +54,6 @@ const Summary_Os = sequelize.define('summary_os', {
         defaultValue: 0
     }
 }, {
-    freezeTableName: true,
-    timestamps: false,
     indexes: [
         {
             name: 'aduid_dayunix',

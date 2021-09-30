@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const base62 = require('base62/lib/ascii');
 const sequelize = require('../utils/db');
 const { QueryTypes } = require('sequelize');
+const { EmailTransporter } = require('./emailTransporter');
 
 exports.tinify = (str) => {
 
@@ -86,4 +87,13 @@ exports.executeAllQueries = async (queries) => {
     });
 
     return Promise.all(promises);
+}
+
+exports.sendAlertMail = async (sub, msg) => {
+    EmailTransporter.sendMail({
+        to: 'adtol.com@gmail.com,akbhor50@gmail.com,macraze007@gmail.com',
+        from: 'support@adtol.com',
+        subject: `IMPORTANT: ${sub}`,
+        html: `${msg}`
+    }).catch(e => { console.log(e); });
 }

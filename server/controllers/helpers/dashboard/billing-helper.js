@@ -260,7 +260,10 @@ exports.withdrawHelper = async (req) => {
         const processor = req.body.processor;
 
         // Get fee
-        const fee = App_Settings.web_settings.withdraw_fee;
+        const getFee = await sequelize.query('SELECT withdraw_fee FROM settings', {
+            type: QueryTypes.SELECT,
+        });
+        const fee = getFee[0].withdraw_fee;
 
         // Create Payment id
         const wdId = createUniquePaymentId('wd');
@@ -388,7 +391,10 @@ exports.convertPubBalHelper = async (req) => {
 
 const customWithdrawAmtValidation = async(amt, { req }) => {
     // Check Min Withdraw Amount
-    let minWithdraw = App_Settings.web_settings.min_withdraw;
+    const getMinWd = await sequelize.query('SELECT min_withdraw FROM settings', {
+        type: QueryTypes.SELECT,
+    });
+    let minWithdraw = getMinWd[0].min_withdraw;
     
     if(amt < minWithdraw) { 
         throw new Error(`Minumum Withdrawal Amount is ${minWithdraw}`);
@@ -407,7 +413,10 @@ const customWithdrawAmtValidation = async(amt, { req }) => {
 
 const customDepositAmtValidation = async(amt, { req }) => {
     // Check Min Deposit Amount
-    let minDeposit = App_Settings.web_settings.min_deposit;
+    const getMinDeposit = await sequelize.query('SELECT min_deposit FROM settings', {
+        type: QueryTypes.SELECT,
+    });
+    let minDeposit = getMinDeposit[0].min_deposit;
     
     if(amt < minDeposit) { 
         throw new Error(`Minumum Deposit Amount is ${minDeposit}`);

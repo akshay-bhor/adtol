@@ -8,18 +8,19 @@ const tasks = require('./cron/cron-jobs');
 const app = express();
 const cluster = require('cluster');
 const helmet = require('helmet');
-const { verifyEmailTransport } = require('./common/emailTransporter');
+// const { verifyEmailTransport } = require('./common/emailTransporter');
+const { sendAlertMail } = require('./common/util');
 let retryCount = 0;
 
 if(cluster.isMaster) {
     console.log(`Master Process: ${process.pid} is running`);
 
     // Fork workers equals no of CPUs'
-    // for(let i = 1; i <= require('os').cpus().length; i++) {
-    //     cluster.fork();
-    //     console.log(`Forked worker ${i}`);
-    // }
-    cluster.fork();
+    const vCPUs = require('os').cpus().length;
+    for(let i = 1; i <= vCPUs; i++) {
+        cluster.fork();
+        console.log(`Forked worker ${i}`);
+    }
 
     // Check if any worker comes online
     cluster.on('online', (worker) => {
@@ -29,10 +30,15 @@ if(cluster.isMaster) {
     // Check if worker died and fork a new one
     cluster.on('exit', (worker) => {
         console.log(`Worker ${worker.process.pid} died`);
-        if(retryCount < 5) {
+        if(retryCount < process.env.MAX_SPAWN_RETRY) {
             cluster.fork();
             console.log('Forking new worker, retry count - ' + retryCount);
             retryCount++;
+        }
+        else {
+            sendAlertMail(`${process.env.ORIGIN} API Server Down`, `Worker Instance Spawning has exceeded maximum threshold.<br />
+            <b>Retry Count - ${retryCount}.</b><br />
+            API server maybe down. Please investigate!`);
         }
     });
 }

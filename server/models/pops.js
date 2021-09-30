@@ -1,7 +1,7 @@
 const sequelize = require('../utils/db');
 const { DataTypes } = require('sequelize');
 
-const Pops = sequelize.define('pop', {
+const Pops = sequelize.define('pops', {
     id: {
         type: DataTypes.BIGINT(14),
         primaryKey: true,
@@ -92,12 +92,12 @@ const Pops = sequelize.define('pop', {
         allowNull: false
     },
     day_unix: {
-        type: DataTypes.BIGINT(12),
+        type: DataTypes.BIGINT(10),
         allowNull: false,
         defaultValue: 0
     },
     time_unix: {
-        type: DataTypes.BIGINT(12),
+        type: DataTypes.BIGINT(10),
         allowNull: false,
         defaultValue: 0
     },
@@ -106,6 +106,19 @@ const Pops = sequelize.define('pop', {
         allowNull:false,
         defaultValue: 1
     }
+}, {
+    indexes: [
+        {
+            name: 'iptiny_dayunix',
+            using: 'BTREE',
+            fields: ['ip_tiny', 'day_unix']
+        },
+        {
+            name: 'ad_id',
+            using: 'BTREE',
+            fields: ['ad_id']
+        }
+    ]
 });
 
 module.exports = Pops;

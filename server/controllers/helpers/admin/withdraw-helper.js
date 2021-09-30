@@ -21,7 +21,7 @@ exports.adminWithdrawsListHelper = async (req) => {
 
     // Convert dates to unix
     sDate = Math.floor(new Date(sDate).getTime() / 1000);
-    eDate = Math.floor((new Date(eDate).getTime() / 1000) + (60*60*24)); // 1 more day for BETWEEN query
+    eDate = Math.floor((new Date(eDate).getTime() / 1000) + (60*60*24)); // Add 1 more day for bcoz today_unix is at 12AM
 
     // Offset & Limit
     const limit = 50;

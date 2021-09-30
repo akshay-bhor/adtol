@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/db");
 
-const Ads = sequelize.define('ad', {
+const Ads = sequelize.define('ads', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -34,7 +34,6 @@ const Ads = sequelize.define('ad', {
             fields: ['match_hash']
         }
     ],
-    timestamps: false
 });
 
 module.exports = Ads;

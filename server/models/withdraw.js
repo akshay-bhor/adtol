@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/db");
 
 
-const Withdraw = sequelize.define('withdraw', {
+const Withdraw = sequelize.define('withdraws', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,

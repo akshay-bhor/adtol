@@ -1,7 +1,7 @@
 const sequelize = require('../utils/db');
 const { DataTypes } = require('sequelize');
 
-const Ref_Stats = sequelize.define('ref_stat', {
+const Ref_Stats = sequelize.define('ref_stats', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -18,7 +18,7 @@ const Ref_Stats = sequelize.define('ref_stat', {
         defaultValue: 0
     },
     day_unix: {
-        type: DataTypes.BIGINT(12),
+        type: DataTypes.BIGINT(10),
         allowNull: false
     }
 },

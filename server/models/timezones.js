@@ -1,7 +1,7 @@
 const sequelize = require('../utils/db');
 const { DataTypes } = require('sequelize');
 
-const Timezones = sequelize.define('timezone', {
+const Timezones = sequelize.define('timezones', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
