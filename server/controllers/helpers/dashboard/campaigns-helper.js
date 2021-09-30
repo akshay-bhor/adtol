@@ -792,9 +792,12 @@ exports.getCampaignFormDataHelper = async (req) => {
         });
 
         res[1].forEach(item => {
+            const version = item.dataValues.version;
+            let osName = `${item.dataValues.name} ${version} and up`;
+            if(!version || version == 0) osName = item.dataValues.name;
             os.push({
                 id: +item.dataValues.id,
-                name: `${item.dataValues.name} ${item.dataValues.version} and up`
+                name: osName
             });
         });
 
