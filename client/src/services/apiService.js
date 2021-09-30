@@ -40,7 +40,7 @@ conn.interceptors.response.use(
     if (err.response?.status === 303) {
       dispatch(authActions.setRequireRegister(true));
     } else if (err.response?.status === 401) {
-      dispatch(createLogout());
+      window.location.href = '/logout';
     } else {
       errMsg = handleErrorResponse(err);
       if (errMsg) {

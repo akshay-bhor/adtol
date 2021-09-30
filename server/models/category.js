@@ -9,7 +9,7 @@ const Categories = sequelize.define('categories', {
         autoIncrement: true
     },
     name: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(25),
         allowNull: false
     }
 });

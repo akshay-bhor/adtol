@@ -711,6 +711,8 @@ exports.getTimezonesHelper = async (req) => {
             result.push(timezone.dataValues.zone);
         });
 
+        result.sort();
+        
         return result;
 
     } catch(err) {
@@ -811,6 +813,7 @@ exports.getCampaignFormDataHelper = async (req) => {
         res[3].forEach(timezone => {
             timezones.push(timezone.dataValues.zone);
         });
+        timezones.sort();
 
         res[4].forEach(item => {
             btns.push({

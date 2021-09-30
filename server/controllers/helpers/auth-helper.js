@@ -26,7 +26,7 @@ exports.registerHelper = async (req) => {
     if(!req.body.gid)
         await check('pass').exists().isLength({ min:8 }).withMessage('Minimum Password Length is 8!').run(req);
     await check('country').exists().isInt().withMessage('Invalid Country').run(req);
-    await check('mobile').exists().isInt().isLength({ min:4, max:10 }).withMessage('Min length 4, Max 10').isMobilePhone('Invalid Mobile').withMessage('Invalid Phone no!').run(req);
+    await check('mobile').exists().isInt().isLength({ min:4, max:10 }).withMessage('Min length 4, Max 10').withMessage('Invalid Phone no!').escape().run(req);
     await check('name').optional().isAlpha().withMessage('Only letters allowed in name').run(req);
     await check('surname').optional().isAlpha().withMessage('Only letters allowed in surname').run(req);
     await check('ac_type').exists().isInt().withMessage('Invalid Account Type!').run(req);
@@ -67,7 +67,8 @@ exports.registerHelper = async (req) => {
             throw new Error('Email Already Exist!');
         }
         // Check referrel
-        let ref_by = base62.decode(req.body.ref_by);
+        let ref_by = null;
+        if(req.body.ref_by) ref_by = base62.decode(req.body.ref_by);
         const refExist = await User.findOne({ where: { id: ref_by } });
         if(!refExist) {
             ref_by = null;

@@ -90,8 +90,7 @@ function App() {
           </Route>
 
           <Route path="/logout">
-            {isAuth && <Logout />}
-            {!isAuth && <Redirect to="/" />}
+            <Logout />
           </Route>
 
           <Route path="/dashboard" component={PrivateRoute(Dashboard)} />

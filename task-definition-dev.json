@@ -37,7 +37,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-nginx-spa-dev:fb04467d6f72191d902d432c3a476882f98e1167",
+      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-nginx-spa-dev:eb822a5f5a272a4b2d621886d796c5c1ee9dcdc2",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": [
@@ -194,6 +194,10 @@
         {
           "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_RSA_PUB_KEY",
           "name": "RSA_PUB_KEY"
+        },
+        {
+          "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_MAX_SPAWN_RETRY",
+          "name": "MAX_SPAWN_RETRY"
         }
       ],
       "dockerSecurityOptions": null,
@@ -201,7 +205,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-node-dev:fb04467d6f72191d902d432c3a476882f98e1167",
+      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-node-dev:eb822a5f5a272a4b2d621886d796c5c1ee9dcdc2",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
@@ -228,7 +232,7 @@
     "EC2",
     "FARGATE"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:205900288504:task-definition/adtol-dev:54",
+  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:205900288504:task-definition/adtol-dev:56",
   "family": "adtol-dev",
   "requiresAttributes": [
     {
@@ -298,7 +302,7 @@
   ],
   "networkMode": "awsvpc",
   "cpu": "512",
-  "revision": 54,
+  "revision": 56,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,

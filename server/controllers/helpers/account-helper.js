@@ -51,7 +51,7 @@ exports.editAccountDetailsHelper = async (req) => {
         await check('name').trim().escape().isAlpha().withMessage('Only letters allowed in name!').run(req);
     if(req.body.surname)
         await check('surname').trim().escape().isAlpha().withMessage('Only letters allowed in last name!').run(req);
-    await check('mobile').trim().escape().isMobilePhone().withMessage('Invalid Mobile Number!').run(req);
+    await check('mobile').exists().isInt().isLength({ min:4, max:10 }).withMessage('Min length 4, Max 10').escape().withMessage('Invalid Mobile Number!').run(req);
 
     try {
         const errs = validationResult(req);
