@@ -193,7 +193,7 @@ const BillingDashboard = () => {
       return "$" + params.value;
     }
     if (params.colDef.field == "fee") {
-      return "$" + params.value;
+      return params.value + "%";
     }
     if (params.colDef.field == "processor") {
       return (

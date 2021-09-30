@@ -131,23 +131,23 @@ export const websitesCols = () => {
 }
 
 export const paymentCols = [
-  { field: "payment_id", headerName: "Payment ID", flex: 0.8 },
-  { field: "order_id", headerName: "Order ID", flex: 1 },
-  { field: "amount", headerName: "Amount", flex: 0.8 },
-  { field: "currency", headerName: "Currency", flex: 0.5 },
-  { field: "status", headerName: "Status", flex: 0.6 },
-  { field: "processor", headerName: "Processor", flex: 0.6 },
-  { field: "time", headerName: "Time", flex: 0.8 },
+  { field: "payment_id", headerName: "Payment ID", flex: 0.8, headerAlign: 'center' },
+  { field: "order_id", headerName: "Order ID", flex: 1, headerAlign: 'center' },
+  { field: "amount", headerName: "Amount", flex: 0.8, headerAlign: 'center' },
+  { field: "currency", headerName: "Currency", flex: 0.5, headerAlign: 'center' },
+  { field: "status", headerName: "Status", flex: 0.6, headerAlign: 'center' },
+  { field: "processor", headerName: "Processor", flex: 0.6, headerAlign: 'center' },
+  { field: "time", headerName: "Time", flex: 0.8, headerAlign: 'center' },
 ];
 
 export const withdrawCols = [
-  { field: "payment_id", headerName: "Payment ID", flex: 0.8 },
-  { field: "amount", headerName: "Amount", flex: 0.8 },
-  { field: "fee", headerName: "Fee", flex: 0.8 },
-  { field: "currency", headerName: "Currency", flex: 0.5 },
-  { field: "status", headerName: "Status", flex: 0.6 },
-  { field: "processor", headerName: "Processor", flex: 0.6 },
-  { field: "time", headerName: "Time", flex: 0.8 },
+  { field: "payment_id", headerName: "Payment ID", flex: 0.8, headerAlign: 'center' },
+  { field: "amount", headerName: "Amount", flex: 0.8, headerAlign: 'center' },
+  { field: "fee", headerName: "Fee", flex: 0.8, headerAlign: 'center' },
+  { field: "currency", headerName: "Currency", flex: 0.5, headerAlign: 'center' },
+  { field: "status", headerName: "Status", flex: 0.6, headerAlign: 'center' },
+  { field: "processor", headerName: "Processor", flex: 0.6, headerAlign: 'center' },
+  { field: "time", headerName: "Time", flex: 0.8, headerAlign: 'center' },
 ];
 
 export const breakdownByListAd = () => ([
