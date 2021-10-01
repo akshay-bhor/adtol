@@ -25,7 +25,7 @@ if (!isHidden(parent)) {
   // Fetch API
   fetchAd(token)
     .then((res) => {
-      ads = res.ads;
+      const ads = res.ads;
       let html = "";
 
       for (let i in ads) {

@@ -32,7 +32,7 @@ if (!isHidden(parent)) {
   // Fetch API
   fetchAd(token)
     .then((res) => {
-      ads = res.ads;
+      const ads = res.ads;
 
       for (let i in ads) {
         let rel = "";

@@ -14,7 +14,7 @@ const randomId = (length) => {
 };
 
 const isHidden = (el) => {
-  var style = window.getComputedStyle(el);
+  const style = window.getComputedStyle(el);
   return (
     style.display === "none" ||
     style.height == 0 ||
