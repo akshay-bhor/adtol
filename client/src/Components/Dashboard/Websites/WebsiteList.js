@@ -85,7 +85,7 @@ const WebsiteList = () => {
   let rows = [];
 
   useEffect(() => {
-    if (data.length === 0 && !fetched) dispatch(fetchWebsites());
+    if (data.length === 0 || !fetched) dispatch(fetchWebsites());
 
     return () => {
       abortWebsiteRequest();
