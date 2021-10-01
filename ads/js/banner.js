@@ -26,13 +26,13 @@ if (!isHidden(parent)) {
   // Fetch API
   fetchAd(token)
     .then((res) => {
-      res = res.ads;
+      ads = res.ads;
       let html = "";
 
-      for (let i in res) {
+      for (let i in ads) {
         let rel = "";
-        if (res[i].rel == 0) rel = " rel='nofollow'";
-        if (res[i].rel == 2) rel = " rel='nofollow noreferrer noopener'";
+        if (ads[i].rel == 0) rel = " rel='nofollow'";
+        if (ads[i].rel == 2) rel = " rel='nofollow noreferrer noopener'";
 
         html += `
         <div
@@ -51,10 +51,10 @@ if (!isHidden(parent)) {
           target="_blank"
           style="display: inline-block"
           ${rel}
-          href="${res[i].process}"
+          href="${ads[i].process}"
           ><img
-            src="${res[i].banner}"
-            alt="${res[i].title}"
+            src="${ads[i].banner}"
+            alt="${ads[i].title}"
             style="position: relative" /></a
         ><a target="_blank" href="https://www.adtol.com"
           ><img

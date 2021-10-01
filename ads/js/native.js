@@ -26,13 +26,13 @@ if (!isHidden(parent)) {
   // Fetch API
   fetchAd(token)
     .then((res) => {
-      res = res.ads;
+      ads = res.ads;
       let html = "";
 
-      for (let i in res) {
+      for (let i in ads) {
         let rel = "";
-        if (res[i].rel == 0) rel = " rel='nofollow'";
-        if (res[i].rel == 2) rel = " rel='nofollow noreferrer noopener'";
+        if (ads[i].rel == 0) rel = " rel='nofollow'";
+        if (ads[i].rel == 2) rel = " rel='nofollow noreferrer noopener'";
 
         html += `
         <div
@@ -53,11 +53,11 @@ if (!isHidden(parent)) {
             target="_blank"
             style="display:flex;width:300px;height:150px;justify-content:center"
             ${rel}
-            href="${res[i].process}"
+            href="${ads[i].process}"
             ><img
               style="height:100%;width:100%"
-              src="${res[i].banner}"
-              alt="${res[i].title}"
+              src="${ads[i].banner}"
+              alt="${ads[i].title}"
           /></a>
         </div>
         <div
@@ -72,8 +72,8 @@ if (!isHidden(parent)) {
           <a
             target="_blank"
             style="font-size:16px;display:inline-block;text-decoration:none;overflow:hidden;text-overflow:ellipsis;line-height:24px"
-            href="${res[i].process}"
-            >${res[i].title}</a
+            href="${ads[i].process}"
+            >${ads[i].title}</a
           >
         </div>
         <div style="display:flex;justify-content:space-between;align-items:baseline;padding:0.25rem 0.5rem;height:45px">
@@ -87,14 +87,14 @@ if (!isHidden(parent)) {
               font-weight:600;
             "
           >
-          ${res[i].domain}
+          ${ads[i].domain}
           </div>
           <div style="display:inline-block;">
             <a
               target="_blank"
               style="display:inline-block"
               ${rel}
-              href="${res[i].process}"
+              href="${ads[i].process}"
               ><button
                 style="
                   background: #4d4dff;
@@ -107,7 +107,7 @@ if (!isHidden(parent)) {
                   box-shadow: 0 2px 5px 0 rgba(211, 209, 238, 0.5);
                 "
               >
-              ${res[i].btn}
+              ${ads[i].btn}
               </button></a
             >
           </div>

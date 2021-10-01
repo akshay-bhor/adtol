@@ -25,13 +25,13 @@ if (!isHidden(parent)) {
   // Fetch API
   fetchAd(token)
     .then((res) => {
-      res = res.ads;
+      ads = res.ads;
       let html = "";
 
-      for (let i in res) {
+      for (let i in ads) {
         let rel = "";
-        if (res[i].rel == 0) rel = " rel='nofollow'";
-        if (res[i].rel == 2) rel = " rel='nofollow noreferrer noopener'";
+        if (ads[i].rel == 0) rel = " rel='nofollow'";
+        if (ads[i].rel == 2) rel = " rel='nofollow noreferrer noopener'";
 
         html += `
         <div
@@ -54,9 +54,9 @@ if (!isHidden(parent)) {
               text-decoration: none;
             "
             ${rel}
-            href="${res[i].process}"
+            href="${ads[i].process}"
           >
-            <b>${res[i].title}</b></a
+            <b>${ads[i].title}</b></a
           >
         </div>
         <div style="color: #333; text-align: left !important">
@@ -82,7 +82,7 @@ if (!isHidden(parent)) {
               >Ad</span
             >
           </a>
-          ${res[i].domain}
+          ${ads[i].domain}
         </div>
         <div
           style="
@@ -92,7 +92,7 @@ if (!isHidden(parent)) {
             text-align: left !important;
           "
         >
-          ${res[i].desc}
+          ${ads[i].desc}
         </div>
       </div>
         `;

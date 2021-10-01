@@ -29,7 +29,7 @@ exports.updateReferrelStats = async () => {
         });
 
         // Update
-        for(let data in yesterdayPayments) {
+        for(let data of yesterdayPayments) {
             if(data.ref_by != null) {
                 const ref_uid = data.ref_by;
                 if(!ref_uid) return;

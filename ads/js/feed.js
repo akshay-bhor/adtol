@@ -32,12 +32,12 @@ if (!isHidden(parent)) {
   // Fetch API
   fetchAd(token)
     .then((res) => {
-      res = res.ads;
+      ads = res.ads;
 
-      for (let i in res) {
+      for (let i in ads) {
         let rel = "";
-        if (res[i].rel == 0) rel = " rel='nofollow'";
-        if (res[i].rel == 2) rel = " rel='nofollow noreferrer noopener'";
+        if (ads[i].rel == 0) rel = " rel='nofollow'";
+        if (ads[i].rel == 2) rel = " rel='nofollow noreferrer noopener'";
 
         html += `
         <div style="background:none!important;padding:0.5em;box-sizing:border-box">
@@ -45,12 +45,12 @@ if (!isHidden(parent)) {
           <a target="_blank"
             style="display:block"
             ${rel}
-            href="${res[i].process}"
+            href="${ads[i].process}"
             ><div style="position:relative;display:block">
               <img
                 style="width:100%;height:175px"
-                src="${res[i].banner}"
-                alt="${res[i].title}"
+                src="${ads[i].banner}"
+                alt="${ads[i].title}"
               />
               <a target="_blank" href="https://www.adtol.com">
                 <img
@@ -65,10 +65,10 @@ if (!isHidden(parent)) {
             <a style="display:inline-block;text-decoration:none!important;overflow:hidden;text-overflow:ellipsis;line-height:24px;height:48px"
               ${rel}
               target="_blank"
-              href="${res[i].process}"
-              >${res[i].title}</a
+              href="${ads[i].process}"
+              >${ads[i].title}</a
             >
-            <div style="color:#a0a0a0;font-weight:600;font-size:90%">${res[i].domain}</div>
+            <div style="color:#a0a0a0;font-weight:600;font-size:90%">${ads[i].domain}</div>
           </div>
         </div>
       </div>

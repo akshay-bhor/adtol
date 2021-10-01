@@ -2,7 +2,7 @@
 --
 -- Host: localhost    Database: adtol
 -- ------------------------------------------------------
--- Server version	8.0.26-0ubuntu0.20.04.2
+-- Server version	8.0.23
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -14,6 +14,14 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+SET @MYSQLDUMP_TEMP_LOG_BIN = @@SESSION.SQL_LOG_BIN;
+SET @@SESSION.SQL_LOG_BIN= 0;
+
+--
+-- GTID state at the beginning of the backup 
+--
+
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '';
 
 --
 -- Table structure for table `SequelizeMeta`
@@ -23,10 +31,10 @@ DROP TABLE IF EXISTS `SequelizeMeta`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `SequelizeMeta` (
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`name`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -152,7 +160,7 @@ CREATE TABLE `btns` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,7 +169,7 @@ CREATE TABLE `btns` (
 
 LOCK TABLES `btns` WRITE;
 /*!40000 ALTER TABLE `btns` DISABLE KEYS */;
-INSERT INTO `btns` VALUES (1,'Click Here');
+INSERT INTO `btns` VALUES (1,'Click Here'),(2,'Book Now'),(3,'Buy Now'),(4,'Call Now'),(5,'Contact Us'),(6,'Download'),(7,'Donate'),(8,'Follow'),(9,'Get Offer'),(10,'Install'),(11,'Join Now'),(12,'Learn More'),(13,'Play Game'),(14,'Register'),(15,'Send Email'),(16,'Sign Up'),(17,'Share'),(18,'Try Now'),(19,'Watch Video'),(20,'Use App');
 /*!40000 ALTER TABLE `btns` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -380,7 +388,7 @@ CREATE TABLE `issued_tokens` (
   `exp` bigint NOT NULL,
   `blacklisted` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -389,7 +397,6 @@ CREATE TABLE `issued_tokens` (
 
 LOCK TABLES `issued_tokens` WRITE;
 /*!40000 ALTER TABLE `issued_tokens` DISABLE KEYS */;
-INSERT INTO `issued_tokens` VALUES (1,1,1640787055,0),(2,1,1640787257,0),(3,1,1640787318,0),(4,1,1640787356,0),(5,1,1640787519,0);
 /*!40000 ALTER TABLE `issued_tokens` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -614,7 +621,7 @@ CREATE TABLE `settings` (
 
 LOCK TABLES `settings` WRITE;
 /*!40000 ALTER TABLE `settings` DISABLE KEYS */;
-INSERT INTO `settings` VALUES (1,1.00,5000.00,100.00,0.00,2.00,0.01000,10.00000,1.00000);
+INSERT INTO `settings` VALUES (1,1.00,5000.00,100.00,2.00,10.00,0.01000,1.00000,1.00000);
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1000,6 +1007,7 @@ LOCK TABLES `withdraws` WRITE;
 /*!40000 ALTER TABLE `withdraws` DISABLE KEYS */;
 /*!40000 ALTER TABLE `withdraws` ENABLE KEYS */;
 UNLOCK TABLES;
+SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1010,4 +1018,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-09-30 19:51:20
+-- Dump completed on 2021-10-01 13:14:07

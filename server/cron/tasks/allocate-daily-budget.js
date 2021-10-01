@@ -17,7 +17,7 @@ exports.allocateDailyBudget = async () => {
             mapToModel: Campaigns
         });
         
-        for(let data in camps) { 
+        for(let data of camps) { 
             let id = data.id;
             let budget_rem = data.budget_rem;
             let today_budget = data.today_budget;

@@ -11,7 +11,7 @@ exports.processDayParting = async () => {
             type: QueryTypes.SELECT
         });
         
-        for(let data in adData) {
+        for(let data of adData) {
             if(data.day == 0) {
                 return;
             }
