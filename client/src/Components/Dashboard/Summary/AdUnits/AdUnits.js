@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef } from "react";
 const chartContent = {
   display: "block",
   width: '100%',
-  margin: "20px 10px",
+  margin: "20px 0",
 }
 
 const AdUnits = (props) => {

@@ -89,7 +89,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     backgroundColor: "#fff",
     boxShadow: '0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)',
-    borderRadius: '10px'
+    borderRadius: '10px',
+    overflow: 'auto'
   },
 }));
 
@@ -279,6 +280,7 @@ const BillingDashboard = () => {
             pageSize={25}
             rowsPerPageOptions={[10, 25, 50]}
             pagination
+            style={{ minWidth: '1200px' }}
           ></DataGrid>
         </Tabpanel>
         <Tabpanel value={tabValue} index={1}>
@@ -291,6 +293,7 @@ const BillingDashboard = () => {
             pageSize={25}
             rowsPerPageOptions={[10, 25, 50]}
             pagination
+            style={{ minWidth: '1200px' }}
           ></DataGrid>
         </Tabpanel>
       </Box>

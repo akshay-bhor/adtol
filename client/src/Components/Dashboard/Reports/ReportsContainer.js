@@ -92,7 +92,7 @@ const ReportsContainer = ({ title, selectionOption, path }) => {
         >
           <Form className={styles.fullWidthForm}>
             <Grid container spacing={3}>
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <Box component={"div"}>
                   <MySelectField
                     name="duration"
@@ -111,7 +111,7 @@ const ReportsContainer = ({ title, selectionOption, path }) => {
                 </Box>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <Box component={"div"}>
                   <MySelectField
                     name={path === "advertiser" ? "campaign" : "website"}
@@ -130,7 +130,7 @@ const ReportsContainer = ({ title, selectionOption, path }) => {
                 </Box>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid item xs={12} md={4}>
                 <Box component={"div"}>
                   <Button
                     variant="contained"
@@ -198,7 +198,9 @@ const ReportsContainer = ({ title, selectionOption, path }) => {
             </Select>
           </Box>
         </Grid>
-
+      </PaperBlock>
+    
+      <Box className={styles.tableContainer}>
         {path === 'advertiser' && advertiserData.views_clicks !== undefined && (<ReportsTableContainer
             breakdown={breakdown}
             advertiserData={advertiserData}
@@ -215,8 +217,8 @@ const ReportsContainer = ({ title, selectionOption, path }) => {
             class={muiStyles.block}
           />
         )}
+      </Box>
 
-      </PaperBlock>
     </Fragment>
   );
 };

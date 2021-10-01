@@ -1,4 +1,4 @@
-import { Grid } from "@material-ui/core";
+import { Box, Grid } from "@material-ui/core";
 import { DataGrid } from "@material-ui/data-grid";
 import {
   browserColumnsAd,
@@ -106,6 +106,7 @@ const ReportsTableContainer = (props) => {
             props.path,
             colName
           )}
+          style={{ minWidth: '1200px', background: '#fff' }}
         />
     </Grid>
   );

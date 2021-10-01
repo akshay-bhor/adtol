@@ -1,4 +1,5 @@
 import {
+  Box,
   Collapse,
   Divider,
   Icon,
@@ -13,6 +14,11 @@ import { SidenavMenuItems } from "../../../constants/common";
 import List from "@material-ui/core/List";
 
 const useStyles = makeStyles((theme) => ({
+  menuContainer: {
+    '@media(max-width: 1200px)': {
+      maxHeight: '70vh'
+    }
+  },
   nested: {
     paddingLeft: "30px",
   },
@@ -27,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const SidenavMenu = () => {
+const DashboardNavMenu = (props) => {
   const muiStyles = useStyles();
   const [open, setOpen] = useState(false);
 
@@ -39,18 +45,22 @@ const SidenavMenu = () => {
     setOpen(!open);
   };
 
+  const toggleMobileDrawer = () => {
+    if(props.toggleDrawer) props.toggleDrawer(false);
+  }
+
   const preventRouting = (e) => {
     e.preventDefault();
   };
 
   return (
-    <Fragment>
+    <Box component="div" className={muiStyles.menuContainer}>
       {SidenavMenuItems.map((item) => {
         return (
           <div key={item.id}>
             <NavLink exact
               to={item.url}
-              onClick={item.disabled ? preventRouting : null}
+              onClick={item.disabled ? preventRouting : toggleMobileDrawer}
               activeClassName={muiStyles.active}
             >
               <ListItem
@@ -74,6 +84,7 @@ const SidenavMenu = () => {
                         to={child.url} 
                         key={child.id} 
                         activeClassName={muiStyles.active}
+                        onClick={toggleMobileDrawer}
                       >
                         <ListItem button className={muiStyles.subNested}>
                           <ListItemIcon>
@@ -91,8 +102,8 @@ const SidenavMenu = () => {
           </div>
         );
       })}
-    </Fragment>
+    </Box>
   );
 };
 
-export default SidenavMenu;
+export default DashboardNavMenu;

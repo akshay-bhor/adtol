@@ -10,7 +10,7 @@ import {
 } from "../../../store/actions/campaigns.action";
 import ShowError from "../../UI/ShowError";
 import Loading from "../../UI/Loading";
-import { Button, Chip, Icon, makeStyles } from "@material-ui/core";
+import { Box, Button, Chip, Icon, makeStyles } from "@material-ui/core";
 import EditBudgetModal from "./EditBudgetModal";
 import { Link } from "react-router-dom";
 
@@ -40,15 +40,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const campaignCols = [
-  { field: "campaign", headerName: "Campaign", flex: 1 },
-  { field: "type", headerName: "Type", flex: 0.8 },
-  { field: "status", headerName: "Status", flex: 0.8 },
-  { field: "views", headerName: "Views", flex: 0.6 },
-  { field: "clicks", headerName: "Clicks", flex: 0.6 },
-  { field: "pops", headerName: "Pops", flex: 0.6 },
-  { field: "cpc", headerName: "CPC", flex: 0.6 },
-  { field: "budget", headerName: "Budget", flex: 0.8 },
-  { field: "manage", headerName: "Manage", flex: 0.6 },
+  { field: "campaign", headerName: "Campaign", flex: 1, headerAlign: 'center' },
+  { field: "type", headerName: "Type", flex: 0.8, headerAlign: 'center' },
+  { field: "status", headerName: "Status", flex: 0.8, headerAlign: 'center' },
+  { field: "views", headerName: "Views", flex: 0.6, headerAlign: 'center' },
+  { field: "clicks", headerName: "Clicks", flex: 0.6, headerAlign: 'center' },
+  { field: "pops", headerName: "Pops", flex: 0.6, headerAlign: 'center' },
+  { field: "cpc", headerName: "CPC", flex: 0.6, headerAlign: 'center' },
+  { field: "budget", headerName: "Budget", flex: 0.8, headerAlign: 'center' },
+  { field: "manage", headerName: "Manage", flex: 0.6, headerAlign: 'center' },
 ];
 
 const mapRows = (data) => {
@@ -267,17 +267,19 @@ const CampaignList = () => {
         </div>
       )}
       {!loading && !err && (
-        <PaperBlock heading="Campaigns" fullWidth="true">
-          <div style={{ flexGrow: 1 }}>
+        <Fragment>
+          <PaperBlock heading="Campaigns" fullWidth="true"></PaperBlock>
+          <Box className={styles.tableContainer}>
             <DataGrid
               autoHeight
               disableColumnMenu
               rows={rows}
               rowHeight={80}
               columns={cols}
+              style={{ minWidth: '1200px' }}
             ></DataGrid>
-          </div>
-        </PaperBlock>
+          </Box>
+        </Fragment>
       )}
       {modal.open && (
         <EditBudgetModal

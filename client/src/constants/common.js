@@ -112,21 +112,21 @@ export const browserColumnsPub = () => {
 }
 
 export const campaignCols = () => ([
-  { field: "campaign", headerName: "Campaign", flex: 1 },
-  { field: "views", headerName: "Views", flex: 1 },
-  { field: "clicks", headerName: "Clicks", flex: 1 },
-  { field: "pops", headerName: "Pops", flex: 1 },
-  { field: "ctr", headerName: "CTR", flex: 1 },
-  { field: "spent", headerName: "Spent", flex: 1 },
+  { field: "campaign", headerName: "Campaign", flex: 1, headerAlign: 'center' },
+  { field: "views", headerName: "Views", flex: 1, headerAlign: 'center' },
+  { field: "clicks", headerName: "Clicks", flex: 1, headerAlign: 'center' },
+  { field: "pops", headerName: "Pops", flex: 1, headerAlign: 'center' },
+  { field: "ctr", headerName: "CTR", flex: 1, headerAlign: 'center' },
+  { field: "spent", headerName: "Spent", flex: 1, headerAlign: 'center' },
 ]);
 
 export const websitesCols = () => {
   const res = campaignCols().filter((item) => item.field !== 'campaign' && item.field !== 'spent');
 
   return [
-    { field: "website", headerName: "Website", flex: 1 },
+    { field: "website", headerName: "Website", flex: 1, headerAlign: 'center' },
     ...res,
-    { field: "earned", headerName: "Earned", flex: 1 }
+    { field: "earned", headerName: "Earned", flex: 1, headerAlign: 'center' }
   ]
 }
 
@@ -141,7 +141,7 @@ export const paymentCols = [
 ];
 
 export const withdrawCols = [
-  { field: "payment_id", headerName: "Payment ID", flex: 0.8, headerAlign: 'center' },
+  { field: "payment_id", headerName: "Payment ID", flex: 0.8, headerAlign: 'center'  },
   { field: "amount", headerName: "Amount", flex: 0.8, headerAlign: 'center' },
   { field: "fee", headerName: "Fee", flex: 0.8, headerAlign: 'center' },
   { field: "currency", headerName: "Currency", flex: 0.5, headerAlign: 'center' },

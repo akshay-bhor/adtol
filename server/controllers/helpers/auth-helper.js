@@ -104,6 +104,11 @@ exports.registerHelper = async (req) => {
             ref_by
         });
 
+        // UserInfo
+        const cUserInfo = await User_Info.create({
+            user: cUser.dataValues.id
+        });
+
         //Create token
         const tokenObj = new Token();
         const token = await tokenObj.createAccessToken(cUser);

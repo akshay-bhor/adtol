@@ -1,4 +1,5 @@
 import { DataGrid } from "@material-ui/data-grid";
+import { Box } from "@material-ui/core";
 import { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../UI/Loading";
@@ -62,13 +63,15 @@ const Advertiser = () => {
           <AdvertiserSummaryBlock data={data.total} />
           <ViewClicksChart data={data.views_clicks} />
           <GeoChart data={data.by_country} cols={geoChartCols} />
-          <PaperBlock heading="By Campaigns" fullWidth={true}>
+          <PaperBlock heading="By Campaigns" fullWidth={true}></PaperBlock>
+          <Box className={styles.tableContainer}>
             <DataGrid
               autoHeight
               columns={cols}
               rows={rows}
+              style={{ minWidth: '1200px', background: '#fff' }}
             ></DataGrid>
-          </PaperBlock>
+          </Box>
         </Fragment>
       )}
       {err && <ShowError />}

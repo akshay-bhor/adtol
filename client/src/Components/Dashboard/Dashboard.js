@@ -4,7 +4,7 @@ import { Route, Switch } from "react-router";
 import { scripts, scriptSrc, loadScript } from "../../util/load-scripts";
 import { scriptActions } from "../../store/reducers/script.reducer";
 import { uiActions } from "../../store/reducers/ui.reducer";
-import Sidenav from "./Sidenav/Sidenav";
+import DashboardNav from "./DashboardNav/DashboardNav";
 import styles from "./Dashboard.module.css";
 import { Fragment } from "react";
 import Loading from "../UI/Loading";
@@ -64,7 +64,7 @@ const Dashboard = () => {
   return (
     <Fragment>
       <div className={styles.mainContainer}>
-        <Sidenav />
+        <DashboardNav />
         <div className={styles.container}>
           <Suspense fallback={<Loading />}>
             <Switch>

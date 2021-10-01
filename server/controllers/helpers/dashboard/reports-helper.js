@@ -278,12 +278,14 @@ exports.reportsHelper = async (req) => {
         const byOs = {};
         const os_list = App_Settings.os;
         for(let key in os_list) {
-            let os_name = os_list[key][0] + ' ' + os_list[key][1];
+            const oName = os_list[key][0];
+            const oVer = os_list[key][1] != 0 ? os_list[key][1]:'';
+            const os_name = `${oName} ${oVer}`;
             
-            let { osviews, osclicks, oscost, ospops } = findBy(osRes, key, 'os');
+            const { osviews, osclicks, oscost, ospops } = findBy(osRes, key, 'os');
 
-            let ctr = Math.round((osclicks / osviews) * 10000) / 100 || 0;
-            let tcost = oscost.toFixed(2);
+            const ctr = Math.round((osclicks / osviews) * 10000) / 100 || 0;
+            const tcost = oscost.toFixed(2);
 
             byOs[os_name] = {
                 views: osviews,

@@ -17,7 +17,7 @@ if(cluster.isMaster) {
 
     // Fork workers equals no of CPUs'
     const vCPUs = require('os').cpus().length;
-    for(let i = 1; i <= vCPUs; i++) {
+    for(let i = 1; i <= 2; i++) {
         cluster.fork();
         console.log(`Forked worker ${i}`);
     }

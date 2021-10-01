@@ -8,10 +8,18 @@ import styles from '../Dashboard.module.css';
 import { abortSummaryRequest, fetchSummaryData, fetchUserStatus } from "../../../store/actions/summary.action";
 import CountryTable from "./CountryTable/CountryTable";
 import { countryColumnsAd, countryColumnsPub } from "../../../constants/common";
-import classes from './Summary.module.css';
 import { Button } from "@material-ui/core";
 import ShowError from "../../UI/ShowError";
 import UserStatusNotification from "./UserStatusNotification/UserStatusNotification";
+
+const classes = {
+    btnContainer: {
+        display: 'flex',
+        marginBottom: '10px',
+        flex: '1',
+        justifyContent: 'flex-end'
+    }
+}
 
 const mapRows = (colName, propData) => {
     let data = colName === 'Earned' ? propData.pub_countries:propData.ad_countries;
@@ -81,7 +89,7 @@ const Summary = () => {
             {isLoading && !err && <div className={styles.loader}><Loading /></div>}
             {!isLoading && !err && data &&
                 <Fragment>
-                    <div className={classes.btnContainer}>
+                    <div style={classes.btnContainer}>
                         <Button 
                             color={selected === 1 ? 'primary':'default'}
                             className={'fright pointer'} 

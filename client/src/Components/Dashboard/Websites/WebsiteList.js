@@ -45,15 +45,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const websiteCols = [
-  { field: "website", headerName: "Website", flex: 1 },
-  { field: "category", headerName: "Category", flex: 0.8 },
-  { field: "status", headerName: "Status", flex: 0.8 },
-  { field: "views", headerName: "Views", flex: 0.6 },
-  { field: "clicks", headerName: "Clicks", flex: 0.6 },
-  { field: "pops", headerName: "Pops", flex: 0.6 },
-  { field: "earned", headerName: "Earned", flex: 0.6 },
-  { field: "ctr", headerName: "CTR", flex: 0.6 },
-  { field: "manage", headerName: "Manage", flex: 0.6 },
+  { field: "website", headerName: "Website", flex: 1, headerAlign: 'center' },
+  { field: "category", headerName: "Category", flex: 0.8, headerAlign: 'center' },
+  { field: "status", headerName: "Status", flex: 0.8, headerAlign: 'center' },
+  { field: "views", headerName: "Views", flex: 0.6, headerAlign: 'center' },
+  { field: "clicks", headerName: "Clicks", flex: 0.6, headerAlign: 'center' },
+  { field: "pops", headerName: "Pops", flex: 0.6, headerAlign: 'center' },
+  { field: "earned", headerName: "Earned", flex: 0.6, headerAlign: 'center' },
+  { field: "ctr", headerName: "CTR", flex: 0.6, headerAlign: 'center' },
+  { field: "manage", headerName: "Manage", flex: 0.6, headerAlign: 'center' },
 ];
 
 const mapRows = (data) => {
@@ -199,17 +199,17 @@ const WebsiteList = () => {
               </Button>
             </Link>
           </Box>
-          <PaperBlock heading={'Websites'} fullWidth={true}>
-            <div style={{ flexGrow: 1 }}>
-              <DataGrid
-                autoHeight
-                disableColumnMenu
-                rows={rows}
-                rowHeight={80}
-                columns={cols}
-              ></DataGrid>
-            </div>
-          </PaperBlock>
+          <PaperBlock heading={'Websites'} fullWidth={true}></PaperBlock>
+          <Box className={styles.tableContainer}>
+            <DataGrid
+              autoHeight
+              disableColumnMenu
+              rows={rows}
+              rowHeight={80}
+              columns={cols}
+              style={{ minWidth: '1200px' }}
+            ></DataGrid>
+          </Box>
         </Fragment>
       )}
       {err && <ShowError />}
