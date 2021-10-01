@@ -1,7 +1,9 @@
-import { Button, makeStyles, TextField } from "@material-ui/core";
+import { Button, makeStyles } from "@material-ui/core";
 import { Form, Formik } from "formik";
 import { useEffect } from "react";
+import * as yup from 'yup';
 import { useDispatch, useSelector } from "react-redux";
+import { MyTextField } from "../../FormUtils/FormUtils";
 import {
   updateCampaignBudget,
 } from "../../../store/actions/campaigns.action";
@@ -9,19 +11,20 @@ import Modal from "../../UI/Modal";
 
 const useStyles = makeStyles({
   input: {
-    width: "250px",
-    display: "block",
+    width: "100%"
   },
   btn: {
-    width: "250px",
+    width: "100%",
     display: "block",
     height: "50px",
     marginTop: "15px",
   },
 });
 
-const EditBudgetModal = (props) => {
+const EditBudgetModal = (props) => { console.log(props.data);
   const success = useSelector((state) => state.campaign.success);
+  const initBudget = parseInt(props.data.budget.trim().substring(5));
+  const userBal = props.data.max;
   const loading = props.loading;
   const dispatch = useDispatch();
   const muiStyle = useStyles();
@@ -32,6 +35,11 @@ const EditBudgetModal = (props) => {
       props.onClose();
     }
   }, [success]);
+
+  const validationSchema = yup.object({
+    budget: yup.number().required('Budget is required').min(1, 'Min budget value is $1')
+    .max((userBal + initBudget), `Max budget exceeds available balance, allowed $${(userBal + initBudget)}`)
+  });
 
   const changeBudget = (values) => {
     const data = {};
@@ -46,26 +54,19 @@ const EditBudgetModal = (props) => {
     <Modal title="Change Remaining Budget" onClose={props.onClose}>
       <Formik
         initialValues={{
-          budget: parseInt(props.data.budget.substring(6)),
+          budget: initBudget
         }}
+        validationSchema={validationSchema}
         onSubmit={(values) => {
           changeBudget(values);
         }}
       >
-        {({ values, handleBlur, handleChange }) => (
           <Form>
-            <TextField
+            <MyTextField
               name="budget"
               type="number"
               label="budget"
-              variant="outlined"
-              value={values.budget}
-              onChange={handleChange}
-              onBlur={handleBlur}
               className={muiStyle.input}
-              fullWidth={true}
-              error={values.budget < 1 || values.budget > props.data.max}
-              helperText={`Value must be between $1 and $${props.data.max}`}
             />
             <Button
               variant="contained"
@@ -77,7 +78,6 @@ const EditBudgetModal = (props) => {
               {loading ? "Please Wait..." : "Change"}
             </Button>
           </Form>
-        )}
       </Formik>
     </Modal>
   );
