@@ -28,23 +28,23 @@ exports.summaryHelper = async(req) => {
         const queries = [
             { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as earned, day_unix FROM summary_device WHERE pub_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
             { "name": "countrystats", "query": "SELECT views as cviews, clicks as cclicks, pops as cpops, cost as cearned, country FROM summary_country WHERE pub_uid = "+ userid +" AND day_unix = "+ today_unix +" ORDER BY cost DESC LIMIT 5" },
-            { "name": "adunits", "query": "SELECT SUM(pub_cpc) as adearned, ad_type, day_unix FROM clicks WHERE pub_uid = "+ userid +" AND day_unix >= "+ yesterday_unix +" GROUP BY ad_type, day_unix" },
+            { "name": "devices", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as dearned, device FROM summary_device WHERE pub_uid=" + userid +" AND day_unix = "+ today +" GROUP BY device" },
             
             { "name": "user", "query": "SELECT pub_balance, ad_balance FROM users WHERE id = "+ userid +"" },
             
             { "name": "stats", "query": "SELECT SUM(views) as ad_views, SUM(clicks) as ad_clicks, SUM(pops) as ad_pops, SUM(cost) as spent, day_unix FROM summary_device WHERE ad_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
             { "name": "countrystats", "query": "SELECT views as cviews, clicks as cclicks, pops as cpops, cost as cspent, country, day_unix FROM summary_country WHERE ad_uid = "+ userid +" AND day_unix = "+ today_unix +" ORDER BY cost DESC LIMIT 5" },
-            { "name": "adunits", "query": "SELECT SUM(ad_cpc) as adspent, ad_type, day_unix FROM clicks WHERE ad_uid = "+ userid +" AND day_unix >= "+ yesterday_unix +" GROUP BY ad_type, day_unix" },
+            { "name": "devices", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as dspent, device FROM summary_device WHERE ad_uid =" + userid +" AND day_unix = "+ today +" GROUP BY device" },
         ];
 
         const result = await executeAllQueries(queries);
         let pubRes = result[0];     
         let countryRes = result[1];   
-        let adunits = result[2];
+        let devicesRes = result[2];
 
         let adRes = result[4];     
         let ad_countryRes = result[5];   
-        let ad_adunits = result[6];
+        let ad_deviceRes = result[6];
         
        
         // Get today earned
@@ -125,21 +125,16 @@ exports.summaryHelper = async(req) => {
             };
         });
 
-        // Ad Units
-        let ad_types = ['', 'text', 'banner', 'native', 'widget']
-        const ad_units = {};
-        for(let i = 1;i < ad_types.length;i++) {
-            let today = 0;
-            let yesterday = 0;
-            adunits.forEach(data => {
-                if(data.ad_type == i && data.day_unix == today_unix) {
-                    today = data.adearned;
-                }
-                if(data.ad_type == i && data.day_unix == yesterday_unix) {
-                    yesterday = data.adearned;
-                }
+        // devices
+        const devices = {};
+        const all_devices = App_Settings.devices;
+        for(let i = 1;i < Object.keys(all_devices).length;i++) {
+            Object.keys(all_devices).forEach(key => { console.log(devicesRes);
+                devices[all_devices[key]] = devicesRes.filter(data => +data.device === +key)[0] ||  
+                    { 
+                        views: 0, clicks: 0, pops: 0, earned: 0
+                    };
             });
-            ad_units[ad_types[i]] = [today.toFixed(2), yesterday.toFixed(2)];
         }
         /**
          * Ad Pop
@@ -262,20 +257,15 @@ exports.summaryHelper = async(req) => {
             };
         });
 
-        // Ad Units
-        const ad_ad_units = {};
-        for(let i = 1;i < ad_types.length;i++) {
-            let today = 0;
-            let yesterday = 0;
-            ad_adunits.forEach(data => {
-                if(data.ad_type == i && data.day_unix == today_unix) {
-                    today = data.adspent;
-                }
-                if(data.ad_type == i && data.day_unix == yesterday_unix) {
-                    yesterday = data.adspent;
-                }
+        // devices
+        const ad_devices = {};
+        for(let i = 1;i < Object.keys(all_devices).length;i++) {
+            Object.keys(all_devices).forEach(key => {
+                ad_devices[App_Settings.devices[key]] = ad_deviceRes.filter(data => +data.device === +key)[0] ||  
+                { 
+                    views: 0, clicks: 0, pops: 0, spent: 0
+                };;
             });
-            ad_ad_units[ad_types[i]] = [today.toFixed(2), yesterday.toFixed(2)];
         }
         // Ad pop
         // let pop_spent_today = 0;
@@ -312,11 +302,11 @@ exports.summaryHelper = async(req) => {
             pub_balance: pub_balance,
             ad_balance: ad_balance,
             pub_countries: countryStats,
-            pub_ad_units: ad_units,
+            pub_ad_devices: devices,
             ad_estimates: ad_estimates,
             ad_performance: ad_performance,
             ad_countries: ad_countryStats,
-            ad_ad_units: ad_ad_units
+            ad_ad_devices: ad_devices
         };
 
     } catch(err) {

@@ -14,33 +14,32 @@ const AdUnits = (props) => {
 
     const loadChart = useCallback(() => {
         let data = window.google.visualization.arrayToDataTable([
-            ['Ad Unit', 'Today', 'Yesterday'],
-            ['Text', +props.data.text[0], +props.data.text[1]],
-            ['Banner', +props.data.banner[0], +props.data.banner[1]],
-            ['Native', +props.data.native[0], +props.data.native[1]],
-            ['Widget', +props.data.widget[0], +props.data.widget[1]],
+            ['Device', 'Clicks'],
+            ['Desktop', +props.data.Desktop.clicks],
+            ['Mobile', +props.data.Mobile.clicks],
+            ['Tablet', +props.data.Tablet.clicks],
           ]);
   
         let options = {
-            bars: 'horizontal' 
+            pieHole: 0.4,
         };
   
-        let chart = new window.google.charts.Bar(chartRef.current);
+        let chart = new window.google.visualization.PieChart(chartRef.current);
   
-        chart.draw(data, window.google.charts.Bar.convertOptions(options));
+        chart.draw(data, options);
     }, [props.data])
 
     useEffect(() => {
         if(gChartLoaded) {
-            window.google.charts.load('current', {'packages':['bar']});
+            window.google.charts.load('current', {'packages':['corechart']});
             window.google.charts.setOnLoadCallback(loadChart);
         }
 
     }, [gChartLoaded, loadChart]);
 
     return (
-        <PaperBlock heading="Ad Units" subheading="Today vs Yesterday">
-            <div ref={chartRef} id="ad_unit_chart" style={chartContent}></div> 
+        <PaperBlock heading="Platforms" subheading="Today">
+            <div ref={chartRef} id="devices_chart" style={chartContent}></div> 
         </PaperBlock>
     );
 }

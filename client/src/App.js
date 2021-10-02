@@ -1,6 +1,7 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router";
+import TagManager from "react-gtm-module";
 import "./App.css";
 import Loading from "./Components/UI/Loading";
 import Layout from "./Components/Layout/Layout";
@@ -28,6 +29,17 @@ const ContactPage = lazy(() => import("./Pages/Contact/Contact"));
 
 function App() {
   const isAuth = useSelector((state) => state.auth.loggedIn);
+
+  /**
+   * Google Tag manager for analytics
+   */
+  useEffect(() => {
+    const tagManagerArgs = {
+      gtmId: 'GTM-5HCBT7C'
+    }
+   
+    TagManager.initialize(tagManagerArgs);
+  }, [])
 
   return (
     <Layout>

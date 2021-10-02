@@ -111,13 +111,13 @@ const Summary = () => {
                     {selected === 1 && <Fragment>
                     <Estimates data={data.ad_estimates} balance={data.ad_balance} selected={selected} />
                     <Performance data={data.ad_performance} />
-                    <AdUnits data={data.ad_ad_units} />
+                    <AdUnits data={data.ad_ad_devices} />
                     <CountryTable data={data.ad_countries} rows={adRows} columns={countryColumnsAd()} /></Fragment>}
                     
                     {selected === 2 && <Fragment>
                     <Estimates data={data.pub_estimates} balance={data.pub_balance} />
                     <Performance data={data.pub_performance} />
-                    <AdUnits data={data.pub_ad_units} />
+                    <AdUnits data={data.pub_ad_devices} />
                     <CountryTable data={data.pub_countries} rows={pubRows} columns={countryColumnsPub()} /></Fragment>}
 
                 </Fragment>}
