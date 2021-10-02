@@ -1,5 +1,6 @@
 import { Box, makeStyles } from "@material-ui/core";
 import { Fragment } from "react";
+import { Helmet } from "react-helmet";
 import Footer from "../../Components/UI/Footer/Footer";
 import styles from "../Common/Content.module.css";
 
@@ -17,6 +18,9 @@ const Terms = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Terms of Service - AdTol</title>
+      </Helmet>
       <Box component="div" className={muiStyles.container}>
         <h2 className={styles.content_heading}>Terms of Service</h2>
         <Box component="div">

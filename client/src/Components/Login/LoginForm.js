@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
 import * as yup from "yup";
 import { Form, Formik } from "formik";
+import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { handleGLogin, handleLogin } from "../../store/actions/auth.action";
 import GoogleSignIn from "../GoogleSignIn/GoogleSignIn";
@@ -65,6 +66,9 @@ const LoginForm = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Login - AdTol</title>
+      </Helmet>
       <div className={styles.loginContainer}>
         <h2 className={`${styles.block} ${styles.center}`}>Login</h2>
         <Formik

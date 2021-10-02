@@ -5,6 +5,7 @@ import Footer from "../../Components/UI/Footer/Footer";
 import styles from "../Common/Content.module.css";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
+import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { MyTextField } from "../../Components/FormUtils/FormUtils";
 import { sendMessageApi } from "../../services/apiService";
@@ -86,6 +87,9 @@ const Contact = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Contact Us - AdTol</title>
+      </Helmet>
       <LoadReCaptcha />
       <Box component="div" className={muiStyles.container}>
         <h2 className={styles.content_heading}>Contact Us</h2>

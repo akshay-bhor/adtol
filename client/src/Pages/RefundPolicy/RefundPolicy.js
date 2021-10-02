@@ -1,6 +1,7 @@
 import { Box, makeStyles } from "@material-ui/core";
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import Footer from "../../Components/UI/Footer/Footer";
 import styles from "../Common/Content.module.css";
 
@@ -18,6 +19,9 @@ const RefundPolicy = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Refund Policy - AdTol</title>
+      </Helmet>
       <Box component="div" className={muiStyles.container}>
         <h2 className={styles.content_heading}>Terms of Service</h2>
         <Box component="div">

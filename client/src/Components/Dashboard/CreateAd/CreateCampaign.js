@@ -1,6 +1,7 @@
 import { Formik } from "formik";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 import {
   fetchCampaignFormData,
   fetchCountries,
@@ -167,6 +168,9 @@ const CreateCampaign = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Create Ad - AdTol</title>
+      </Helmet>
       {!formDataFetched && <Loading />}
       {formDataFetched() && (
         <Formik

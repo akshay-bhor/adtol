@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import { Helmet } from "react-helmet";
 import Head from '../Common/Head';
 import MidContent from './MidContent';
 import advertiserImg from '../../assets/svg/advertiser.svg';
@@ -120,6 +121,9 @@ const HomePage = () => {
     
     return (
         <Fragment>
+            <Helmet>
+                <title>Adtol: The Best PPC/CPM Ad Agency for Publishers & Advertisers</title>
+            </Helmet>
             <Head 
                 heading={heading}
                 subheading={subheading}

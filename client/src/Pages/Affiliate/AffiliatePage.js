@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import { Helmet } from "react-helmet";
 import Head from '../Common/Head';
 import affiliateImg from '../../assets/svg/share.svg';
 import Footer from '../../Components/UI/Footer/Footer';
@@ -62,6 +63,9 @@ const AffiliatePage = () => {
 
     return (
         <Fragment>
+            <Helmet>
+                <title>The Best Affiliate Network - AdTol</title>
+            </Helmet>
             <Head 
                 heading={heading}
                 subheading={subheading}

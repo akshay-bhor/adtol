@@ -1,6 +1,7 @@
 import { Formik, Form } from "formik";
 import { useEffect, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 import {
   abortBillingRequest,
   convertPubBalance,
@@ -116,6 +117,9 @@ const Deposit = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Deposit - AdTol</title>
+      </Helmet>
       {loading && !err && (
         <div className={styles.loader}>
           <Loading />

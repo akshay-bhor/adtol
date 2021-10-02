@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 import { abortUserRequest, fetchAccountInfoData } from "../../store/actions/user.action";
 import PaperBlock from "../Dashboard/Common/PaperBlock";
 import AccountDetailsForm from "./AccountDetailsForm";
@@ -91,6 +92,9 @@ const Account = () => {
 
   return (
     <div className="block mt-60 pl-10 pr-10">
+      <Helmet>
+        <title>Account - AdTol</title>
+      </Helmet>
       <PaperBlock fullWidth={true}>
         <Grid container>
           <Grid item xs={12} className={muiStyles.acInfoContainer}>

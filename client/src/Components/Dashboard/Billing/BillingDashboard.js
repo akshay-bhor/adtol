@@ -12,6 +12,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../Dashboard.module.css";
 import { DataGrid } from "@material-ui/data-grid";
+import { Helmet } from "react-helmet";
 import {
   abortBillingRequest,
   fetchPayments,
@@ -232,6 +233,9 @@ const BillingDashboard = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Billing -AdTol</title>
+      </Helmet>
       <Paper
         className={[muiStyles.container, muiStyles.topContainer].join(" ")}
       >

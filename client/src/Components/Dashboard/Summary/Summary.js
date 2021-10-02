@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 import Loading from "../../UI/Loading";
 import AdUnits from "./AdUnits/AdUnits";
 import Estimates from "./Estimates/Estimates"
@@ -86,6 +87,9 @@ const Summary = () => {
 
     return (
         <Fragment>
+            <Helmet>
+                <title>Dashboard - AdTol</title>
+            </Helmet>
             {isLoading && !err && <div className={styles.loader}><Loading /></div>}
             {!isLoading && !err && data &&
                 <Fragment>

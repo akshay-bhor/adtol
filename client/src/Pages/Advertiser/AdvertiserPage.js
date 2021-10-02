@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import { Helmet } from "react-helmet";
 import Head from '../Common/Head';
 import advertiserImg from '../../assets/svg/advertise.svg';
 import Footer from '../../Components/UI/Footer/Footer';
@@ -83,6 +84,9 @@ const AdvertiserPage = () => {
 
     return (
         <Fragment>
+            <Helmet>
+                <title>Best AdWords Alternative Ad Network For Advertisers - AdTol</title>
+            </Helmet>
             <Head 
                 heading={heading}
                 subheading={subheading}

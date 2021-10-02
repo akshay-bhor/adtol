@@ -2,6 +2,7 @@ import { Redirect, Route, Switch } from "react-router";
 import RegisterGoogle from "./RegisterGoogle";
 import RegisterForm from "./RegisterForm";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 import { authActions } from "../../store/reducers/auth.reducer";
 import { useEffect } from "react";
 
@@ -15,6 +16,9 @@ const Register = () => {
 
   return (
     <Switch>
+      <Helmet>
+        <title>Register - AdTol</title>
+      </Helmet>
       <Route path="/register" exact>
         {!gToken && <RegisterForm />}
         {gToken && <Redirect to="/register/google" />}

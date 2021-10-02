@@ -1,6 +1,7 @@
 import { DataGrid } from "@material-ui/data-grid";
 import { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import PaperBlock from "../Common/PaperBlock";
 import styles from "../Dashboard.module.css";
@@ -205,6 +206,9 @@ const WebsiteList = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Websites - AdTol</title>
+      </Helmet>
       {loading && !err && (
         <div className={styles.loader}>
           <Loading />

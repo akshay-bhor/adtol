@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 import Loading from "../../UI/Loading";
 import styles from "../Dashboard.module.css";
 import ShowError from "../../UI/ShowError";
@@ -113,6 +114,9 @@ const Referrals = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Referral - AdTol</title>
+      </Helmet>
       {isLoading && !err && (
         <div className={styles.loader}>
           <Loading />

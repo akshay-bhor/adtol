@@ -1,6 +1,7 @@
 import { Formik } from "formik";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 import { useParams, useHistory } from "react-router-dom";
 import { abortWebsiteRequest, updateWebsite } from "../../../store/actions/websites.action";
 import PaperBlock from "../Common/PaperBlock";
@@ -49,17 +50,22 @@ const EditWebsite = () => {
     }
    
     return (
-        <PaperBlock heading="Edit Website" fullWidth={true} headingCenter={true}>
-            {formValues !== undefined && <Formik
-                initialValues={formValues}
-                validationSchema={websiteFormValidationSchema}
-                onSubmit={(values, actions) => {
-                    submitForm(values);
-                }}
-            >
-                <WebsiteForm edit={true} />
-            </Formik>}
-        </PaperBlock>
+        <Fragment>
+            <Helmet>
+                <title>Edit Website - AdTol</title>
+            </Helmet>
+            <PaperBlock heading="Edit Website" fullWidth={true} headingCenter={true}>
+                {formValues !== undefined && <Formik
+                    initialValues={formValues}
+                    validationSchema={websiteFormValidationSchema}
+                    onSubmit={(values, actions) => {
+                        submitForm(values);
+                    }}
+                >
+                    <WebsiteForm edit={true} />
+                </Formik>}
+            </PaperBlock>
+        </Fragment>
     );
 }
 

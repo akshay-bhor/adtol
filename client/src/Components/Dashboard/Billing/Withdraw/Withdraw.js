@@ -1,6 +1,7 @@
 import { Formik, Form } from "formik";
 import { useEffect, Fragment, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 import {
   abortBillingRequest,
   fetchFormData,
@@ -98,6 +99,9 @@ const Withdraw = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Withdraw - AdTol</title>
+      </Helmet>
       {loading && !err && (
         <div className={styles.loader}>
           <Loading />

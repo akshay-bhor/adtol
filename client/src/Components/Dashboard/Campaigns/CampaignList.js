@@ -1,6 +1,7 @@
 import { DataGrid } from "@material-ui/data-grid";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 import PaperBlock from "../Common/PaperBlock";
 import styles from "../Dashboard.module.css";
 import {
@@ -261,6 +262,9 @@ const CampaignList = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Campaigns - AdTol</title>
+      </Helmet>
       {loading && !err && (
         <div className={styles.loader}>
           <Loading />

@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import { Helmet } from "react-helmet";
 import Head from '../Common/Head';
 import publisherImg from '../../assets/svg/publish.svg';
 import Footer from '../../Components/UI/Footer/Footer';
@@ -80,6 +81,9 @@ const PublisherPage = () => {
 
     return (
         <Fragment>
+            <Helmet>
+                <title>The Best AdSense Alternative PPC Ad Network - AdTol</title>
+            </Helmet>
             <Head 
                 heading={heading}
                 subheading={subheading}

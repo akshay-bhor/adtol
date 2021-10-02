@@ -2,6 +2,7 @@ import { DataGrid } from "@material-ui/data-grid";
 import { Box } from "@material-ui/core";
 import { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 import Loading from "../../UI/Loading";
 import PublisherSummaryBlock from "./PublisherSummaryBlock";
 import styles from "../Dashboard.module.css";
@@ -56,6 +57,9 @@ const Publisher = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Publisher - AdTol</title>
+      </Helmet>
       {isLoading && !err && (
         <div className={styles.loader}>
           <Loading />

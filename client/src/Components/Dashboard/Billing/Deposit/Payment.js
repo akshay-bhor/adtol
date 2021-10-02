@@ -3,6 +3,7 @@ import { Button, Grid, makeStyles } from "@material-ui/core";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import {
   abortBillingRequest,
   createOrder,
@@ -162,6 +163,9 @@ const Payment = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Payment - AdTol</title>
+      </Helmet>
       {loading && !err && (
         <div className={styles.loader}>
           <Loading

@@ -1,6 +1,7 @@
 import { Formik } from "formik";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 import {
   fetchCampaignFormData,
   fetchCountries,
@@ -228,6 +229,9 @@ const EditCampaign = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Edit Ad - AdTol</title>
+      </Helmet>
       {!stateUpdated && <Loading />}
       {stateUpdated && (
         <Formik

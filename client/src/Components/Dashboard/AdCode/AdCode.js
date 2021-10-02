@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import { Fragment, useEffect } from "react";
 import { Formik, Form } from "formik";
+import { Helmet } from "react-helmet";
 import * as yup from "yup";
 import Loading from "../../UI/Loading";
 import PaperBlock from "../Common/PaperBlock";
@@ -89,6 +90,9 @@ const AdCode = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>AdCodes - AdTol</title>
+      </Helmet>
       <Box component="div" className={muiStyles.btnContainer}>
         <Link to="/dashboard/websites/add">
           <Button

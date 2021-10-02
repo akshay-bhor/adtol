@@ -1,6 +1,7 @@
 import { Box, Grid, makeStyles } from "@material-ui/core";
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import Footer from "../../Components/UI/Footer/Footer";
 import styles from "../Common/Content.module.css";
 
@@ -23,6 +24,9 @@ const Guidelines = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>Guidelines</title>
+      </Helmet>
       <Box component="div" className={muiStyles.container}>
         <Grid container>
           <Grid item sm={12} md={6} className={muiStyles.guidelines}>

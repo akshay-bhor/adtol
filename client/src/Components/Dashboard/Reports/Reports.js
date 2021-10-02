@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import {
   abortCampaignRequest,
   fetchCampaignsList,
@@ -100,6 +101,9 @@ const Reports = () => {
 
   return (
     <Fragment>
+      <Helmet>
+        <title>{title} - AdTol</title>
+      </Helmet>
       {(campLoading || webLoading) && !campErr && !webErr && (
         <div className={styles.loader}>
           <Loading />
