@@ -122,6 +122,8 @@ export const addWebsite = (data) => conn.post('/dashboard/websites/add', data);
 
 export const editWebsite = (data) => conn.post('/dashboard/websites/edit/' + data.id, data.data);
 
+export const deleteWebsiteApi = (data) => conn.post('/dashboard/websites/delete/' + data.id);
+
 export const getAdcode = (data) => conn.post('/dashboard/websites/get-adcode', data);
 
 export const getReferralStats = () => conn.get('/dashboard/referrals');

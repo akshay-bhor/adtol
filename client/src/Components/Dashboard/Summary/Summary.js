@@ -40,7 +40,7 @@ const mapRows = (colName, propData) => {
         // Calculate CTR
         if(ctr === 'NA') {
             if(clicks !== 0) {
-            ctr = "$" + (views / clicks).toFixed(2);
+            ctr = (views / clicks).toFixed(2) + "%";
             }
         }
 
@@ -105,7 +105,7 @@ const Summary = () => {
                     </div>
         
                     {selected === 1 && <Fragment>
-                    <Estimates data={data.ad_estimates} balance={data.ad_balance} />
+                    <Estimates data={data.ad_estimates} balance={data.ad_balance} selected={selected} />
                     <Performance data={data.ad_performance} />
                     <AdUnits data={data.ad_ad_units} />
                     <CountryTable data={data.ad_countries} rows={adRows} columns={countryColumnsAd()} /></Fragment>}

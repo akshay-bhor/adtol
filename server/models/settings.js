@@ -39,6 +39,11 @@ const Settings = sequelize.define('settings', {
         allowNull: false,
         defaultValue: '0.02'
     },
+    min_pop_cpc: {
+        type: DataTypes.FLOAT(10, 5),
+        allowNull: false,
+        defaultValue: '0.002'
+    },
     min_budget: {
         type: DataTypes.FLOAT(15, 5),
         allowNull: false,

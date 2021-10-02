@@ -8,7 +8,7 @@
     <% if(error) { %> <%- include('includes/err.ejs') %> <% } %>
 
     <div id="app">
-      <h2>Categories</h2>
+      <h2>Categories (Max: 45)</h2>
       <form @submit.prevent @submit="addSiteData('category')">
         <div data-toggle="collapse" data-target="#catRow" style="cursor:pointer;">Show Categories</div>
         <div class="collapse" id="catRow">
@@ -39,7 +39,7 @@
         />
       </form>
 
-      <h2 class="mt-5">OS</h2>
+      <h2 class="mt-5">OS (Max: 80)</h2>
       <form @submit.prevent @submit="addSiteData('os')">
         <div data-toggle="collapse" data-target="#osRow" style="cursor:pointer;">Show OS</div>
         <div class="collapse" id="osRow">
@@ -93,7 +93,7 @@
         />
       </form>
 
-      <h2 class="mt-5">Browsers</h2>
+      <h2 class="mt-5">Browsers (Max: 20)</h2>
       <form @submit.prevent @submit="addSiteData('browser')">
         <div data-toggle="collapse" data-target="#browserRow" style="cursor:pointer;">Show Browsers</div>
         <div class="collapse" id="browserRow">
@@ -142,7 +142,7 @@
         />
       </form>
 
-      <h2 class="mt-5">Languages</h2>
+      <h2 class="mt-5">Languages (Max: 25)</h2>
       <form @submit.prevent @submit="addSiteData('language')">
         <div data-toggle="collapse" data-target="#langRow" style="cursor:pointer;">Show Languages</div>
         <div class="collapse" id="langRow">

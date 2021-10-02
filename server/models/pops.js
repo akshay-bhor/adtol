@@ -29,7 +29,7 @@ const Pops = sequelize.define('pops', {
         allowNull: false
     },
     ad_url: {
-        type: DataTypes.STRING(500),
+        type: DataTypes.STRING(2000),
         allowNull: false
     },
     ad_url_tiny: {
@@ -37,7 +37,7 @@ const Pops = sequelize.define('pops', {
         allowNull: false
     },
     pub_url: {
-        type: DataTypes.STRING(500),
+        type: DataTypes.STRING(2000),
         allowNull: false
     },
     pub_url_tiny: {

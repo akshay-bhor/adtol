@@ -38,6 +38,7 @@ router.get('/publisher', isAuth, publisherController.publisher);
 router.get('/websites', isAuth, websitesController.websites);
 router.post('/websites/add', isAuth, websitesController.addWebsite);
 router.post('/websites/edit/:webid', isAuth, websitesController.editWebsite);
+router.post('/websites/delete/:webid', isAuth, websitesController.deleteWebsite);
 router.post('/websites/get-adcode', isAuth, websitesController.getAdcode);
 router.get('/websites/formdata', websitesController.formdata);
 

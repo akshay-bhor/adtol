@@ -6,6 +6,7 @@ const { tinify, extractHostname } = require("../../../common/util");
 const Banner_Sizes = require("../../../models/banner_sizes");
 const { encryptAES } = require("../../../common/encrypt");
 const crypto = require('crypto');
+const { Op } = require("sequelize");
 
 
 exports.websitesHelper = async (req) => {
@@ -20,7 +21,7 @@ exports.websitesHelper = async (req) => {
         // Userid
         const userid = req.userInfo.id;
 
-        let sites = await Pub_Sites.findAll({ where: { uid: userid } });
+        let sites = await Pub_Sites.findAll({ where: { uid: userid, [Op.not]: [{ status: 4 }] } });
 
         let sitesData = [];
         sites.forEach(data => {
@@ -204,9 +205,6 @@ exports.editWebsiteHelper = async (req) => {
 
         // Website ID
         const website_id = req.params.webid;
-
-        // Set Status to pending
-        const status = 2;
         
         // Verify categories
         const catId = Object.keys(App_Settings.categories).filter(key => {
@@ -232,6 +230,22 @@ exports.editWebsiteHelper = async (req) => {
             throw err;
         }
 
+        const getWebInfo = await Pub_Sites.findOne({ 
+            where: {
+                id: website_id,
+                uid: userid
+            }
+        });
+        
+        // Check what values updated
+        let status = getWebInfo.dataValues.status;
+        const oldHash = getWebInfo.dataValues.hash;
+        const oldCat = getWebInfo.dataValues.category;
+        const oldLang = getWebInfo.dataValues.language;
+        if(oldHash != dHash || oldCat != catId || oldLang != langId) {
+            status = 2;
+        }
+
         // Validate adult
         if(req.body.category == "Adult") adult = 1; 
 
@@ -243,6 +257,63 @@ exports.editWebsiteHelper = async (req) => {
             language: langId,
             traffic: traffic,
             adult: adult,
+            status: status
+        }, {
+            where: {
+                id: website_id,
+                uid: userid
+            }
+        });
+        
+        if(update[0] == 0) {
+            const err = new Error('Something Went Wrong, try again!');
+            err.statusCode = 422;
+            throw err;
+        }
+
+        // Return
+        return {
+            msg: 'success'
+        };
+
+    } catch(err) {
+        if(!err.statusCode)
+            err.statusCode = 500;
+        throw err;
+    }
+}
+
+exports.deleteWebsiteHelper = async (req) => {
+    if(!req.userInfo) {
+        const err = new Error('Not Allowed!');
+        err.statusCode = 422;
+        throw err;
+    }
+
+    await check('webid').exists().trim().isInt().withMessage('Invalid website ID!').run(req);
+
+    try {
+
+        // Check validation errors
+        const errs = validationResult(req);
+        if(!errs.isEmpty()) {
+            const err = new Error('Validation Failed!');
+            err.statusCode = 422;
+            err.data = errs.array();
+            throw err;
+        }
+        
+        // Userid
+        const userid = req.userInfo.id;
+
+        // Website ID
+        const website_id = req.params.webid;
+
+        // Status
+        const status = 4;
+
+        // Update
+        const update = await Pub_Sites.update({
             status: status
         }, {
             where: {
@@ -329,9 +400,9 @@ exports.getAdcodeHelper = async (req) => {
         }
 
         // Check if website approved
-        if(webInfo.dataValues.status != 1) {
-            throw new Error('Website has not been approved yet!');
-        }
+        // if(webInfo.dataValues.status != 1) {
+        //     throw new Error('Website has not been approved yet!');
+        // }
 
         // Get banner info
         const bInfo = await Banner_Sizes.findAll();
@@ -344,6 +415,7 @@ exports.getAdcodeHelper = async (req) => {
         // Check if website is adult
         if(webInfo.dataValues.adult == 1) adult = 1;
         webInfoObj.ad_adult = adult;
+        webInfoObj.web_id = webid;
         webInfoObj.ad_hash = webInfo.dataValues.hash;
         webInfoObj.ad_lang = webInfo.dataValues.language;
         webInfoObj.ad_cat = webInfo.dataValues.category;
@@ -437,6 +509,7 @@ exports.getAdcodeHelper = async (req) => {
 
         /**
          * webInfo payload:
+         * web_id
          * ad_adult
          * ad_type
          * ad_hash => basically domain => unique

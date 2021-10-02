@@ -28,6 +28,9 @@ exports.processPop = async (req, res, next) => {
         const ad_lang = req.webInfo.ad_lang;
         const ad_cat = req.webInfo.ad_cat;
         const ad_hash = req.webInfo.ad_hash;
+
+        // Website id
+        const web_id = +req.webInfo.web_id;
         
         // Create match_hash bot|status|type|adult|run
         const match_hash = req.match_hash;
@@ -106,7 +109,7 @@ exports.processPop = async (req, res, next) => {
          * Things we need from db
          * pub_uid, status, web id
          */
-        const pubData = await Pub_Sites.findOne({ where: { hash: domain_hash }, attributes: ['id', 'uid', 'status'] });
+        const pubData = await Pub_Sites.findOne({ where: { id: web_id, hash: domain_hash }, attributes: ['id', 'uid', 'status'] });
 
         // Check if campaign and publisher exist (this will never happen)
         if(pubData == null) {

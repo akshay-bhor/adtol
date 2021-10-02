@@ -61,6 +61,15 @@
           v-model="min_cpc"
           name="min_cpc"
           class="form-control mb-3" />
+        
+        <label for="min_cpc">Min Pop CPC ($)</label>
+        <input
+          type="number"
+          step="0.001"
+          id="min_pop_cpc"
+          v-model="min_pop_cpc"
+          name="min_pop_cpc"
+          class="form-control mb-3" />
 
         <label for="min_budget">Min Campaign Budget ($)</label>
         <input
@@ -105,6 +114,7 @@
         withdraw_fee: parseFloat('<%= data.withdraw_fee %>'),
         ref_commision: parseFloat('<%= data.ref_commision %>'),
         min_cpc: parseFloat('<%= data.min_cpc %>'),
+        min_pop_cpc: parseFloat('<%= data.min_pop_cpc %>'),
         min_budget: parseFloat('<%= data.min_budget %>'),
         min_daily_budget: parseFloat('<%= data.min_daily_budget %>')
       };
@@ -119,6 +129,7 @@
             withdraw_fee: this.withdraw_fee,
             ref_commision: this.ref_commision,
             min_cpc: this.min_cpc,
+            min_pop_cpc: this.min_pop_cpc,
             min_budget: this.min_budget,
             min_daily_budget: this.min_daily_budget
           }

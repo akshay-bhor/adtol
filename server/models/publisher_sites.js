@@ -18,7 +18,6 @@ const Pub_Sites = sequelize.define('pub_sites', {
     },
     hash: {
         type: DataTypes.STRING(12),
-        unique: true,
         allowNull: false
     },
     category: {
@@ -58,7 +57,7 @@ const Pub_Sites = sequelize.define('pub_sites', {
         allowNull: false,
         defaultValue: 0
     },
-    status: { // 1 Approved 2 pending 3 rejected
+    status: { // 1 Approved 2 pending 3 rejected 4 deleted
         type: DataTypes.TINYINT(1),
         allowNull: false,
         defaultValue: 2

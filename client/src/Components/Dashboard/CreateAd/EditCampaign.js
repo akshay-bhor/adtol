@@ -14,38 +14,6 @@ import { weekDaysList } from "../../../constants/common";
 import { editCampaign, fetchCampaignData } from "../../../store/actions/campaigns.action";
 import { campaignActions } from "../../../store/reducers/campaigns.reducer";
 
-const validationSchema = yup.object({
-  campaign_name: yup
-    .string()
-    .required("Campaign Name is required")
-    .min(3, "Min Length is 3")
-    .max(50, "Max Length is 50"),
-  title: yup
-    .string()
-    .required("Title is required")
-    .min(3, "Min length is 3")
-    .max(50, "Max length is 50"),
-  desc: yup
-    .string()
-    .required("Description is required")
-    .min(3, "Min length is 3")
-    .max(300, "Max length is 300"),
-  url: yup.string().required("URL is required").url('Invalid URL, make sure to add https://'),
-  timezone: yup.string().required('Timezone is required'),
-  rel: yup.number().optional(),
-  cpc: yup.number().required('CPC is required').when('rel', {
-    is: 1,
-    then: yup.number().min(0.03, 'Min CPC when DoFollow is $0.03')
-  })
-  .when('rel', {
-    is: (rel) => rel !== 1,
-    then: yup.number().min(0.02, 'Min CPC is $0.02')
-  }),
-  budget: yup.number().required('Budget is required').min(1, 'Min budget is $1'),
-  daily_budget: yup.number().required('Daily Budget is required').min(1, 'Min Daily Budget is $1'),
-  adult: yup.boolean().required('Adult value is required'),
-});
-
 const EditCampaign = () => {
   const dispatch = useDispatch();
   const params = useParams();
@@ -64,6 +32,7 @@ const EditCampaign = () => {
   const os = useSelector((state) => state.formdata.os);
   const browsers = useSelector((state) => state.formdata.browsers);
   const btns = useSelector((state) => state.formdata.btns);
+  const campSettings = useSelector((state) => state.formdata.campaign_settings);
   /**
    * End
    */
@@ -196,6 +165,41 @@ const EditCampaign = () => {
     if(formDataFetched()) updateStates();
   }, [formDataFetched]);
 
+  const getValidationSchema = () => {
+    const min_cpc = type === 'campaign' ? campSettings.min_cpc:campSettings.min_pop_cpc;
+    return yup.object({
+      campaign_name: yup
+        .string()
+        .required("Campaign Name is required")
+        .min(3, "Min Length is 3")
+        .max(55, "Max Length is 55"),
+      title: yup
+        .string()
+        .required("Title is required")
+        .min(3, "Min length is 3")
+        .max(50, "Max length is 55"),
+      desc: yup
+        .string()
+        .required("Description is required")
+        .min(3, "Min length is 3")
+        .max(300, "Max length is 300"),
+      url: yup.string().max(2000, "Max length is 2000").required("URL is required").url('Invalid URL, make sure to add https://'),
+      timezone: yup.string().required('Timezone is required'),
+      rel: yup.number().optional(),
+      cpc: yup.number().required('CPC is required').when('rel', {
+        is: 1,
+        then: yup.number().min((min_cpc + 0.01), `Min CPC when DoFollow is $${(min_cpc + 0.01)}`)
+      })
+      .when('rel', {
+        is: (rel) => rel !== 1,
+        then: yup.number().min(min_cpc, `Min CPC is $${min_cpc}`)
+      }),
+      budget: yup.number().required('Budget is required').min(campSettings.min_budget, `Min budget is $${campSettings.min_budget}`),
+      daily_budget: yup.number().required('Daily Budget is required').min(campSettings.min_daily_budget, `Min Daily Budget is $${campSettings.min_daily_budget}`),
+      adult: yup.boolean().required('Adult value is required'),
+    });
+  }
+
   const onSubmit = (values) => {
     const postData = {
       ...values,
@@ -228,7 +232,7 @@ const EditCampaign = () => {
       {stateUpdated && (
         <Formik
           initialValues={getInitialData()}
-          validationSchema={validationSchema}
+          validationSchema={getValidationSchema()}
           onSubmit={(values) => {
             onSubmit(values);
           }}

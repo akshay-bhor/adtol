@@ -33,6 +33,17 @@ exports.editWebsite = async (req, res, next) => {
     }
 }
 
+exports.deleteWebsite = async (req, res, next) => {
+    try {
+        const result = await websitesHelper.deleteWebsiteHelper(req);
+        
+        res.status(200).json(result);
+
+    } catch (err) {
+        next(err);
+    }
+}
+
 exports.getAdcode = async (req, res, next) => {
     try {
         const result = await websitesHelper.getAdcodeHelper(req);

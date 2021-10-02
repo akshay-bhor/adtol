@@ -36,9 +36,11 @@ if(cluster.isMaster) {
             retryCount++;
         }
         else {
-            sendAlertMail(`${process.env.ORIGIN} API Server Down`, `Worker Instance Spawning has exceeded maximum threshold.<br />
-            <b>Retry Count - ${retryCount}.</b><br />
-            API server maybe down. Please investigate!`);
+            if(process.env.ORIGIN != 'http://localhost:5000') {
+                sendAlertMail(`${process.env.ORIGIN} API Server Down`, `Worker Instance Spawning has exceeded maximum threshold.<br />
+                <b>Retry Count - ${retryCount}.</b><br />
+                API server maybe down. Please investigate!`);
+            }
         }
     });
 }

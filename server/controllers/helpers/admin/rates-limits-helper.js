@@ -38,6 +38,7 @@ exports.postRatesLimitsHelper = async (req) => {
         const ref_commision = req.body.ref_commision;
         const withdraw_fee = req.body.withdraw_fee;
         const min_cpc = req.body.min_cpc;
+        const min_pop_cpc = req.body.min_pop_cpc;
         const min_budget = req.body.min_budget;
         const min_daily_budget = req.body.min_daily_budget;
 
@@ -48,6 +49,7 @@ exports.postRatesLimitsHelper = async (req) => {
             withdraw_fee,
             ref_commision,
             min_cpc,
+            min_pop_cpc,
             min_budget,
             min_daily_budget
         }, {

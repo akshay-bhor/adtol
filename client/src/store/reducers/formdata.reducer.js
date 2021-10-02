@@ -10,7 +10,8 @@ const formDataSlice = createSlice({
     devices: [],
     os: [],
     browsers: [],
-    btns: []
+    btns: [],
+    campaign_settings: {}
   },
   reducers: {
     loadCountries(state, action) {
@@ -36,6 +37,9 @@ const formDataSlice = createSlice({
     },
     loadBtns(state, action) {
       state.btns = action.payload
+    },
+    loadCampaignSettings(state, action) {
+      state.campaign_settings = action.payload
     }
   },
 });

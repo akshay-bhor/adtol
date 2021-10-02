@@ -6,6 +6,7 @@ import PaperBlock from "../Common/PaperBlock";
 import styles from "../Dashboard.module.css";
 import {
   abortWebsiteRequest,
+  deleteWebsite,
   fetchWebsites,
 } from "../../../store/actions/websites.action";
 import { websiteActions } from "../../../store/reducers/websites.reducer";
@@ -91,7 +92,22 @@ const WebsiteList = () => {
       abortWebsiteRequest();
       dispatch(websiteActions.clearError());
     };
-  }, [dispatch]);
+  }, [dispatch, fetched]);
+
+  const changeStatusHelper = (id, confirm = false) => {
+    if (confirm) {
+      const res = window.confirm(
+        "Website once deleted cannot be recovered/readded, still want to go ahead?"
+      );
+
+      if (!res) return;
+    }
+
+    const data = {};
+    data.id = id;
+
+    dispatch(deleteWebsite(data));
+  };
 
   const renderTableCell = (params) => {
     if (params.colDef.field == "website") {
@@ -163,6 +179,14 @@ const WebsiteList = () => {
               Get Adcode
             </Button>
           </Link>
+          <Button
+              color="secondary"
+              className={muiStyles.smallBtn}
+              startIcon={<Icon>delete</Icon>}
+              onClick={() => changeStatusHelper(params.row.id, true)}
+            >
+              Delete
+          </Button>
         </Fragment>
       );
     }

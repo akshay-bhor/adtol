@@ -30,7 +30,7 @@ const Campaigns = sequelize.define('campaigns', {
         allowNull: false
     },
     url: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(2000),
         allowNull: false
     },
     domain_hash: { // Domain hash to prevent same site ad
@@ -38,12 +38,12 @@ const Campaigns = sequelize.define('campaigns', {
         allowNull: false
     },
     category: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.STRING(140),
         allowNull: false,
         defaultValue: 0
     },
     country: {
-        type: DataTypes.STRING(500),
+        type: DataTypes.STRING(1000),
         allowNull: false,
         defaultValue: 0
     },
@@ -53,17 +53,17 @@ const Campaigns = sequelize.define('campaigns', {
         defaultValue: 0
     },
     os: {
-        type: DataTypes.STRING(200),
+        type: DataTypes.STRING(240),
         allowNull: false,
         defaultValue: 0
     },
     browser: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(60),
         allowNull: false,
         defaultValue: 0
     },
     language: {
-        type: DataTypes.STRING(60),
+        type: DataTypes.STRING(75),
         allowNull: false,
         defaultValue: 0
     },

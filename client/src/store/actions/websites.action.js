@@ -1,5 +1,5 @@
 import { websiteActions } from "../reducers/websites.reducer";
-import { abortRequest, addWebsite, editWebsite, getAdcode, getWebsitesList } from "../../services/apiService";
+import { abortRequest, addWebsite, deleteWebsiteApi, editWebsite, getAdcode, getWebsitesList } from "../../services/apiService";
 import { uiActions } from "../reducers/ui.reducer";
 
 const _websiteGetRequest = (sendRequest) => {
@@ -59,6 +59,13 @@ export const updateWebsite = (data) => {
 export const createWebsite = (data) => {
   return async (dispatch) => {
     await dispatch(_websitePostRequest(addWebsite, data));
+    dispatch(websiteActions.setFetched(false));
+  }
+}
+
+export const deleteWebsite = (data) => {
+  return async (dispatch) => {
+    await dispatch(_websitePostRequest(deleteWebsiteApi, data));
     dispatch(websiteActions.setFetched(false));
   }
 }

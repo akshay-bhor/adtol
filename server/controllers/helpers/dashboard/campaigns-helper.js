@@ -361,13 +361,15 @@ exports.manageCampaignHelper = async (req) => {
         const userid = req.userInfo.id;
 
         // Validate if campaign exists
+        let oldCampData = null;
         if(manage === 'edit') {
-            const res = await Campaigns.findAll({ where: { id: campaign_id, uid: userid } });
-            if(res.length < 1) {
+            oldCampData = await Campaigns.findAll({ where: { id: campaign_id, uid: userid } });
+            if(oldCampData.length < 1) {
                 const err = new Error('Campaign not found!');
                 err.statusCode = 404;
                 throw err;
             }
+            oldCampData = oldCampData[0];
         }
 
         // Validate banners
@@ -379,6 +381,24 @@ exports.manageCampaignHelper = async (req) => {
             user_banners = await User_Banners.findAll({ where: { uid: userid } });
             bannerValidation(banner_ids, user_banners);
             banner_sizes = await Banner_Sizes.findAll();
+        }
+
+        // Check if banners changed
+        let bannersChanged = false;
+        if(req.body.banners) {
+            banner_ids = req.body.banners.split(',').map(d => +d);
+            let oldBanner_ids = await Banners.findAll({ where: { campaign_id: campaign_id } });
+            oldBanner_ids = oldBanner_ids.map(data => +data.dataValues.banner_id);
+            if(banner_ids.length === oldBanner_ids.length) {
+                for(let id of banner_ids) {
+                    if(!oldBanner_ids.includes(id)) {
+                        bannersChanged = true;
+                    }
+                }
+            }
+            else {
+                bannersChanged = true;
+            }
         }
 
         /**
@@ -446,7 +466,13 @@ exports.manageCampaignHelper = async (req) => {
                 delete campaign_obj.today_budget_rem;
                 delete campaign_obj.spent;
                 delete campaign_obj.run;
+                campaign_obj.status = oldCampData.dataValues.status;
                 const new_budget = req.body.budget;
+
+                // Check weather to update status
+                if(shouldUpdateStatus(campaign_obj, oldCampData.dataValues) || bannersChanged) {
+                    campaign_obj.status = 2;
+                }
 
                 const oldData = await sequelize.query('SELECT u.ad_balance, c.budget_rem from users u INNER JOIN campaigns c ON u.id = c.uid WHERE u.id = ? AND c.id = ?', {
                     type: QueryTypes.SELECT,
@@ -733,7 +759,7 @@ exports.getCampaignBannersHelper = async (req) => {
         const userid = req.userInfo.id;
 
         // Get All Banners
-        const user_banners = await sequelize.query('SELECT id, size, src FROM user_banners WHERE uid = ?', {
+        const user_banners = await sequelize.query('SELECT id, size, src FROM user_banners WHERE uid = ? ORDER BY id DESC', {
             type: QueryTypes.SELECT,
             replacements: [userid]
         });
@@ -777,7 +803,8 @@ exports.getCampaignFormDataHelper = async (req) => {
             Os.findAll(),
             Browsers.findAll(),
             Timezones.findAll(),
-            Btns.findAll()
+            Btns.findAll(),
+            Settings.findAll()
         ]);
 
         const devices = [];
@@ -785,6 +812,7 @@ exports.getCampaignFormDataHelper = async (req) => {
         const browsers = [];
         const timezones = [];
         const btns = [];
+        const settings = {};
 
         res[0].forEach(item => {
             devices.push({
@@ -822,12 +850,20 @@ exports.getCampaignFormDataHelper = async (req) => {
             });
         });
 
+        res[5].forEach(item => {
+            settings.min_cpc = item.dataValues.min_cpc;
+            settings.min_pop_cpc = item.dataValues.min_pop_cpc;
+            settings.min_budget = item.dataValues.min_budget;
+            settings.min_daily_budget = item.dataValues.min_daily_budget;
+        });
+
         return {
             devices,
             os,
             browsers,
             timezones,
-            btns
+            btns,
+            settings
         };
 
     } catch(err) {
@@ -1011,8 +1047,11 @@ const adSettingsValidation = async (value, { req, location, path }) => {
         const web_settings = await Settings.findOne();
 
         if(path === 'cpc') {
-            if(+value < +web_settings.dataValues.min_cpc) {
+            if(req.query.type === 'campaign' && +value < +web_settings.dataValues.min_cpc) {
                 throw new Error(`Min CPC is $${web_settings.dataValues.min_cpc}`);
+            }
+            if(req.query.type === 'pop' && +value < +web_settings.dataValues.min_pop_cpc) {
+                throw new Error(`Min CPC is $${web_settings.dataValues.min_pop_cpc}`);
             }
             if(req.body.rel === 1 && +value < (+web_settings.dataValues.min_cpc + 0.01)) {
                 throw new Error(`Min CPC is $${(+web_settings.dataValues.min_cpc + 0.01)}`);
@@ -1083,4 +1122,16 @@ const campaignTypeValidation = async (value, { req }) => {
     } catch (err) {
         throw new Error(err.message);
     }
+}
+
+const shouldUpdateStatus = (campData, oldData) => {
+    if(
+        campData.title == oldData.title &&
+        campData.desc == oldData.desc &&
+        campData.url == oldData.url &&
+        campData.adult == oldData.adult
+    ) {
+        return false
+    }
+    return true;
 }

@@ -47,7 +47,7 @@ const User_Info = sequelize.define('user_info', {
         allowNull: true
     },
     verify_exp: {
-        type: DataTypes.BIGINT(12),
+        type: DataTypes.BIGINT(10),
         allowNull: true
     }
 }, 

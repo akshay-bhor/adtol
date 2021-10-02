@@ -27,6 +27,7 @@ exports.adServe = async (req, res, next) => {
 
         /**
          * webInfo payload:
+         * web_id
          * ad_adult
          * ad_type
          * ad_hash => basically domain => unique
@@ -39,6 +40,7 @@ exports.adServe = async (req, res, next) => {
          */
 
         // Get payload
+        const web_id = +req.webInfo.web_id;
         const ad_cat = +req.webInfo.ad_cat;
         const ad_lang = +req.webInfo.ad_lang;
         const hash = req.webInfo.ad_hash;
@@ -111,7 +113,7 @@ exports.adServe = async (req, res, next) => {
 
         // Check if publisher website approved
         let webValid = 0;
-        const ps = await Pub_Sites.findOne({ where: { hash: domain_hash, status: 1 }, attributes: ['id', 'uid'] }); 
+        const ps = await Pub_Sites.findOne({ where: { id: web_id, hash: domain_hash, status: 1 }, attributes: ['id', 'uid'] }); 
         if(ps) webValid = 1;
 
         // Response object

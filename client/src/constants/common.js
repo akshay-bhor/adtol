@@ -246,6 +246,14 @@ export const SidenavMenuItems = [
     divider: true,
   },
   {
+    id: 41,
+    title: "Billing",
+    url: "/dashboard/billing",
+    icon: "receipt_long",
+    nested: false,
+    divider: true,
+  },
+  {
     id: 32,
     title: "Advertiser",
     url: "/dashboard/advertiser",
@@ -330,11 +338,12 @@ export const SidenavMenuItems = [
     divider: true,
   },
   {
-    id: 41,
-    title: "Billing",
-    url: "/dashboard/billing",
-    icon: "receipt_long",
+    id: 42,
+    title: "Contact Us",
+    url: "/contact",
+    icon: "contact_support",
     nested: false,
+    divider: false,
   },
 ];
 

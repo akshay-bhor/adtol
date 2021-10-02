@@ -11,7 +11,7 @@ const styles = {
 const Estimates = (props) => {
 
     return (
-        <PaperBlockPrimary heading={'Estimates'}>
+        <PaperBlockPrimary heading={props.selected === 1 ? 'Spending':'Earning'}>
 
                 <div style={styles.iblock}>
                     <Typography variant="caption" display="block">
