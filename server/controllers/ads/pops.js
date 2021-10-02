@@ -125,7 +125,7 @@ exports.processPop = async (req, res, next) => {
         }
 
         // Get IP
-        const ip = req.ip;
+        const ip = req.ip_addr;
         const ip_tiny = tinify(ip);
 
         // Validate adv pop

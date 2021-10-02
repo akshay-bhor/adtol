@@ -90,7 +90,7 @@ exports.processClick = async (req, res, next) => {
         }
 
         // Get IP
-        const ip = (req.get['x-forwarded-for'] || req.connection.remoteAddress).split(',')[0].trim() || req.ip;
+        const ip = (req.get('x-forwarded-for') || req.connection.remoteAddress).split(',')[0].trim() || req.ip;
         const ip_tiny = tinify(ip);
 
         

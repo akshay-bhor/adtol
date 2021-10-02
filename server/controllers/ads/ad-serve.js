@@ -226,7 +226,7 @@ exports.adServe = async (req, res, next) => {
                         browser: bCode,
                         country: cCode,
                         language: ad_lang,
-                        ip: req.ip,
+                        ip: req.ip_addr,
                         day_unix: today_unix,
                         time_unix: time_unix
                     });

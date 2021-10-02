@@ -44,8 +44,8 @@ module.exports = async (req, res, next) => {
         req.bCode = +bCode;
         
         // Get user country
-        req.ip = getReqIP(req);
-        const { country } = { country: req.get('cf-ipcountry') } || geoip.lookup(req.ip) || { country: 'IN' };
+        req.ip_addr = getReqIP(req);
+        const { country } = { country: req.get('cf-ipcountry') } || geoip.lookup(req.ip_addr) || { country: 'IN' };
         
         // Find country code
         let cCode = Object.keys(App_Settings.countries).find(key => App_Settings.countries[key][0] == country) || 0;

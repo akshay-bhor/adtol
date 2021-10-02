@@ -33,12 +33,16 @@ exports.test = async(req, res, next) => {
     const req_ip = req.ip;
     const headers = req.headers;
     const x_real_ip = req.get('x-real-ip');
+    req.ip = '10.24.32.1';
+    req.ip_addr = '10.24.32.1';
+    const updated = req.ip_addr;
 
     res.status(200).json({
         x_forwarded_for,
         remote_address,
         req_ip,
         x_real_ip,
+        updated,
         headers
     });
 }
