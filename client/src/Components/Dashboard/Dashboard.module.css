@@ -45,6 +45,15 @@
     overflow: visible;
 }
 
+.cellCenter {
+    display: flex!important;
+    flex-direction: column!important;
+    justify-content: center!important;
+    align-items: center!important;
+    line-height: unset!important;
+    overflow: visible;
+}
+
 .chipContainer {
     max-height: 40px;
     margin-top: 8px;

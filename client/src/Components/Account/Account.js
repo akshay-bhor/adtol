@@ -28,6 +28,9 @@ const useStyles = makeStyles((theme) => ({
   acIcon: {
     fontSize: "120px",
     color: "#999",
+    '@media(max-width: 768px)': {
+      fontSize: '60px'
+    }
   },
   acInfo: {
     display: "flex",
@@ -137,6 +140,8 @@ const Account = () => {
           }}
           indicatorColor="primary"
           textColor="primary"
+          variant="scrollable"
+          scrollButtons="auto"
         >
           <Tab label="Account Details" {...tabProps(0)} />
           <Tab label="Payment Details" {...tabProps(1)} />

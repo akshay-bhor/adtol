@@ -47,7 +47,10 @@ const Publisher = () => {
   }, [dispatch]);
 
   if(!isLoading && !err) {
-      cols = websitesCols();
+      cols = websitesCols().map(col => ({
+        ...col,
+        cellClassName: styles.cellCenter,
+      }));
       rows = mapRows(data.by_websites)
   }
 

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
+import { MAPS_API_KEY } from "../../../util/load-scripts";
 import PaperBlock from "./PaperBlock";
 
 const chartContent = {
@@ -50,6 +51,7 @@ const GeoChart = (props) => {
     if (gChartLoaded) {
         window.google.charts.load('current', {
             'packages':['geochart'],
+            'mapsApiKey': MAPS_API_KEY,
           });
         window.google.charts.setOnLoadCallback(loadChart);
     }

@@ -40,7 +40,7 @@ const mapRows = (colName, propData) => {
         // Calculate CTR
         if(ctr === 'NA') {
             if(clicks !== 0) {
-            ctr = (views / clicks).toFixed(2) + "%";
+            ctr = (clicks / views).toFixed(2) + "%";
             }
         }
 

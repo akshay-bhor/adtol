@@ -47,7 +47,10 @@ const Advertiser = () => {
   }, [dispatch]);
 
   if(!isLoading && !err) {
-      cols = campaignCols();
+      cols = campaignCols().map(col => ({
+        ...col,
+        cellClassName: styles.cellCenter,
+      }));
       rows = mapRows(data.by_campaign)
   }
 
