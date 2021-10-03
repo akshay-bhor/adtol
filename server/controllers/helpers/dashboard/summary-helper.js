@@ -28,13 +28,13 @@ exports.summaryHelper = async(req) => {
         const queries = [
             { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as earned, day_unix FROM summary_device WHERE pub_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
             { "name": "countrystats", "query": "SELECT views as cviews, clicks as cclicks, pops as cpops, cost as cearned, country FROM summary_country WHERE pub_uid = "+ userid +" AND day_unix = "+ today_unix +" ORDER BY cost DESC LIMIT 5" },
-            { "name": "devices", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as dearned, device FROM summary_device WHERE pub_uid=" + userid +" AND day_unix = "+ today +" GROUP BY device" },
+            { "name": "devices", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as dearned, device FROM summary_device WHERE pub_uid=" + userid +" AND day_unix = "+ today_unix +" GROUP BY device" },
             
             { "name": "user", "query": "SELECT pub_balance, ad_balance FROM users WHERE id = "+ userid +"" },
             
             { "name": "stats", "query": "SELECT SUM(views) as ad_views, SUM(clicks) as ad_clicks, SUM(pops) as ad_pops, SUM(cost) as spent, day_unix FROM summary_device WHERE ad_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
             { "name": "countrystats", "query": "SELECT views as cviews, clicks as cclicks, pops as cpops, cost as cspent, country, day_unix FROM summary_country WHERE ad_uid = "+ userid +" AND day_unix = "+ today_unix +" ORDER BY cost DESC LIMIT 5" },
-            { "name": "devices", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as dspent, device FROM summary_device WHERE ad_uid =" + userid +" AND day_unix = "+ today +" GROUP BY device" },
+            { "name": "devices", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as dspent, device FROM summary_device WHERE ad_uid =" + userid +" AND day_unix = "+ today_unix +" GROUP BY device" },
         ];
 
         const result = await executeAllQueries(queries);

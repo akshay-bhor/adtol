@@ -50,8 +50,7 @@ const GeoChart = (props) => {
   useEffect(() => {
     if (gChartLoaded) {
         window.google.charts.load('current', {
-            'packages':['geochart'],
-            'mapsApiKey': MAPS_API_KEY,
+            'packages':['geochart']
           });
         window.google.charts.setOnLoadCallback(loadChart);
     }
