@@ -129,7 +129,7 @@ exports.summaryHelper = async(req) => {
         const devices = {};
         const all_devices = App_Settings.devices;
         for(let i = 1;i < Object.keys(all_devices).length;i++) {
-            Object.keys(all_devices).forEach(key => { console.log(devicesRes);
+            Object.keys(all_devices).forEach(key => {
                 devices[all_devices[key]] = devicesRes.filter(data => +data.device === +key)[0] ||  
                     { 
                         views: 0, clicks: 0, pops: 0, earned: 0
