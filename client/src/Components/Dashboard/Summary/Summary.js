@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
 import Loading from "../../UI/Loading";
-import AdUnits from "./AdUnits/AdUnits";
+import PlatformChart from "./PlatformChart/PlatformChart";
 import Estimates from "./Estimates/Estimates"
 import Performance from "./Performance/Performance";
 import styles from '../Dashboard.module.css';
@@ -111,13 +111,13 @@ const Summary = () => {
                     {selected === 1 && <Fragment>
                     <Estimates data={data.ad_estimates} balance={data.ad_balance} selected={selected} />
                     <Performance data={data.ad_performance} />
-                    <AdUnits data={data.ad_ad_devices} />
+                    <PlatformChart data={data.ad_ad_devices} />
                     <CountryTable data={data.ad_countries} rows={adRows} columns={countryColumnsAd()} /></Fragment>}
                     
                     {selected === 2 && <Fragment>
                     <Estimates data={data.pub_estimates} balance={data.pub_balance} />
                     <Performance data={data.pub_performance} />
-                    <AdUnits data={data.pub_ad_devices} />
+                    <PlatformChart data={data.pub_ad_devices} />
                     <CountryTable data={data.pub_countries} rows={pubRows} columns={countryColumnsPub()} /></Fragment>}
 
                 </Fragment>}
