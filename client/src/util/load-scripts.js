@@ -1,7 +1,7 @@
 export const RECAPTCHA_SITE_KEY = "6LcIF9waAAAAAM6J1cr9odD8vAi3Yh73Gi2HqG16";
 export const GOOGLE_CLIENT_ID =
   "533810574933-hlh07fjana2kbf05m4ui6h5jhlactp1k.apps.googleusercontent.com";
-export const MAPS_API_KEY = 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY';
+export const MAPS_API_KEY = 'AIzaSyAmM-cTf8LEwvoU9gtl-Z-qXsSry-8QLuw';
 
 // Scripts selector
 export const scripts = {
