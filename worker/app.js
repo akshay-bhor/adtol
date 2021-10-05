@@ -11,7 +11,7 @@ router.get('/', (_, res, __) => {
 });
 
 app.listen(process.env.PORT || 8080, function () {
-    console.log('Worker server is online');
+    console.log('Worker instance is online');
 });
 
 /**

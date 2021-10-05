@@ -24,17 +24,9 @@
 #    and best practices on handling the access key credentials.
 
 on:
-  # push:
-  #   branches:
-  #     - 'release/v-*' # push on release branch 
-  #     - 'release/hotfix/v-*' # push on hotfix hotfix branch
-  #   tags:
-  #     - 'v-*' # push on tags v-1.0.0 and up
-  #     - 'hotfix/v-*' 
-  release:
-    types: [created]
-  # run manually
-  workflow_dispatch:
+  push:
+    branches:
+      - 'develop' # push on develop branch 
 
 name: Deploy Dev Version to Amazon ECS
 
@@ -91,7 +83,7 @@ jobs:
       id: render-adtol-frontend
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: task-definition-dev.json
+        task-definition: task-definition-adtol-dev.json
         container-name: adtol-frontend
         image: ${{ steps.build-image-frontend.outputs.image }}
     
