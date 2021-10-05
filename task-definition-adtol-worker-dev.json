@@ -78,22 +78,13 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-worker-dev:eff4d5743d8f49a33bd7d9b534e4c48e3f29c641",
+      "image": "205900288504.dkr.ecr.ap-south-1.amazonaws.com/adtol-worker-dev:51f6dbbbff011f6ab23ae2f6fb8fe5887ebcd6e7",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
       "disableNetworking": null,
       "interactive": null,
-      "healthCheck": {
-        "retries": 5,
-        "command": [
-          "CMD-SHELL",
-          "curl -f http://localhost:8080/ || exit 1"
-        ],
-        "timeout": 10,
-        "interval": 30,
-        "startPeriod": null
-      },
+      "healthCheck": null,
       "essential": true,
       "links": null,
       "hostname": null,
@@ -114,7 +105,7 @@
     "EC2",
     "FARGATE"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:205900288504:task-definition/adtol-dev-worker:5",
+  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:205900288504:task-definition/adtol-dev-worker:8",
   "family": "adtol-dev-worker",
   "requiresAttributes": [
     {
@@ -122,12 +113,6 @@
       "targetType": null,
       "value": null,
       "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
-    },
-    {
-      "targetId": null,
-      "targetType": null,
-      "value": null,
-      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.24"
     },
     {
       "targetId": null,
@@ -152,12 +137,6 @@
       "targetType": null,
       "value": null,
       "name": "com.amazonaws.ecs.capability.task-iam-role"
-    },
-    {
-      "targetId": null,
-      "targetType": null,
-      "value": null,
-      "name": "ecs.capability.container-health-check"
     },
     {
       "targetId": null,
@@ -190,7 +169,7 @@
   ],
   "networkMode": "awsvpc",
   "cpu": "256",
-  "revision": 5,
+  "revision": 8,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
