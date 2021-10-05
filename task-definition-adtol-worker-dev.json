@@ -33,28 +33,8 @@
         "workingDirectory": null,
         "secrets": [
           {
-            "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_NAME",
-            "name": "DB_NAME"
-          },
-          {
-            "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_USER",
-            "name": "DB_USER"
-          },
-          {
-            "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_PASS",
-            "name": "DB_PASS"
-          },
-          {
-            "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_HOST",
-            "name": "DB_HOST"
-          },
-          {
-            "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_DIALECT",
-            "name": "DB_DIALECT"
-          },
-          {
-            "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_PORT",
-            "name": "DB_PORT"
+            "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_REGION",
+            "name": "AWS_REGION"
           },
           {
             "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_SES_ACCESS_KEY",
@@ -65,8 +45,28 @@
             "name": "AWS_SES_SECRET_KEY"
           },
           {
-            "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_AWS_REGION",
-            "name": "AWS_REGION"
+            "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_DIALECT",
+            "name": "DB_DIALECT"
+          },
+          {
+            "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_HOST",
+            "name": "DB_HOST"
+          },
+          {
+            "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_NAME",
+            "name": "DB_NAME"
+          },
+          {
+            "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_PASS",
+            "name": "DB_PASS"
+          },
+          {
+            "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_PORT",
+            "name": "DB_PORT"
+          },
+          {
+            "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_DB_USER",
+            "name": "DB_USER"
           },
           {
             "valueFrom": "arn:aws:ssm:ap-south-1:205900288504:parameter/ADTOL_DEV_EMAIL_SENDING_RATE",
@@ -103,7 +103,7 @@
         "dockerLabels": null,
         "systemControls": null,
         "privileged": null,
-        "name": "adtol-dev-worker"
+        "name": "adtol-worker"
       }
     ],
     "placementConstraints": [],
@@ -113,7 +113,7 @@
       "EC2",
       "FARGATE"
     ],
-    "taskDefinitionArn": "arn:aws:ecs:ap-south-1:205900288504:task-definition/adtol-dev-worker:2",
+    "taskDefinitionArn": "arn:aws:ecs:ap-south-1:205900288504:task-definition/adtol-dev-worker:3",
     "family": "adtol-dev-worker",
     "requiresAttributes": [
       {
@@ -189,7 +189,7 @@
     ],
     "networkMode": "awsvpc",
     "cpu": "256",
-    "revision": 2,
+    "revision": 3,
     "status": "ACTIVE",
     "inferenceAccelerators": null,
     "proxyConfiguration": null,
