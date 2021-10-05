@@ -3,8 +3,6 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const sequelize = require('./utils/db');
 const { loadSettings } = require('./common/settings');
-const cron = require('node-cron');
-const tasks = require('./cron/cron-jobs');
 const app = express();
 const cluster = require('cluster');
 const helmet = require('helmet');
@@ -92,41 +90,4 @@ else {
         loadSettings();
         // verifyEmailTransport();
     });
-}
-
-
-if(cluster.isMaster) { console.log('Cron is running in master');
-    /**
-     * Cron Jobs => Run only in master
-     * 
-     * # ┌────────────── second (optional)
-     # │ ┌──────────── minute
-    # │ │ ┌────────── hour
-    # │ │ │ ┌──────── day of month
-    # │ │ │ │ ┌────── month
-    # │ │ │ │ │ ┌──── day of week
-    # │ │ │ │ │ │
-    # │ │ │ │ │ │
-    # * * * * * *
-    */
-
-    // cron.schedule('* 2 * * *', () => { // Execute everyday at 2 AM
-    //     // Update referrel stats
-    //     tasks.updateRefStatsJob();
-    // });
-
-    // cron.schedule('* 1 * * *', () => { // Execute at 1AM
-    //     // Delete old data
-    //     tasks.deleteOldDataJob();
-    // });
-
-    // cron.schedule('* 0 * * *', () => { // Execute at 12 AM
-    //     // Allocate today's budget
-    //     tasks.allocateDailyBudgetJob();
-    // });
-
-    // cron.schedule('*/15 * * * *', () => { // Execute every 15 min
-    //     // Process day parting
-    //     tasks.processDayPartingJob();
-    // });
 }
