@@ -10,6 +10,8 @@ router.get('/', (_, res, __) => {
     res.status(200).json({msg:'success'});
 });
 
+app.use(router);
+
 app.listen(process.env.PORT || 8080, function () {
     console.log('Worker instance is online');
 });
