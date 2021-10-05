@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { handleRegister, abortAuthRequest } from "../../store/actions/auth.action";
 import { abortFormDataRequest, fetchCountries } from "../../store/actions/formdata.action";
 import LoadReCaptcha from "../Common/LoadReCaptcha";
-import { useHistory } from "react-router";
+import { useHistory, useLocation } from "react-router";
 import FormContent from "./FormContent";
 import { RECAPTCHA_SITE_KEY } from "../../util/load-scripts";
 import { Link } from "react-router-dom";
@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
 
 const RegisterForm = () => { 
   const countries = useSelector((state) => state.formdata.countries);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const ref_by = queryParams.get("ref") || '';
   const history = useHistory();
   const dispatch = useDispatch();
   const muiStyles = useStyles();
@@ -83,6 +86,7 @@ const RegisterForm = () => {
             mobile: "",
             ac_type: "",
             company_name: "",
+            ref_by: ref_by,
             agreement: false
           }}
           validationSchema={registerValidationSchema}

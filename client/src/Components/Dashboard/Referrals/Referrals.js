@@ -56,6 +56,7 @@ const initSummaryData = [
 const Referrals = () => {
   const isLoading = useSelector((state) => state.referral.loading);
   const data = useSelector((state) => state.referral.data);
+  const ref_link = `https://adtol.com/register?ref=${data.share_link_code}`;
   const err = useSelector((state) => state.referral.error);
   const dispatch = useDispatch();
   const muiStyles = useStyles();
@@ -134,6 +135,18 @@ const Referrals = () => {
               variant="subtitle2"
               className={muiStyles.copy}
               onClick={() => copyCode(data.share_link_code)}
+            >
+              <Icon>content_copy</Icon>&nbsp;Copy
+            </Typography>
+          </PaperBlock>
+          <PaperBlock heading="Referral Link" fullWidth={false}>
+            <Typography variant="h5" className={muiStyles.ref_code}>
+              {ref_link}
+            </Typography>
+            <Typography
+              variant="subtitle2"
+              className={muiStyles.copy}
+              onClick={() => copyCode(ref_link)}
             >
               <Icon>content_copy</Icon>&nbsp;Copy
             </Typography>

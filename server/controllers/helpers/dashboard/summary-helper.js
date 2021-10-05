@@ -115,7 +115,7 @@ exports.summaryHelper = async(req) => {
         countryRes.forEach(c => {
             // Find country Name
             let cid = c.country; 
-            let [ccode, cname] = App_Settings.countries[cid];
+            let [ccode, cname] = App_Settings.countries[cid] || [99, 'India'];
             
             countryStats[cname] = {
                 "earned": c.cearned.toFixed(2),
@@ -247,7 +247,7 @@ exports.summaryHelper = async(req) => {
         ad_countryRes.forEach(c => {
             // Find country Name
             let cid = c.country; 
-            let [ccode, cname] = App_Settings.countries[cid];
+            let [ccode, cname] = App_Settings.countries[cid] || [99, 'India'];
             
             ad_countryStats[cname] = {
                 "spent": c.cspent.toFixed(2),

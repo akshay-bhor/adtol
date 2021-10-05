@@ -191,15 +191,15 @@ exports.reportsHelper = async (req) => {
                 views_clicks[date].pops = 0;
             }
         }
-
+        
         // Views pops and clicks by country
         i = 0;
         const byCountry = {};
         while(true) {
             if(!countryRes[i]) break;
-
+            
             let code = countryRes[i].country;
-            let cname = App_Settings.countries[code][1];
+            let cname = App_Settings.countries[code] ? App_Settings.countries[code][1]:'India';
 
             if(!byCountry[cname]) byCountry[cname] = {};
 
@@ -210,8 +210,7 @@ exports.reportsHelper = async (req) => {
 
             i++;
         }
-
-
+        
         // By elements -> campaign for advertiser, websites for publishers
         const byElements = {};
         if(reportType == 'advertiser') {

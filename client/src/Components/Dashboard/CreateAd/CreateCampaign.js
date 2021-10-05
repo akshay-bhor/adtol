@@ -20,8 +20,8 @@ const CreateCampaign = () => {
   const params = useParams();
   const location = useLocation();
   const type = params.type; // campaign or pop
-  const searchParams = new URLSearchParams(location.search);
-  const goal = searchParams.get("type") || 1;
+  const queryParams = new URLSearchParams(location.search);
+  const goal = queryParams.get("type") || 1;
 
   // Intial form data
   const initialData = {
@@ -127,7 +127,7 @@ const CreateCampaign = () => {
       rel: yup.number().optional(),
       cpc: yup.number().required('CPC is required').when('rel', {
         is: 1,
-        then: yup.number().min((min_cpc + 0.01), `Min CPC when DoFollow is $${(min_cpc + 0.01)}`)
+        then: yup.number().min((min_cpc + 0.001), `Min CPC when DoFollow is $${(min_cpc + 0.001)}`)
       })
       .when('rel', {
         is: (rel) => rel !== 1,
