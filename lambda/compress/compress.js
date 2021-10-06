@@ -2,6 +2,8 @@ const AWS = require('aws-sdk');
 const sharp = require('sharp');
 const FileType = require('file-type');
 const s3 = new AWS.S3();
+const {execFile} = require('child_process');
+const Gifsicle = require('gifsicle-wrapper');
 
 const destBucket = process.env.DEST_BUCKET;
 const quality = parseInt(process.env.QUALITY);
@@ -94,9 +96,12 @@ async function compress(inBuffer, destKey) {
   let image;
   if(ext !== 'gif') {
     image = await sharp(inBuffer).jpeg({ quality: quality });
+    return image.toBuffer();
   }
   else {
-    image = await sharp(inBuffer).gif({ quality: quality });
+    image = await Gifsicle(inBuffer)
+		.optimize({ level: Gifsicle.level.O2, lossiness: 20 })
+		.toBuffer();
+    return image;
   }
-  return image.toBuffer();
 }
