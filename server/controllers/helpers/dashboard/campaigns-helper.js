@@ -385,7 +385,7 @@ exports.manageCampaignHelper = async (req) => {
 
         // Check if banners changed
         let bannersChanged = false;
-        if(req.body.banners) {
+        if(req.body.banners && manage === 'edit') {
             banner_ids = req.body.banners.split(',').map(d => +d);
             let oldBanner_ids = await Banners.findAll({ where: { campaign_id: campaign_id } });
             oldBanner_ids = oldBanner_ids.map(data => +data.dataValues.banner_id);
@@ -465,7 +465,7 @@ exports.manageCampaignHelper = async (req) => {
                 delete campaign_obj.budget_rem;
                 delete campaign_obj.today_budget_rem;
                 delete campaign_obj.spent;
-                delete campaign_obj.run;
+                campaign_obj.run = oldCampData.dataValues.run;
                 campaign_obj.status = oldCampData.dataValues.status;
                 const new_budget = req.body.budget;
 
@@ -511,7 +511,7 @@ exports.manageCampaignHelper = async (req) => {
             // Create ad types
             if(reqType === 'campaign') {
                 // Insert ads
-                const adsArr = createAds(req, campaign_id, banner_ids, user_banners, banner_sizes, campaign_obj.status);
+                const adsArr = createAds(campaign_obj, campaign_id, banner_ids, user_banners, banner_sizes);
                 const res = await Ads.bulkCreate(adsArr, { transaction: ts });
                 if(req.body.banners) {
                     // Filter banners
@@ -873,7 +873,7 @@ exports.getCampaignFormDataHelper = async (req) => {
     }
 }
 
-const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, status = 2) => {
+const createAds = (data, campaign_id, banner_ids, user_banners, banner_sizes) => {
     /**
      * Chekout website-helper for more info
      */
@@ -881,7 +881,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, sta
     const adsArr = [];
     {
         const ad_type = 1;
-        const str = `0|${status}|${ad_type}|${req.body.adult}|${req.body.run}`; 
+        const str = `0|${+data.status}|${+ad_type}|${+data.adult}|${+data.run}`; 
         let match_hash = tinify(str);
         adsArr.push({
             campaign_id: campaign_id,
@@ -892,7 +892,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, sta
     // Banners 
     if(req.body.banners) {
         const ad_type = 2;
-        const str = `0|${status}|${ad_type}|${req.body.adult}|${req.body.run}`; 
+        const str = `0|${+data.status}|${+ad_type}|${+data.adult}|${+data.run}`; 
         let match_hash = tinify(str);
         adsArr.push({
             campaign_id: campaign_id,
@@ -927,7 +927,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, sta
 
         if(has_native) {
             const ad_type = 3;
-            const str = `0|${status}|${ad_type}|${req.body.adult}|${req.body.run}`; 
+            const str = `0|${+data.status}|${+ad_type}|${+data.adult}|${+data.run}`; 
             let match_hash = tinify(str);
             adsArr.push({
                 campaign_id: campaign_id,
@@ -955,7 +955,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, sta
 
         if(has_widget) {
             const ad_type = 4;
-            const str = `0|${status}|${ad_type}|${req.body.adult}|${req.body.run}`; 
+            const str = `0|${+data.status}|${+ad_type}|${+data.adult}|${+data.run}`; 
             let match_hash = tinify(str);
             adsArr.push({
                 campaign_id: campaign_id,
