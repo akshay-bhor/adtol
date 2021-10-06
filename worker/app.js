@@ -30,17 +30,17 @@ app.listen(process.env.PORT || 8080, function () {
 # * * * * * *
 */
 
-cron.schedule('* 2 * * *', () => { // Execute everyday at 2 AM
+cron.schedule('0 2 * * *', () => { // Execute everyday at 2 AM
     // Update referrel stats
     tasks.updateRefStatsJob();
 });
 
-cron.schedule('* 1 * * *', () => { // Execute at 1AM
+cron.schedule('0 1 * * *', () => { // Execute at 1AM
     // Delete old data
     tasks.deleteOldDataJob();
 });
 
-cron.schedule('* 0 * * *', () => { // Execute at 12 AM
+cron.schedule('0 0 * * *', () => { // Execute at 12 AM
     // Allocate today's budget
     tasks.allocateDailyBudgetJob();
 });

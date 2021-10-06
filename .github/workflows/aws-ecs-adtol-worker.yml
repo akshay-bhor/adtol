@@ -24,19 +24,10 @@
 #    and best practices on handling the access key credentials.
 
 on:
-  # push:
-  #   branches:
-  #     - 'release/v-*' # push on release branch 
-  #     - 'release/hotfix/v-*' # push on hotfix hotfix branch
-  #   tags:
-  #     - 'v-*' # push on tags v-1.0.0 and up
-  #     - 'hotfix/v-*' 
-  release:
-    types: [created]
   # run manually
   workflow_dispatch:
 
-name: Deploy Worker Dev Version to Amazon ECS
+name: Deploy Worker PRod Version to Amazon ECS
 
 jobs:
   deploy:

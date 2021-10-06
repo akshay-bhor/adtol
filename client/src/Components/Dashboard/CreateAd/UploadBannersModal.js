@@ -162,7 +162,7 @@ const UploadBannersModal = (props) => {
                   ref={fileRef}
                   onChange={updateFilesList}
                   multiple="multiple"
-                  accept="image/png, image/jpeg, image/jpg"
+                  accept="image/png, image/jpeg, image/jpg, image/gif"
                   hidden
                 />
               </Button>

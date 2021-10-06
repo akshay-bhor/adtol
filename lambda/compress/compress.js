@@ -41,7 +41,7 @@ function conversionPromise(record, destBucket) {
     console.log('Attempting: ' + conversion);
 
     get(srcBucket, srcKey)
-      .then(original => compress(original))
+      .then(original => compress(original, destKey))
       .then(modified => put(destBucket, destKey, modified))
       .then(() => {
         console.log('Success: ' + conversion);
@@ -89,7 +89,14 @@ async function put(destBucket, destKey, data) {
   });
 }
 
-async function compress(inBuffer) {
-  const image = await sharp(inBuffer).jpeg({ quality: quality })
+async function compress(inBuffer, destKey) {
+  const ext = destKey.split('.').pop();
+  let image;
+  if(ext !== 'gif') {
+    image = await sharp(inBuffer).jpeg({ quality: quality });
+  }
+  else {
+    image = await sharp(inBuffer).gif({ quality: quality });
+  }
   return image.toBuffer();
 }
