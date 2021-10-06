@@ -1,6 +1,6 @@
 const multer = require("multer");
 
-const whitelist = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+const whitelist = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/gif"];
 
 exports.storeImg = multer({
   storage: multer.memoryStorage(),
