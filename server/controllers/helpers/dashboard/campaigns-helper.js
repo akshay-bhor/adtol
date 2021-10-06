@@ -511,7 +511,7 @@ exports.manageCampaignHelper = async (req) => {
             // Create ad types
             if(reqType === 'campaign') {
                 // Insert ads
-                const adsArr = createAds(campaign_obj, campaign_id, banner_ids, user_banners, banner_sizes);
+                const adsArr = createAds(req, campaign_id, banner_ids, user_banners, banner_sizes, campaign_obj);
                 const res = await Ads.bulkCreate(adsArr, { transaction: ts });
                 if(req.body.banners) {
                     // Filter banners
@@ -873,7 +873,7 @@ exports.getCampaignFormDataHelper = async (req) => {
     }
 }
 
-const createAds = (data, campaign_id, banner_ids, user_banners, banner_sizes) => {
+const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, data) => {
     /**
      * Chekout website-helper for more info
      */
