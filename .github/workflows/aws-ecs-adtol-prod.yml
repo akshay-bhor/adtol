@@ -31,8 +31,6 @@ on:
   #   tags:
   #     - 'v-*' # push on tags v-1.0.0 and up
   #     - 'hotfix/v-*' 
-  release:
-    types: [created]
   # run manually
   workflow_dispatch:
 

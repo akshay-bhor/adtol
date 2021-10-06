@@ -27,7 +27,7 @@ on:
   # run manually
   workflow_dispatch:
 
-name: Deploy Worker PRod Version to Amazon ECS
+name: Deploy Worker Prod Version to Amazon ECS
 
 jobs:
   deploy:
