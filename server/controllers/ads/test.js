@@ -1,3 +1,4 @@
+const { tinify } = require('../../common/util');
 const Campaigns = require('../../models/campaigns');
 
 exports.test = async(req, res, next) => {
@@ -27,22 +28,42 @@ exports.test = async(req, res, next) => {
 
     // console.log(r);
     // res.redirect('http://adtol.com');
-    
-    const x_forwarded_for = req.get('x-forwarded-for');
-    const remote_address = req.connection.remoteAddress;
-    const req_ip = req.ip;
-    const headers = req.headers;
-    const x_real_ip = req.get('x-real-ip');
-    req.ip = '10.24.32.1';
-    req.ip_addr = '10.24.32.1';
-    const updated = req.ip_addr;
+    if(req.query.send == 'ip') {
+        const x_forwarded_for = req.get('x-forwarded-for');
+        const remote_address = req.connection.remoteAddress;
+        const req_ip = req.ip;
+        const headers = req.headers;
+        const x_real_ip = req.get('x-real-ip');
+        req.ip = '10.24.32.1';
+        req.ip_addr = '10.24.32.1';
+        const updated = req.ip_addr;
 
-    res.status(200).json({
-        x_forwarded_for,
-        remote_address,
-        req_ip,
-        x_real_ip,
-        updated,
-        headers
-    });
+        res.status(200).json({
+            x_forwarded_for,
+            remote_address,
+            req_ip,
+            x_real_ip,
+            updated,
+            headers
+        });
+    }
+    
+    if(req.query.send == 'match_hash') {
+        const result = [];
+
+        for(let i = 1; i < 6;i++) {
+            let ad_type = i;
+            let adult = 0;
+            let str = `0|1|${ad_type}|${adult}|1`; 
+            let match_hash = tinify(str);
+            result.push(match_hash);
+
+            ad_type = i;
+            adult = 1;
+            str = `0|1|${ad_type}|${adult}|1`; 
+            match_hash = tinify(str);
+            result.push(match_hash);
+        }
+        res.status(200).json(result);
+    }
 }

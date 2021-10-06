@@ -35,7 +35,7 @@ exports.processDayParting = async () => {
                     if(!dayArr.includes(weekDay) && data.run == 1)
                         run = 3;
                     
-                    str = '0|'+data.status+'|'+data.type+'|'+data.adult+'|'+run;
+                    str = `0|${+data.status}|${+data.type}|${+data.adult}|$${+run}`;
                     let match_hash = tinify(str);
 
                     // Update
