@@ -156,7 +156,7 @@ exports.changeStatusHelper = async (req) => {
                 today_budget_rem = 0;
             }
             else nstatus = status;
-            const str = '0|'+nstatus+'|'+type+'|'+adult+'|'+nrun;
+            const str = `0|${+nstatus}|${+type}|${+adult}|${+nrun}`;
             const match_hash = tinify(str);
 
             const ts = await sequelize.transaction();
@@ -511,7 +511,7 @@ exports.manageCampaignHelper = async (req) => {
             // Create ad types
             if(reqType === 'campaign') {
                 // Insert ads
-                const adsArr = createAds(req, campaign_id, banner_ids, user_banners, banner_sizes);
+                const adsArr = createAds(req, campaign_id, banner_ids, user_banners, banner_sizes, campaign_obj.status);
                 const res = await Ads.bulkCreate(adsArr, { transaction: ts });
                 if(req.body.banners) {
                     // Filter banners
@@ -873,7 +873,7 @@ exports.getCampaignFormDataHelper = async (req) => {
     }
 }
 
-const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes) => {
+const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, status = 2) => {
     /**
      * Chekout website-helper for more info
      */
@@ -881,7 +881,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes) => 
     const adsArr = [];
     {
         const ad_type = 1;
-        const str = `0|2|${ad_type}|${req.body.adult}|${req.body.run}`; 
+        const str = `0|${status}|${ad_type}|${req.body.adult}|${req.body.run}`; 
         let match_hash = tinify(str);
         adsArr.push({
             campaign_id: campaign_id,
@@ -892,7 +892,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes) => 
     // Banners 
     if(req.body.banners) {
         const ad_type = 2;
-        const str = `0|2|${ad_type}|${req.body.adult}|${req.body.run}`; 
+        const str = `0|${status}|${ad_type}|${req.body.adult}|${req.body.run}`; 
         let match_hash = tinify(str);
         adsArr.push({
             campaign_id: campaign_id,
@@ -927,7 +927,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes) => 
 
         if(has_native) {
             const ad_type = 3;
-            const str = `0|2|${ad_type}|${req.body.adult}|${req.body.run}`; 
+            const str = `0|${status}|${ad_type}|${req.body.adult}|${req.body.run}`; 
             let match_hash = tinify(str);
             adsArr.push({
                 campaign_id: campaign_id,
@@ -955,7 +955,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes) => 
 
         if(has_widget) {
             const ad_type = 4;
-            const str = `0|2|${ad_type}|${req.body.adult}|${req.body.run}`; 
+            const str = `0|${status}|${ad_type}|${req.body.adult}|${req.body.run}`; 
             let match_hash = tinify(str);
             adsArr.push({
                 campaign_id: campaign_id,

@@ -145,7 +145,7 @@ exports.setCampaignStatusHelper = async (req) => {
             }
 
             // Construct new hash
-            const str = '0|'+nstatus+'|'+type+'|'+adult+'|'+run;
+            const str = `0|${+nstatus}|${+type}|${+adult}|${+run}`;
             const match_hash = tinify(str);
             
             // Update
