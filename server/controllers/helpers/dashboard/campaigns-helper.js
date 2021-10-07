@@ -1053,8 +1053,8 @@ const adSettingsValidation = async (value, { req, location, path }) => {
             if(req.query.type === 'pop' && +value < +web_settings.dataValues.min_pop_cpc) {
                 throw new Error(`Min CPC is $${web_settings.dataValues.min_pop_cpc}`);
             }
-            if(req.body.rel === 1 && +value < (+web_settings.dataValues.min_cpc + 0.01)) {
-                throw new Error(`Min CPC is $${(+web_settings.dataValues.min_cpc + 0.01)}`);
+            if(req.body.rel === 1 && +value < (+web_settings.dataValues.min_cpc + 0.001)) {
+                throw new Error(`Min CPC is $${(+web_settings.dataValues.min_cpc + 0.001)}`);
             }
         }
         if(path === 'budget') {
