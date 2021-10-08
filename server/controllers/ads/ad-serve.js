@@ -254,16 +254,16 @@ exports.adServe = async (req, res, next) => {
                     /**
                      * Check affected rows else create new record
                      */
-                    if(statRes[0][1] < 1) {
+                    if(statRes[0][1] < 2) {
                         executeInsertQuery('summary_device', today_unix, 'device', dCode, campaign_id, site_id, ad_uid, pub_uid);
                     }
-                    if(statRes[1][1] < 1) {
+                    if(statRes[1][1] < 2) {
                         executeInsertQuery('summary_country', today_unix, 'country', cCode, campaign_id, site_id, ad_uid, pub_uid);
                     }
-                    if(statRes[2][1] < 1) {
+                    if(statRes[2][1] < 2) {
                         executeInsertQuery('summary_browser', today_unix, 'browser', bCode, campaign_id, site_id, ad_uid, pub_uid);
                     }
-                    if(statRes[3][1] < 1) {
+                    if(statRes[3][1] < 2) {
                         executeInsertQuery('summary_os', today_unix, 'os', oCode, campaign_id, site_id, ad_uid, pub_uid);
                     }
                 }
@@ -299,13 +299,27 @@ const executeUpdateQuery = async (table, day_unix, col, value, campaign, website
  */
 const executeInsertQuery = async (table, day_unix, col, value, campaign, website, ad_uid, pub_uid) => {
     const viewCount = 1;
-    sequelize.query(`INSERT INTO ${table} (ad_uid, ${col}, campaign, views, day_unix) VALUES(?, ?, ?, ?, ?)`, {
-        type: QueryTypes.INSERT,
-        replacements: [ad_uid, value, campaign, viewCount, day_unix]
+
+    const adRows = await sequelize.query(`SELECT COUNT(id) as count FROM ${table} WHERE day_unix = ? AND ${col} = ? AND campaign = ? AND ad_uid = ?`, {
+        type: QueryTypes.SELECT,
+        replacements: [day_unix, value, campaign, ad_uid]
     });
-    sequelize.query(`INSERT INTO ${table} (pub_uid, ${col}, website, views, day_unix) VALUES(?, ?, ?, ?, ?)`, {
-        type: QueryTypes.INSERT,
-        replacements: [pub_uid, value, website, viewCount, day_unix]
+    if(adRows[0].count == 0) {
+        sequelize.query(`INSERT INTO ${table} (ad_uid, ${col}, campaign, views, day_unix) VALUES(?, ?, ?, ?, ?)`, {
+            type: QueryTypes.INSERT,
+            replacements: [ad_uid, value, campaign, viewCount, day_unix]
+        });
+    }
+
+    const pubRows = await sequelize.query(`SELECT COUNT(id) as count FROM ${table} WHERE day_unix = ? AND ${col} = ? AND website = ? AND pub_uid = ?`, {
+        type: QueryTypes.SELECT,
+        replacements: [day_unix, value, website, pub_uid]
     });
+    if(pubRows[0].count == 0) {
+        sequelize.query(`INSERT INTO ${table} (pub_uid, ${col}, website, views, day_unix) VALUES(?, ?, ?, ?, ?)`, {
+            type: QueryTypes.INSERT,
+            replacements: [pub_uid, value, website, viewCount, day_unix]
+        });
+    }
     return true;
 }
