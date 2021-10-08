@@ -15,7 +15,7 @@ exports.processPop = async (req, res, next) => {
         let pubValidPop = true;
 
         // Get ad_type
-        if(req.webInfo.ad_type != 5) { console.log('ad type');// Will not execute ever if I did it right
+        if(req.webInfo.ad_type != 5) { // Will not execute ever if I did it right
             res.redirect(process.env.ORIGIN);
             res.end();
             return next();
@@ -37,7 +37,7 @@ exports.processPop = async (req, res, next) => {
         // Construct domain hash
         const ref_url = extractURL(req.get('Referrer')) || null;
         // If ref url null
-        if(!ref_url) { console.log('no ref');
+        if(!ref_url) { 
             res.redirect(process.env.ORIGIN);
             res.end();
             return next();
@@ -50,7 +50,7 @@ exports.processPop = async (req, res, next) => {
         const domain_hash = tinify(domain);
 
         // Match domain hash with token hash
-        if(domain_hash != ad_hash) { console.log('hash mismatch');
+        if(domain_hash != ad_hash) { 
             res.redirect(process.env.ORIGIN);
             res.end();
             return next();
@@ -88,7 +88,7 @@ exports.processPop = async (req, res, next) => {
         });
 
         // If not ad Found
-        if(result.length < 1) { console.log('no ads');
+        if(result.length < 1) {
             res.redirect(process.env.ORIGIN);
             res.end();
             return next();
@@ -112,7 +112,7 @@ exports.processPop = async (req, res, next) => {
         const pubData = await Pub_Sites.findOne({ where: { id: web_id, hash: domain_hash }, attributes: ['id', 'uid', 'status'] });
 
         // Check if campaign and publisher exist (this will never happen)
-        if(pubData == null) { console.log('pundata null');
+        if(pubData == null) { 
             // Redirect to adtol
             res.redirect(process.env.ORIGIN);
             res.end();
@@ -308,7 +308,7 @@ exports.processPop = async (req, res, next) => {
  */
 const executeAdUpdateQuery = async (table, day_unix, col, value, campaign, ad_uid, cpc) => {
     const incCount = 1;
-    return sequelize.query(`UPDATE ${table} SET clicks = clicks + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND campaign = ? AND ad_uid = ?`, {
+    return sequelize.query(`UPDATE ${table} SET pops = pops + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND campaign = ? AND ad_uid = ?`, {
         type: QueryTypes.UPDATE,
         replacements: [cpc, day_unix, value, campaign, ad_uid]
     });
@@ -325,7 +325,7 @@ const executeAdInsertQuery = async (table, day_unix, col, value, campaign, ad_ui
 
 const executePubUpdateQuery = async (table, day_unix, col, value, website, pub_uid, cpc) => {
     const incCount = 1;
-    return sequelize.query(`UPDATE ${table} SET clicks = clicks + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND website = ? AND pub_uid = ?`, {
+    return sequelize.query(`UPDATE ${table} SET pops = pops + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND website = ? AND pub_uid = ?`, {
         type: QueryTypes.UPDATE,
         replacements: [cpc, day_unix, value, website, pub_uid]
     });
