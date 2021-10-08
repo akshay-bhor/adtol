@@ -406,7 +406,7 @@ exports.manageCampaignHelper = async (req) => {
          */
         const campaign_obj = {};
         campaign_obj.campaign_title = req.body.campaign_name;
-        campaign_obj.campaign_type = req.body.campaign_type;
+        campaign_obj.campaign_type = reqType === 'campaign' ? req.body.campaign_type:0;
         campaign_obj.title = req.body.title;
         campaign_obj.desc = req.body.desc;
         campaign_obj.url = req.body.url;

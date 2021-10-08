@@ -15,7 +15,7 @@ exports.processPop = async (req, res, next) => {
         let pubValidPop = true;
 
         // Get ad_type
-        if(req.webInfo.ad_type != 5) { // Will not execute ever if I did it right
+        if(req.webInfo.ad_type != 5) { console.log('ad type');// Will not execute ever if I did it right
             res.redirect(process.env.ORIGIN);
             res.end();
             return next();
@@ -37,7 +37,7 @@ exports.processPop = async (req, res, next) => {
         // Construct domain hash
         const ref_url = extractURL(req.get('Referrer')) || null;
         // If ref url null
-        if(!ref_url) {
+        if(!ref_url) { console.log('no ref');
             res.redirect(process.env.ORIGIN);
             res.end();
             return next();
@@ -50,7 +50,7 @@ exports.processPop = async (req, res, next) => {
         const domain_hash = tinify(domain);
 
         // Match domain hash with token hash
-        if(domain_hash != ad_hash) {
+        if(domain_hash != ad_hash) { console.log('hash mismatch');
             res.redirect(process.env.ORIGIN);
             res.end();
             return next();
@@ -88,7 +88,7 @@ exports.processPop = async (req, res, next) => {
         });
 
         // If not ad Found
-        if(result.length < 1) {
+        if(result.length < 1) { console.log('no ads');
             res.redirect(process.env.ORIGIN);
             res.end();
             return next();
@@ -112,7 +112,7 @@ exports.processPop = async (req, res, next) => {
         const pubData = await Pub_Sites.findOne({ where: { id: web_id, hash: domain_hash }, attributes: ['id', 'uid', 'status'] });
 
         // Check if campaign and publisher exist (this will never happen)
-        if(pubData == null) {
+        if(pubData == null) { console.log('pundata null');
             // Redirect to adtol
             res.redirect(process.env.ORIGIN);
             res.end();
@@ -222,6 +222,22 @@ exports.processPop = async (req, res, next) => {
                 executeAdUpdateQuery('summary_os', day_unix, 'os', oCode, campaign_id, ad_uid, ad_cpc),
             ]);
 
+            /**
+             * Check affected rows else create new record
+             */
+            if(adStatRes[0][1] < 1) {
+                executeAdInsertQuery('summary_device', day_unix, 'device', dCode, campaign_id, ad_uid, ad_cpc);
+            }
+            if(adStatRes[1][1] < 1) {
+                executeAdInsertQuery('summary_country', day_unix, 'country', cCode, campaign_id, ad_uid, ad_cpc);
+            }
+            if(adStatRes[2][1] < 1) {
+                executeAdInsertQuery('summary_browser', day_unix, 'browser', bCode, campaign_id, ad_uid, ad_cpc);
+            }
+            if(adStatRes[3][1] < 1) {
+                executeAdInsertQuery('summary_os', day_unix, 'os', oCode, campaign_id, ad_uid, ad_cpc);
+            }
+
             await ts.commit();
         } catch (err) {
             await ts.rollback();
@@ -255,6 +271,22 @@ exports.processPop = async (req, res, next) => {
                     executePubUpdateQuery('summary_os', day_unix, 'os', oCode, site_id, pub_uid, pub_cpc),
                 ]);
 
+                /**
+                 * Check affected rows else create new record
+                 */
+                if(pubStatRes[0][1] < 1) {
+                    executePubInsertQuery('summary_device', day_unix, 'device', dCode, site_id, pub_uid, pub_cpc);
+                }
+                if(pubStatRes[1][1] < 1) {
+                    executePubInsertQuery('summary_country', day_unix, 'country', cCode, site_id, pub_uid, pub_cpc);
+                }
+                if(pubStatRes[2][1] < 1) {
+                    executePubInsertQuery('summary_browser', day_unix, 'browser', bCode, site_id, pub_uid, pub_cpc);
+                }
+                if(pubStatRes[3][1] < 1) {
+                    executePubInsertQuery('summary_os', day_unix, 'os', oCode, site_id, pub_uid, pub_cpc);
+                }
+
                 await ts.commit();
             } catch (err) {
                 await ts.rollback();
@@ -282,10 +314,28 @@ const executeAdUpdateQuery = async (table, day_unix, col, value, campaign, ad_ui
     });
 }
 
+const executeAdInsertQuery = async (table, day_unix, col, value, campaign, ad_uid, cpc) => {
+    const count = 1;
+    sequelize.query(`INSERT INTO ${table} (ad_uid, ${col}, campaign, pops, cost, day_unix) VALUES (?, ?, ?, ?, ?, ?)`, {
+        type: QueryTypes.INSERT,
+        replacements: [ad_uid, value, campaign, count, cpc, day_unix]
+    });
+    return true;
+}
+
 const executePubUpdateQuery = async (table, day_unix, col, value, website, pub_uid, cpc) => {
     const incCount = 1;
     return sequelize.query(`UPDATE ${table} SET clicks = clicks + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND website = ? AND pub_uid = ?`, {
         type: QueryTypes.UPDATE,
         replacements: [cpc, day_unix, value, website, pub_uid]
     });
+}
+
+const executePubInsertQuery = async (table, day_unix, col, value, website, pub_uid, cpc) => {
+    const count = 1;
+    sequelize.query(`INSERT INTO ${table} (pub_uid, ${col}, website, pops, cost, day_unix) VALUES (?, ?, ?, ?, ?, ?)`, {
+        type: QueryTypes.INSERT,
+        replacements: [pub_uid, value, website, count, cpc, day_unix]
+    });
+    return true;
 }
