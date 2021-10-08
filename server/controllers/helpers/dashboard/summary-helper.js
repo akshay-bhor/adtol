@@ -27,13 +27,13 @@ exports.summaryHelper = async(req) => {
 
         const queries = [
             { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as earned, day_unix FROM summary_device WHERE pub_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
-            { "name": "countrystats", "query": "SELECT views as cviews, clicks as cclicks, pops as cpops, cost as cearned, country FROM summary_country WHERE pub_uid = "+ userid +" AND day_unix = "+ today_unix +" ORDER BY cost DESC LIMIT 5" },
+            { "name": "countrystats", "query": "SELECT SUM(views) as cviews, SUM(clicks) as cclicks, SUM(pops) as cpops, SUM(cost) as cearned, country FROM summary_country WHERE pub_uid = "+ userid +" AND day_unix = "+ today_unix +" GROUP BY country ORDER BY cearned DESC LIMIT 5" },
             { "name": "devices", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as dearned, device FROM summary_device WHERE pub_uid=" + userid +" AND day_unix = "+ today_unix +" GROUP BY device" },
             
             { "name": "user", "query": "SELECT pub_balance, ad_balance FROM users WHERE id = "+ userid +"" },
             
             { "name": "stats", "query": "SELECT SUM(views) as ad_views, SUM(clicks) as ad_clicks, SUM(pops) as ad_pops, SUM(cost) as spent, day_unix FROM summary_device WHERE ad_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
-            { "name": "countrystats", "query": "SELECT views as cviews, clicks as cclicks, pops as cpops, cost as cspent, country, day_unix FROM summary_country WHERE ad_uid = "+ userid +" AND day_unix = "+ today_unix +" ORDER BY cost DESC LIMIT 5" },
+            { "name": "countrystats", "query": "SELECT SUM(views) as cviews, SUM(clicks) as cclicks, SUM(pops) as cpops, SUM(cost) as cspent, country FROM summary_country WHERE ad_uid = "+ userid +" AND day_unix = "+ today_unix +" GROUP BY country ORDER BY cspent DESC LIMIT 5" },
             { "name": "devices", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as dspent, device FROM summary_device WHERE ad_uid =" + userid +" AND day_unix = "+ today_unix +" GROUP BY device" },
         ];
 
@@ -43,7 +43,7 @@ exports.summaryHelper = async(req) => {
         let devicesRes = result[2];
 
         let adRes = result[4];     
-        let ad_countryRes = result[5];   
+        let ad_countryRes = result[5];
         let ad_deviceRes = result[6];
         
        
@@ -112,10 +112,10 @@ exports.summaryHelper = async(req) => {
         
         // Countries
         let countryStats = {};
-        countryRes.forEach(c => {
+        countryRes.forEach(c => { 
             // Find country Name
             let cid = c.country; 
-            let [ccode, cname] = App_Settings.countries[cid] || [99, 'India'];
+            let [ccode, cname] = App_Settings.countries[cid] || [0, 'Unknown'];
             
             countryStats[cname] = {
                 "earned": c.cearned.toFixed(2),
@@ -124,7 +124,7 @@ exports.summaryHelper = async(req) => {
                 "pops": c.cpops
             };
         });
-
+        
         // devices
         const devices = {};
         const all_devices = App_Settings.devices;
@@ -247,7 +247,7 @@ exports.summaryHelper = async(req) => {
         ad_countryRes.forEach(c => {
             // Find country Name
             let cid = c.country; 
-            let [ccode, cname] = App_Settings.countries[cid] || [99, 'India'];
+            let [ccode, cname] = App_Settings.countries[cid] || [0, 'Unknown'];
             
             ad_countryStats[cname] = {
                 "spent": c.cspent.toFixed(2),

@@ -76,7 +76,7 @@ exports.advertiserHelper = async(req) => {
 
             if(countryRes[i]) {
                 let code = countryRes[i].country; 
-                let cname = App_Settings.countries[code] ? App_Settings.countries[code][1] : 'India';
+                let cname = App_Settings.countries[code] ? App_Settings.countries[code][1] : 'Unknown';
 
                 if(!byCountry[cname]) byCountry[cname] = {};
 
