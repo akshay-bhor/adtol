@@ -105,7 +105,7 @@ exports.summaryHelper = async(req) => {
         // Performance
         let { views, pops, clicks } = findBy(pubRes, today_unix, 'day_unix');
         let cpc = 'NA';
-        if(clicks != 0) cpc = (todayEarned / clicks).toFixed(2);
+        if(clicks != 0) cpc = (todayEarned / clicks).toFixed(3);
 
         // Publisher balance
         let pub_balance = result[3][0]['pub_balance'];
@@ -237,7 +237,7 @@ exports.summaryHelper = async(req) => {
         let { ad_pops } = findBy(adRes, today_unix, 'day_unix');
         let { ad_clicks } = findBy(adRes, today_unix, 'day_unix');
         let ad_cpc = 'NA';
-        if(ad_clicks != 0) ad_cpc = (todaySpent / ad_clicks).toFixed(2);
+        if(ad_clicks != 0) ad_cpc = (todaySpent / ad_clicks).toFixed(3);
 
         // Publisher balance
         let ad_balance = result[3][0]['ad_balance'];

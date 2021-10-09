@@ -62,7 +62,7 @@ const mapRows = (data) => {
       views: item.views,
       clicks: item.clicks,
       pops: item.pops,
-      cpc: "$" + parseFloat(item.cpc).toFixed(2),
+      cpc: "$" + parseFloat(item.cpc),
       budget: "$" + item.budget + ", rem:" + "$" + item.budget_rem,
       manage: "Manage",
     };

@@ -8,7 +8,7 @@ const Summary_Country = require("../../models/summary_country");
 const Summary_Device = require("../../models/summary_device");
 const Issued_Tokens = require("../../models/issued_tokens");
 const Token_Blacklist = require("../../models/token_blacklist");
-const cronLogWrite = require('../cron-logger');
+const { cronLogWrite } = require('../cron-logger');
 
 exports.deleteOldData = async () => {
 
@@ -88,13 +88,13 @@ exports.deleteOldData = async () => {
         const tids = tokens.map(data => {
             return data.dataValues.id;
         })
-        const delTokenBlacklist = await Token_Blacklist.destroy({ 
-            where: { 
-                exp: {
-                    [Op.in]: tids
-                } 
-            } 
-        });
+        // const delTokenBlacklist = await Token_Blacklist.destroy({ 
+        //     where: { 
+        //         exp: {
+        //             [Op.in]: tids
+        //         } 
+        //     } 
+        // });
 
         cronLogWrite('Deleted old data');
     } catch (err) {

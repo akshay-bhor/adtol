@@ -923,7 +923,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `mail` (`mail`),
   UNIQUE KEY `gid` (`gid`),
   KEY `mobile` (`mobile`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1001 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -932,7 +932,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'admin','adtolcom@gmail.com',NULL,'$2a$12$iQoF8hYqEBNFwymksAcxV.cyoKHkbqkvKj48QsWoJng7aea9.xh5O',99,7385859262,NULL,NULL,2,NULL,'EvilTech Pvt Ltd',0.00000,0.00000,0.00000,0.00000,0.00000,0,0,0,0,0,0,1,1,'2021-09-30 14:10:55','2021-09-30 14:10:55');
+INSERT INTO `users` VALUES (1000,'admin','adtolcom@gmail.com',NULL,'$2a$12$iQoF8hYqEBNFwymksAcxV.cyoKHkbqkvKj48QsWoJng7aea9.xh5O',99,7385859262,NULL,NULL,2,NULL,'EvilTech Pvt Ltd',0.00000,0.00000,0.00000,0.00000,0.00000,0,0,0,0,0,0,1,1,'2021-09-30 14:10:55','2021-09-30 14:10:55');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 

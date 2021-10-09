@@ -21,7 +21,7 @@ const PublisherSummaryBlock = (props) => {
         },
         {
             key: 4,
-            title: 'Spending',
+            title: 'Earning',
             value: data.pub_earning,
             prefix: '$'
         },
