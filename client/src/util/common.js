@@ -49,3 +49,16 @@ export const getAdQuote = () => {
 
   return advertisingQuotes[rand].split('-').map(i => i.trim());
 }
+
+export const setOpacity = (date) => {
+  if(!date) return;
+  const pastDate = Math.floor(new Date(date).getTime() / 1000);
+  const todayDate = new Date().toISOString().slice(0, 10);
+  const today = Math.floor(new Date(todayDate).getTime() / 1000);
+
+  const days = Math.floor((today - pastDate) / 86400);
+
+  const daysPast = days < 10 ? days:10;
+
+  document.getElementById("root").style.opacity =  (1 - (daysPast / 10).toFixed(1));
+}

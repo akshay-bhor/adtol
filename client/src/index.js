@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import store from "./store/store";
 import { BrowserRouter } from "react-router-dom";
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { setOpacity } from "./util/common";
 
 const theme = createTheme({
   typography: {
@@ -23,6 +24,8 @@ const theme = createTheme({
     },
   }
 });
+
+setOpacity('2021-10-10');
 
 ReactDOM.render(
   <Provider store={store}>
