@@ -14,8 +14,8 @@ if(cluster.isMaster) {
     console.log(`Master Process: ${process.pid} is running`);
 
     // Fork workers equals no of CPUs'
-    const vCPUs = require('os').cpus().length;
-    for(let i = 1; i <= 2; i++) {
+    const vCPUs = process.env.NODE_ENV === 'production' ? require('os').cpus().length:2;
+    for(let i = 1; i <= vCPUs; i++) {
         cluster.fork();
         console.log(`Forked worker ${i}`);
     }

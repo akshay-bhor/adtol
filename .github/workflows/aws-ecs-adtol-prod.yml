@@ -24,21 +24,16 @@
 #    and best practices on handling the access key credentials.
 
 on:
-  # push:
-  #   branches:
-  #     - 'release/v-*' # push on release branch 
-  #     - 'release/hotfix/v-*' # push on hotfix hotfix branch
-  #   tags:
-  #     - 'v-*' # push on tags v-1.0.0 and up
-  #     - 'hotfix/v-*' 
-  # run manually
-  workflow_dispatch:
+  push:
+    branches:
+      - 'release/v-*' # push on release branch 
+      - 'release/hotfix/v-*' # push on hotfix hotfix branch
 
 name: Deploy Prod Version to Amazon ECS
 
 jobs:
   deploy:
-    name: Deploy to ECS DEV
+    name: Deploy to ECS PROD
     runs-on: ubuntu-latest
     environment: develop
 
@@ -61,7 +56,7 @@ jobs:
       id: build-image-frontend
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: adtol-nginx-spa-dev
+        ECR_REPOSITORY: adtol-nginx-spa
         IMAGE_TAG: ${{ github.sha }}
       run: |
         # Build a docker container and
@@ -75,7 +70,7 @@ jobs:
       id: build-image-backend
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: adtol-node-dev
+        ECR_REPOSITORY: adtol-node
         IMAGE_TAG: ${{ github.sha }}
       run: |
         # Build a docker container and
@@ -89,7 +84,7 @@ jobs:
       id: render-adtol-frontend
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: task-definition-adtol-dev.json
+        task-definition: task-definition-adtol-prod.json
         container-name: adtol-frontend
         image: ${{ steps.build-image-frontend.outputs.image }}
     
@@ -105,6 +100,6 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.render-adtol-backend.outputs.task-definition }}
-        service: adtol-dev-service
-        cluster: adtol-dev
+        service: adtol-service
+        cluster: adtol
         wait-for-service-stability: true

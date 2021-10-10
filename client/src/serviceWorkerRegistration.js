@@ -77,9 +77,6 @@ function registerValidSW(swUrl, config) {
                 config.onUpdate(registration);
               }
 
-              // Update sw
-              registration.update();
-
               // Force cold boot
               const loc = window.location;
               window.location.href = loc + '?force_cold_boot=1';

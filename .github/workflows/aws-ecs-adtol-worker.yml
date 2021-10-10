@@ -31,7 +31,7 @@ name: Deploy Worker Prod Version to Amazon ECS
 
 jobs:
   deploy:
-    name: Deploy Worker to ECS DEV
+    name: Deploy Worker to ECS PROD
     runs-on: ubuntu-latest
     environment: develop
 
@@ -54,7 +54,7 @@ jobs:
       id: build-image-worker
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: adtol-worker-dev
+        ECR_REPOSITORY: adtol-worker
         IMAGE_TAG: ${{ github.sha }}
       run: |
         # Build a docker container and
@@ -68,7 +68,7 @@ jobs:
       id: render-adtol-worker
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: task-definition-adtol-worker-dev.json
+        task-definition: task-definition-adtol-worker.json
         container-name: adtol-worker
         image: ${{ steps.build-image-worker.outputs.image }}
 
@@ -76,6 +76,6 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.render-adtol-worker.outputs.task-definition }}
-        service: adtol-dev-worker-service
-        cluster: adtol-dev
+        service: adtol-worker-service
+        cluster: adtol
         wait-for-service-stability: true
