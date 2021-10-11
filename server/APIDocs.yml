@@ -1,0 +1,1071 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: 'AdTol API'
+  description: 'AdTol Ad Netwok API'
+  contact:
+    name: Akshay Bhor
+    email: akbhor50@gmail.com
+  
+servers:
+  - url: https://dev.adtol.com/api
+    description: Dev API
+    
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      description: Lets new user register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterPost'
+      responses:
+        200:
+          description: Registration Successfull
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthSuccess'
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        422:
+          description: Invalid postdata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/422Error'
+  /auth/login:
+    post: 
+      tags:
+        - Auth
+      description: user login api
+      requestBody:
+        required: true
+        content:
+          application/json:
+           schema:
+            $ref: '#/components/schemas/LoginPost'
+      responses:
+        200:
+          description: login success
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/AuthSuccess'
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        422:
+          description: Invalid postdata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/422Error'
+                
+  /auth/glogin:
+    post:
+      tags:
+        - Auth
+      description: login with google
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleLogin'
+      responses:
+        200:
+          description: login success
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/AuthSuccess'
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        422:
+          description: Invalid postdata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/422Error'
+              
+  /auth/change-pass:
+    post:
+      tags:
+        - Auth
+      description: Change Password
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePassPost'
+      responses:
+        200:
+          description: login success
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/AuthSuccess'
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        422:
+          description: Invalid postdata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/422Error'
+                
+  /auth/forgot-pass:
+    post:
+      tags:
+        - Auth
+      description: forgot password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgetPassPost'
+      
+      responses:
+        200:
+          description: reset pass link sent
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  msg:
+                    type: string
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        422:
+          description: Invalid postdata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/422Error'
+  
+  /auth/reset-pass:
+    post:
+      tags:
+        - Auth
+      description: Reset Password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPassPost'
+      
+      responses:
+        200:
+          description: password reset successfully
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  msg:
+                    type: string
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        422:
+          description: Invalid postdata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/422Error'
+                
+  /auth/get-countries:
+    get:
+      tags:
+        - Auth
+      description: Get Country List
+      responses:
+        200:
+          description: country list
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: 
+                      type: number
+                    code:
+                      type: string
+                    name:
+                      type: string
+                    tel:
+                      type: number
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+      
+  
+  /contact/send-message:
+    post:
+      tags:
+        - Contact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactPost'
+      responses:
+        200:
+          description: message sent successfully
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  msg:
+                    type: string
+                example:
+                  msg: success
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        422:
+          description: Invalid postdata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/422Error'
+  
+  /account:
+    get:
+      tags:
+        - Account
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Account Info
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/AccountInfo'
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        401:
+          description: Unauthorised
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+              
+  /account/edit-details:
+    post:
+      tags:
+        - Account
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+             type: object
+             required:
+              - mobile
+             properties:
+              name:
+                type: string
+              surname:
+                type: string
+              mobile: 
+                type: number
+              
+      responses:
+        200:
+          description: Edit Successfull
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  msg:
+                    type: string
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        401:
+          description: Unauthorised
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+                
+  /account/edit-payment:
+    post:
+      tags:
+        - Account
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+             type: object
+             properties:
+              paypal:
+                type: string
+              payoneer:
+                type: string
+              upi: 
+                type: string
+              bank: 
+                type: string
+              acno: 
+                type: number
+              ifsc: 
+                type: string
+              branch: 
+                type: string
+              
+      responses:
+        200:
+          description: Edit Successfull
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  msg:
+                    type: string
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        401:
+          description: Unauthorised
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+  
+  /dashboard/summary:
+    get:
+      tags:
+        - Dashboard
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Get Dashboard Summary
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/SummaryResponse'
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        401:
+          description: Unauthorised
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+                
+  /dashboard/user-status:
+    get:
+      tags:
+        - Dashboard
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Get User Status
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UserStatusResponse'
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        401:
+          description: Unauthorised
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+  
+  /dashboard/advertiser:
+    get:
+      tags:
+        - Dashboard
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Get Advertiser Summary
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/AdvertiserResponse'
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        401:
+          description: Unauthorised
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+  
+  /dashboard/publisher:
+    get:
+      tags:
+        - Dashboard
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Get Publisher Summary
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/PublisherResponse'
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        401:
+          description: Unauthorised
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+  
+  /dashboard/campaigns:
+    get:
+      tags:
+        - Dashboard
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Get Campaigns List
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/CampaignsList'
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        401:
+          description: Unauthorised
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+                
+  /dashboard/campaigns/get-campaign-types:
+    get:
+      tags:
+        - Dashboard
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Get Campaign Types
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/CampaignTypes'
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        401:
+          description: Unauthorised
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+                
+  /dashboard/campaigns/get-banners:
+    get:
+      tags:
+        - Dashboard
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Get User Banners
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/UserBanners'
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        401:
+          description: Unauthorised
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+  
+  /dashboard/campaigns/formdata:
+    get:
+      tags:
+        - Dashboard
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: Get Formdata for campaigns
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/CampaignFormData'
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        401:
+          description: Unauthorised
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+  
+  /dashboard/campaigns/get-info/{campaign_id}:
+    get:
+      tags:
+        - Dashboard
+      security:
+        - BearerAuth: []
+      description: Get Campaign Info by ID
+      parameters:
+        - name: campaign_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Get Formdata for campaigns
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/CampaignFormData'
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        401:
+          description: Unauthorised
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+  
+  /dashboard/campaigns/create:
+    post:
+      tags:
+        - Dashboard
+      security:
+        - BearerAuth: []
+      description: Create a New Ad Campaign
+      parameters:
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignCreate'
+      responses:
+        200:
+          description: Campaign Created Successfully
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  msg:
+                    type: string
+        500:
+          description: internal server error
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/500Error'
+        401:
+          description: Unauthorised
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/401Error'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  
+  schemas:
+    RegisterPost:
+      type: object
+      required:
+        - user
+        - country
+        - mobile
+        - name
+        - surname
+        - ac_type
+      properties:
+        user:
+          type: string
+          description: username
+        mail: 
+          type: string
+          description: email
+        pass:
+          type: string
+          description: password
+          minLength: 8
+          maxLength: 20
+        country:
+          type: number
+          description: country id
+        mobile:
+          type: number
+        name:
+          type: string
+        surname:
+          type: string
+        ac_type:
+          type: number
+          minimum: 1
+          maximum: 2
+        ref_by:
+          type: string
+      example:
+        user: test
+        mail: test@test.com
+        pass: 12345678
+        country: 99
+        mobile: 1234567890
+        name: john
+        surname: doe
+        ref_by: g8bH
+
+    AuthSuccess:
+      type: object
+      properties:
+        msg: 
+          type: string
+        token: 
+          type: string
+        expiresIn: 
+          type: string
+    
+    LoginPost:
+      type: object
+      required:
+        - client
+        - pass
+      properties:
+        client:
+          type: string
+        pass: 
+          type: string
+    
+    GoogleLogin:
+      type: object
+      required:
+        - gToken
+      properties:
+        gToken:
+          type: string
+    
+    ChangePassPost:
+      type: object
+      required:
+        - opass
+        - npass
+        - cpass
+      properties:
+        opass: 
+          type: string
+          description: old password
+        npass:
+          type: string
+          description: new password
+        cpass:
+          type: string
+          description: confirm new password
+          
+    ForgetPassPost:
+      type: object
+      required:
+        - mail
+      properties:
+        mail: 
+          type: string
+          description: user email
+    
+    ResetPassPost:
+      type: object
+      required:
+        - token
+        - pass
+      properties:
+        token: 
+          type: string
+          description: reset token
+        pass:
+          type: string
+          minLength: 8
+          maxLength: 20
+    
+    ContactPost:
+      type: object
+      required:
+        - name
+        - subject
+        - message
+        - email
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        subject:
+          type: string
+        message:
+          type: string
+    
+    AccountInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        surname:
+          type: string
+        mobile:
+          type: number
+        country:
+          type: string
+        status:
+          type: number
+        paypal:
+          type: string
+        acno:
+          type: number
+        bank:
+          type: string
+        ifsc:
+          type: string
+        branch:
+          type: string
+        upi:
+          type: string
+        payoneer:
+          type: string
+      
+    SummaryResponse:
+      type: object
+      properties:
+        ad_ad_devices:
+          type: object
+        ad_balance:
+          type: number
+        ad_countries:
+          type: object
+        ad_estimate:
+          type: object
+        ad_performance:
+          type: object
+        pub_ad_devices:
+          type: object
+        pub_balance:
+          type: number
+        pub_countries:
+          type: object
+        pub_estimates:
+          type: object
+        pub_performance:
+          type: object
+    
+    UserStatusResponse:
+      type: object
+      properties:
+        hasCamp:
+          type: boolean
+          description: does user has campaigns
+        hasPay:
+          type: boolean
+          description: has user added payment details
+        hasWeb:
+          type: boolean
+          description: has user added payment details
+        isLow:
+          type: boolean
+          description: is user balance low
+          
+    AdvertiserResponse:
+      type: object
+      properties:
+        by_campaign:
+          type: object
+        by_country:
+          type: object
+        total:
+          type: object
+        views_clicks:
+          type: object
+        
+    PublisherResponse:
+      type: object
+      properties:
+        by_websites:
+          type: object
+        by_country:
+          type: object
+        total:
+          type: object
+        views_clicks:
+          type: object   
+    
+    CampaignsList:
+      type: object
+      properties:
+        max_budget:
+          type: number
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id: 
+                type: number
+              adult:
+                type: boolean
+              budget:
+                type: number
+              budget_rem:
+                type: number
+              campaign_type:
+                type: string
+              clicks:
+                type: number
+              cpc:
+                type: number
+              cstatus:
+                type: number
+              isPro:
+                type: number
+              name:
+                type: string
+              pops:
+                type: number
+              status:
+                type: number
+              views:
+                type: number
+    
+    CampaignTypes:
+      type: array
+      items:
+        type: object
+        properties:
+          id: 
+            type: number
+          icon:
+            type: string
+          type:
+            type: string
+            
+    UserBanners:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: number
+          size:
+            type: string
+          src:
+            type: string
+    
+    CampaignFormData:
+      type: object
+      properties:
+        browsers:
+          type: array
+          items:
+            type: object
+            properties:
+              id: 
+                type: number
+              name:
+                type: string
+        btns:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+              name:
+                type: string
+        devices:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+              name:
+                type: string
+        os:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+              name:
+                type: string
+        settings:
+          type: object
+          properties:
+            min_budget:
+              type: number
+            min_cpc:
+              type: number
+            min_daily_budget:
+              type: number
+            min_pop_cpc:
+              type: number
+        timezones:
+          type: array
+          items:
+            type: string
+    
+    500Error:
+      type: object
+      properties:
+        msg:
+          type: string
+    
+    422Error:
+      type: object
+      properties:
+        msg: 
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              location:
+                type: string
+              msg:
+                type: string
+              param:
+                type: string
+              values:
+                type: string
+        err:
+          type: string
+          description: razorpay error
+          
+    403Error:
+      type: object
+      properties:
+        msg:
+          type: string
+    
+    401Error:
+      type: object
+      properties:
+        msg:
+          type: string
+tags:
+  - name: Auth
+  - name: Contact
+  - name: Account
+  - name: Dashboard
