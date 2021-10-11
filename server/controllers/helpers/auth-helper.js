@@ -210,7 +210,7 @@ exports.gLoginHelper = async (req) => {
     }
 
     await check('gid').exists().trim().isLength({ min: 21, max:21 }).withMessage('Invalid Login').run(req);
-    await check('mail').exists().trim().isEmail().withMessage('Invalid Email').run(req);
+    await check('mail').exists().trim().isEmail().withMessage('Invalid Email').normalizeEmail().run(req);
 
     try {
         const errs = validationResult(req);
