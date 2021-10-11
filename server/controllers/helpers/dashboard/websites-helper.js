@@ -165,7 +165,7 @@ exports.addWebsiteHelper = async (req) => {
 exports.editWebsiteHelper = async (req) => {
     if(!req.userInfo) {
         const err = new Error('Not Allowed!');
-        err.statusCode = 422;
+        err.statusCode = 401;
         throw err;
     }
 

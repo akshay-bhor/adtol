@@ -1,0 +1,3586 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "AdTol API",
+    "description": "AdTol Ad Netwok API",
+    "contact": {
+      "name": "Akshay Bhor",
+      "email": "akbhor50@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://dev.adtol.com/api",
+      "description": "Dev API"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth"
+    },
+    {
+      "name": "Contact"
+    },
+    {
+      "name": "Account"
+    },
+    {
+      "name": "Dashboard"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "New User Registration",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterPost"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Registration Successfull",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSuccess"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "user login api",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginPost"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "login success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSuccess"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/glogin": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "login with google",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLogin"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "login success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSuccess"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/change-pass": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Change Password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePassPost"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "login success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSuccess"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/auth/forgot-pass": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "forgot password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgetPassPost"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "reset pass link sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/reset-pass": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Reset Password",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPassPost"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "password reset successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/get-countries": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Get Country List",
+        "responses": {
+          "200": {
+            "description": "country list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/inline_response_200_1"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contact/send-message": {
+      "post": {
+        "tags": [
+          "Contact"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactPost"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "message sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_2"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/account": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "responses": {
+          "200": {
+            "description": "Account Info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/account/edit-details": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/account_editdetails_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Edit Successfull",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/account/edit-payment": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/account_editpayment_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Edit Successfull",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/summary": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Dashboard Summary",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummaryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/user-status": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get User Status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserStatusResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/advertiser": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Advertiser Summary",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdvertiserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/publisher": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Publisher Summary",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublisherResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/campaigns": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Campaigns List",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignsList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/campaigns/get-campaign-types": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Campaign Types",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignTypes"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/campaigns/get-banners": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get User Banners",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserBanners"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/campaigns/formdata": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Formdata for campaigns",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignFormData"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/campaigns/get-info/{campaign_id}": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "description": "Get Campaign Info by ID",
+        "parameters": [
+          {
+            "name": "campaign_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Formdata for campaigns",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CampaignFormData"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/campaigns/create": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "description": "Create a New Ad Campaign",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "campaign",
+                "pop"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampaignCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Campaign Created Successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/campaigns/edit/{campaign_id}": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "description": "Edit an Ad Campaign",
+        "parameters": [
+          {
+            "name": "campaign_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "campaign",
+                "pop"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CampaignEdit"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Campaign Edited Successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/campaigns/upload-banners": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "description": "Upload Banners",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/campaigns_uploadbanners_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Campaign Edited Successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/campaigns/change-status/{campaign_id}": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "description": "Change Campaign Running Status",
+        "parameters": [
+          {
+            "name": "campaign_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/changestatus_campaign_id_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Campaign Status Updated Successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/campaigns/change-budget/{campaign_id}": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "description": "Change Campaign Budget",
+        "parameters": [
+          {
+            "name": "campaign_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/changebudget_campaign_id_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Campaign Status Updated Successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/websites": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Website List",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebsiteList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/websites/formdata": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "responses": {
+          "200": {
+            "description": "Get Website Formdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebsiteFormData"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/websites/add": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/websites_add_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfull Creation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/websites/edit/{campaign_id}": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "parameters": [
+          {
+            "name": "campaign_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/edit_campaign_id_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully Edited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/websites/delete/{campaign_id}": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "parameters": [
+          {
+            "name": "campaign_id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully Edited",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/websites/get-adcode": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/websites_getadcode_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ad Codes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdCodes"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/referrals": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "description": "Get Referral Stats",
+        "responses": {
+          "200": {
+            "description": "Referral Stats",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReferralStats"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/billing/payment-history": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "description": "Get Payment History",
+        "responses": {
+          "200": {
+            "description": "Payments List",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentHistory"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/billing/withdraw-history": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "description": "Get Withdraw History",
+        "responses": {
+          "200": {
+            "description": "Withdraw List",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithdrawHistory"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/billing/formdata": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "description": "Get Billing Formdata",
+        "responses": {
+          "200": {
+            "description": "formdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_3"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/billing/withdraw": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/billing_withdraw_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ad Codes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/billing/convert-pub-balance": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/billing_convertpubbalance_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ad Codes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/payment/create-order": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/payment_createorder_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ad Codes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_4"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/payment/verify-payment": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/payment_verifypayment_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ad Codes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/reports/advertiser": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/reports_advertiser_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ad Codes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportsSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/dashboard/reports/publisher": {
+      "post": {
+        "tags": [
+          "Dashboard"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/reports_publisher_body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ad Codes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportsSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorised",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/401Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid postdata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/422Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/500Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegisterPost": {
+        "required": [
+          "ac_type",
+          "country",
+          "mobile",
+          "name",
+          "surname",
+          "user"
+        ],
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "description": "username"
+          },
+          "mail": {
+            "type": "string",
+            "description": "email"
+          },
+          "pass": {
+            "maxLength": 20,
+            "minLength": 8,
+            "type": "string",
+            "description": "password"
+          },
+          "country": {
+            "type": "number",
+            "description": "country id"
+          },
+          "mobile": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "ac_type": {
+            "maximum": 2,
+            "minimum": 1,
+            "type": "number"
+          },
+          "ref_by": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "user": "test",
+          "mail": "test@test.com",
+          "pass": 12345678,
+          "country": 99,
+          "mobile": 1234567890,
+          "name": "john",
+          "surname": "doe",
+          "ref_by": "g8bH"
+        }
+      },
+      "AuthSuccess": {
+        "type": "object",
+        "properties": {
+          "msg": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "string"
+          }
+        }
+      },
+      "LoginPost": {
+        "required": [
+          "client",
+          "pass"
+        ],
+        "type": "object",
+        "properties": {
+          "client": {
+            "type": "string"
+          },
+          "pass": {
+            "type": "string"
+          }
+        }
+      },
+      "GoogleLogin": {
+        "required": [
+          "gToken"
+        ],
+        "type": "object",
+        "properties": {
+          "gToken": {
+            "type": "string"
+          }
+        }
+      },
+      "ChangePassPost": {
+        "required": [
+          "cpass",
+          "npass",
+          "opass"
+        ],
+        "type": "object",
+        "properties": {
+          "opass": {
+            "type": "string",
+            "description": "old password"
+          },
+          "npass": {
+            "type": "string",
+            "description": "new password"
+          },
+          "cpass": {
+            "type": "string",
+            "description": "confirm new password"
+          }
+        }
+      },
+      "ForgetPassPost": {
+        "required": [
+          "mail"
+        ],
+        "type": "object",
+        "properties": {
+          "mail": {
+            "type": "string",
+            "description": "user email"
+          }
+        }
+      },
+      "ResetPassPost": {
+        "required": [
+          "pass",
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "reset token"
+          },
+          "pass": {
+            "maxLength": 20,
+            "minLength": 8,
+            "type": "string"
+          }
+        }
+      },
+      "ContactPost": {
+        "required": [
+          "email",
+          "message",
+          "name",
+          "subject"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "AccountInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "mobile": {
+            "type": "number"
+          },
+          "country": {
+            "type": "string"
+          },
+          "status": {
+            "type": "number"
+          },
+          "paypal": {
+            "type": "string"
+          },
+          "acno": {
+            "type": "number"
+          },
+          "bank": {
+            "type": "string"
+          },
+          "ifsc": {
+            "type": "string"
+          },
+          "branch": {
+            "type": "string"
+          },
+          "upi": {
+            "type": "string"
+          },
+          "payoneer": {
+            "type": "string"
+          }
+        }
+      },
+      "SummaryResponse": {
+        "type": "object",
+        "properties": {
+          "ad_ad_devices": {
+            "type": "object"
+          },
+          "ad_balance": {
+            "type": "number"
+          },
+          "ad_countries": {
+            "type": "object"
+          },
+          "ad_estimate": {
+            "type": "object"
+          },
+          "ad_performance": {
+            "type": "object"
+          },
+          "pub_ad_devices": {
+            "type": "object"
+          },
+          "pub_balance": {
+            "type": "number"
+          },
+          "pub_countries": {
+            "type": "object"
+          },
+          "pub_estimates": {
+            "type": "object"
+          },
+          "pub_performance": {
+            "type": "object"
+          }
+        }
+      },
+      "UserStatusResponse": {
+        "type": "object",
+        "properties": {
+          "hasCamp": {
+            "type": "boolean",
+            "description": "does user has campaigns"
+          },
+          "hasPay": {
+            "type": "boolean",
+            "description": "has user added payment details"
+          },
+          "hasWeb": {
+            "type": "boolean",
+            "description": "has user added payment details"
+          },
+          "isLow": {
+            "type": "boolean",
+            "description": "is user balance low"
+          }
+        }
+      },
+      "AdvertiserResponse": {
+        "type": "object",
+        "properties": {
+          "by_campaign": {
+            "type": "object"
+          },
+          "by_country": {
+            "type": "object"
+          },
+          "total": {
+            "type": "object"
+          },
+          "views_clicks": {
+            "type": "object"
+          }
+        }
+      },
+      "PublisherResponse": {
+        "type": "object",
+        "properties": {
+          "by_websites": {
+            "type": "object"
+          },
+          "by_country": {
+            "type": "object"
+          },
+          "total": {
+            "type": "object"
+          },
+          "views_clicks": {
+            "type": "object"
+          }
+        }
+      },
+      "CampaignsList": {
+        "type": "object",
+        "properties": {
+          "max_budget": {
+            "type": "number"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignsList_data"
+            }
+          }
+        }
+      },
+      "CampaignTypes": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/CampaignTypes_inner"
+        }
+      },
+      "UserBanners": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/UserBanners_inner"
+        }
+      },
+      "CampaignFormData": {
+        "type": "object",
+        "properties": {
+          "browsers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignFormData_browsers"
+            }
+          },
+          "btns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignFormData_browsers"
+            }
+          },
+          "devices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignFormData_browsers"
+            }
+          },
+          "os": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignFormData_browsers"
+            }
+          },
+          "settings": {
+            "$ref": "#/components/schemas/CampaignFormData_settings"
+          },
+          "timezones": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "CampaignCreate": {
+        "required": [
+          "adult",
+          "browser",
+          "budget",
+          "campaign_name",
+          "category",
+          "country",
+          "cpc",
+          "daily_budget",
+          "day",
+          "desc",
+          "device",
+          "language",
+          "os",
+          "run",
+          "timezone",
+          "title",
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "campaign_name": {
+            "type": "string"
+          },
+          "campaign_type": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "desc": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "banners": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "device": {
+            "type": "string"
+          },
+          "os": {
+            "type": "string"
+          },
+          "browser": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "day": {
+            "type": "string"
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "btn": {
+            "type": "number"
+          },
+          "rel": {
+            "type": "number",
+            "enum": [
+              0,
+              1,
+              2
+            ]
+          },
+          "cpc": {
+            "type": "number"
+          },
+          "adult": {
+            "type": "number",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "budget": {
+            "type": "number"
+          },
+          "daily_budget": {
+            "type": "number"
+          },
+          "run": {
+            "type": "number",
+            "enum": [
+              1,
+              2
+            ]
+          }
+        }
+      },
+      "CampaignEdit": {
+        "required": [
+          "adult",
+          "browser",
+          "budget",
+          "campaign_name",
+          "category",
+          "country",
+          "cpc",
+          "daily_budget",
+          "day",
+          "desc",
+          "device",
+          "language",
+          "os",
+          "timezone",
+          "title",
+          "url"
+        ],
+        "type": "object",
+        "properties": {
+          "campaign_name": {
+            "type": "string"
+          },
+          "campaign_type": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "desc": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "banners": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "device": {
+            "type": "string"
+          },
+          "os": {
+            "type": "string"
+          },
+          "browser": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "day": {
+            "type": "string"
+          },
+          "timezone": {
+            "type": "string"
+          },
+          "btn": {
+            "type": "number"
+          },
+          "rel": {
+            "type": "number",
+            "enum": [
+              0,
+              1,
+              2
+            ]
+          },
+          "cpc": {
+            "type": "number"
+          },
+          "adult": {
+            "type": "number",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "budget": {
+            "type": "number"
+          },
+          "daily_budget": {
+            "type": "number"
+          }
+        }
+      },
+      "WebsiteList": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebsiteList_data"
+            }
+          }
+        }
+      },
+      "WebsiteFormData": {
+        "type": "object",
+        "properties": {
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CampaignFormData_browsers"
+            }
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WebsiteFormData_languages"
+            }
+          }
+        }
+      },
+      "ReferralStats": {
+        "type": "object",
+        "properties": {
+          "balance": {
+            "type": "number"
+          },
+          "ref_stats": {
+            "type": "object"
+          },
+          "referred": {
+            "type": "number"
+          },
+          "share_link_code": {
+            "type": "number"
+          },
+          "total_earnings": {
+            "type": "number"
+          }
+        }
+      },
+      "AdCodes": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "website id"
+          },
+          "text": {
+            "type": "string"
+          },
+          "native": {
+            "type": "string"
+          },
+          "pop": {
+            "type": "string"
+          },
+          "feed": {
+            "type": "string"
+          },
+          "banner": {
+            "$ref": "#/components/schemas/AdCodes_banner"
+          }
+        }
+      },
+      "PaymentHistory": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentHistory_data"
+            }
+          }
+        }
+      },
+      "WithdrawHistory": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WithdrawHistory_data"
+            }
+          }
+        }
+      },
+      "ReportsSchema": {
+        "type": "object",
+        "properties": {
+          "by_browser": {
+            "$ref": "#/components/schemas/TableStatSchema"
+          },
+          "by_country": {
+            "$ref": "#/components/schemas/TableStatSchema"
+          },
+          "by_device": {
+            "$ref": "#/components/schemas/TableStatSchema"
+          },
+          "by_elements": {
+            "$ref": "#/components/schemas/TableStatSchema"
+          },
+          "by_os": {
+            "$ref": "#/components/schemas/TableStatSchema"
+          },
+          "views_clicks": {
+            "$ref": "#/components/schemas/TableStatSchema"
+          }
+        }
+      },
+      "TableStatSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/TableStatSchema_name"
+          }
+        }
+      },
+      "500Error": {
+        "type": "object",
+        "properties": {
+          "msg": {
+            "type": "string",
+            "example": "Something Went Wrong"
+          }
+        }
+      },
+      "422Error": {
+        "type": "object",
+        "properties": {
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/422Error_data"
+            }
+          },
+          "err": {
+            "type": "string",
+            "description": "razorpay error"
+          }
+        }
+      },
+      "403Error": {
+        "type": "object",
+        "properties": {
+          "msg": {
+            "type": "string"
+          }
+        }
+      },
+      "401Error": {
+        "type": "object",
+        "properties": {
+          "msg": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "msg": "Not Allowed"
+        }
+      },
+      "inline_response_200": {
+        "type": "object",
+        "properties": {
+          "msg": {
+            "type": "string"
+          }
+        }
+      },
+      "inline_response_200_1": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tel": {
+            "type": "number"
+          }
+        }
+      },
+      "inline_response_200_2": {
+        "type": "object",
+        "properties": {
+          "msg": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "msg": "success"
+        }
+      },
+      "account_editdetails_body": {
+        "required": [
+          "mobile"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "mobile": {
+            "type": "number"
+          }
+        }
+      },
+      "account_editpayment_body": {
+        "type": "object",
+        "properties": {
+          "paypal": {
+            "type": "string"
+          },
+          "payoneer": {
+            "type": "string"
+          },
+          "upi": {
+            "type": "string"
+          },
+          "bank": {
+            "type": "string"
+          },
+          "acno": {
+            "type": "number"
+          },
+          "ifsc": {
+            "type": "string"
+          },
+          "branch": {
+            "type": "string"
+          }
+        }
+      },
+      "campaigns_uploadbanners_body": {
+        "type": "object",
+        "properties": {
+          "banners": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        }
+      },
+      "changestatus_campaign_id_body": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "run",
+              "pause",
+              "delete"
+            ]
+          }
+        }
+      },
+      "changebudget_campaign_id_body": {
+        "type": "object",
+        "properties": {
+          "budget": {
+            "type": "number"
+          }
+        }
+      },
+      "websites_add_body": {
+        "type": "object",
+        "properties": {
+          "domain": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "traffic": {
+            "type": "string"
+          }
+        }
+      },
+      "edit_campaign_id_body": {
+        "type": "object",
+        "properties": {
+          "webid": {
+            "type": "number"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "language": {
+            "type": "string"
+          },
+          "traffic": {
+            "type": "number"
+          }
+        }
+      },
+      "websites_getadcode_body": {
+        "type": "object",
+        "properties": {
+          "webid": {
+            "type": "number"
+          },
+          "count": {
+            "type": "number"
+          },
+          "adult": {
+            "type": "boolean"
+          }
+        }
+      },
+      "inline_response_200_3": {
+        "type": "object",
+        "properties": {
+          "max_deposit": {
+            "type": "number"
+          },
+          "min_deposit": {
+            "type": "number"
+          },
+          "pub_bal": {
+            "type": "number"
+          },
+          "min_withdraw": {
+            "type": "number"
+          },
+          "withdraw_fee": {
+            "type": "number"
+          }
+        }
+      },
+      "billing_withdraw_body": {
+        "type": "object",
+        "properties": {
+          "amt": {
+            "type": "number"
+          },
+          "processor": {
+            "type": "number"
+          }
+        }
+      },
+      "billing_convertpubbalance_body": {
+        "type": "object",
+        "properties": {
+          "amt": {
+            "type": "number"
+          }
+        }
+      },
+      "payment_createorder_body": {
+        "type": "object",
+        "properties": {
+          "amt": {
+            "type": "number"
+          }
+        }
+      },
+      "inline_response_200_4": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "api_key_id": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "order_id": {
+            "type": "string"
+          }
+        }
+      },
+      "payment_verifypayment_body": {
+        "type": "object",
+        "properties": {
+          "razorpay_order_id": {
+            "type": "string"
+          },
+          "razorpay_payment_id": {
+            "type": "string"
+          },
+          "razorpay_signature": {
+            "type": "string"
+          }
+        }
+      },
+      "reports_advertiser_body": {
+        "type": "object",
+        "properties": {
+          "campaign": {
+            "type": "number"
+          },
+          "duration": {
+            "type": "number",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          }
+        }
+      },
+      "reports_publisher_body": {
+        "type": "object",
+        "properties": {
+          "campaign": {
+            "type": "number"
+          },
+          "duration": {
+            "type": "number",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          }
+        }
+      },
+      "CampaignsList_data": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "adult": {
+            "type": "boolean"
+          },
+          "budget": {
+            "type": "number"
+          },
+          "budget_rem": {
+            "type": "number"
+          },
+          "campaign_type": {
+            "type": "string"
+          },
+          "clicks": {
+            "type": "number"
+          },
+          "cpc": {
+            "type": "number"
+          },
+          "cstatus": {
+            "type": "number"
+          },
+          "isPro": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "pops": {
+            "type": "number"
+          },
+          "status": {
+            "type": "number"
+          },
+          "views": {
+            "type": "number"
+          }
+        }
+      },
+      "CampaignTypes_inner": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "UserBanners_inner": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "size": {
+            "type": "string"
+          },
+          "src": {
+            "type": "string"
+          }
+        }
+      },
+      "CampaignFormData_browsers": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "CampaignFormData_settings": {
+        "type": "object",
+        "properties": {
+          "min_budget": {
+            "type": "number"
+          },
+          "min_cpc": {
+            "type": "number"
+          },
+          "min_daily_budget": {
+            "type": "number"
+          },
+          "min_pop_cpc": {
+            "type": "number"
+          }
+        }
+      },
+      "WebsiteList_data": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "domain": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "views": {
+            "type": "number"
+          },
+          "clicks": {
+            "type": "number"
+          },
+          "pops": {
+            "type": "number"
+          },
+          "traffic": {
+            "type": "number"
+          },
+          "adult": {
+            "type": "number",
+            "enum": [
+              0,
+              1
+            ]
+          },
+          "ctr": {
+            "type": "number"
+          },
+          "earned": {
+            "type": "number"
+          },
+          "language": {
+            "type": "string"
+          }
+        }
+      },
+      "WebsiteFormData_languages": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "number"
+          }
+        }
+      },
+      "AdCodes_banner": {
+        "type": "object",
+        "properties": {
+          "banner_size": {
+            "type": "string"
+          }
+        }
+      },
+      "PaymentHistory_data": {
+        "type": "object",
+        "properties": {
+          "payment_id": {
+            "type": "string"
+          },
+          "order_id": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD"
+            ]
+          },
+          "processor": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "time": {
+            "type": "number"
+          }
+        }
+      },
+      "WithdrawHistory_data": {
+        "type": "object",
+        "properties": {
+          "payment_id": {
+            "type": "string"
+          },
+          "fee": {
+            "type": "number"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD"
+            ]
+          },
+          "processor": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "time": {
+            "type": "number"
+          }
+        }
+      },
+      "TableStatSchema_name": {
+        "type": "object",
+        "properties": {
+          "views": {
+            "type": "number"
+          },
+          "clicks": {
+            "type": "number"
+          },
+          "pops": {
+            "type": "number"
+          },
+          "cost": {
+            "type": "number"
+          },
+          "ctr": {
+            "type": "number"
+          }
+        }
+      },
+      "422Error_data": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "param": {
+            "type": "string"
+          },
+          "values": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}
