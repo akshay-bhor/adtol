@@ -57,7 +57,7 @@ if (!isHidden(parent)) {
               text-decoration: none;
             "
             ${rel}
-            href="${ads[i].process}?ref=${ref_url}"
+            href="${ads[i].process}&ref=${ref_url}"
           >
             <b>${ads[i].title}</b></a
           >

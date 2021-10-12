@@ -56,7 +56,7 @@ if (!isHidden(parent)) {
             target="_blank"
             style="display:flex;width:300px;height:150px;justify-content:center"
             ${rel}
-            href="${ads[i].process}?ref=${ref_url}"
+            href="${ads[i].process}&ref=${ref_url}"
             ><img
               style="height:100%;width:100%"
               src="${ads[i].banner}"
