@@ -22,6 +22,9 @@ if (!isHidden(parent)) {
   // Get ad element
   const ad_widget = document.getElementById(idName);
 
+  // Get ref URL
+  const ref_url = window.location.href;
+
   let html = "";
   html += `<style>
   .adtol-feed-ad-container{display:flex;justify-content:space-around;flex-basis:320px;flex-direction:row;flex-wrap:wrap}
@@ -65,7 +68,7 @@ if (!isHidden(parent)) {
             <a style="display:inline-block;text-decoration:none!important;overflow:hidden;text-overflow:ellipsis;line-height:24px;height:48px"
               ${rel}
               target="_blank"
-              href="${ads[i].process}"
+              href="${ads[i].process}?ref=${ref_url}"
               >${ads[i].title}</a
             >
             <div style="color:#a0a0a0;font-weight:600;font-size:90%">${ads[i].domain}</div>

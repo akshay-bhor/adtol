@@ -22,6 +22,9 @@ if (!isHidden(parent)) {
   // Get ad element
   const ad_widget = document.getElementById(idName);
 
+  // Get ref URL
+  const ref_url = window.location.href;
+
   // Fetch API
   fetchAd(token)
     .then((res) => {
@@ -54,7 +57,7 @@ if (!isHidden(parent)) {
               text-decoration: none;
             "
             ${rel}
-            href="${ads[i].process}"
+            href="${ads[i].process}?ref=${ref_url}"
           >
             <b>${ads[i].title}</b></a
           >

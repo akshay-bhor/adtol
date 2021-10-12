@@ -50,9 +50,12 @@ exports.processClick = async (req, res, next) => {
         const userData = tData.userData; 
 
         // Create domain hash
-        const ref_url = extractURL(req.get('Referrer')) || null;
-        // If ref url null
-        if(!ref_url) {
+        let ref_url;
+        try {
+            ref_url = extractURL(req.query.ref || req.get('Referrer')) || null;
+            if(!ref_url) throw new Error('Invalid URL');
+        } catch (err) {
+            // If ref url null
             res.redirect(process.env.ORIGIN);
             res.end();
             return next();

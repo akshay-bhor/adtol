@@ -50,8 +50,9 @@ exports.adServe = async (req, res, next) => {
         
         // Construct domain hash from ref url
         const match_hash = req.match_hash;
-        const ref_url = extractURL(req.get('Referrer'));
-        const origin = extractHostname(req.get('origin'));
+        const ref_url = extractURL(req.query.ref || req.get('Referrer')) || null;
+        if(!ref_url) throw new Error('Invalid URL');
+        const origin = extractHostname(ref_url);
         // const ref_url = "https://example.com/test.html".split('//')[1];
         // const origin = "https://example.com".split('//')[1];
         let parsed = psl.parse(origin); 
