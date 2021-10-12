@@ -152,7 +152,7 @@ exports.adServe = async (req, res, next) => {
             const link = process.env.ORIGIN + '/api/display/pcs/click?tk=' + encryptAES(JSON.stringify(linkData));
 
             // Get domain from url
-            parsed = psl.parse(result[bestAdIndex].url);
+            parsed = psl.parse(extractHostname(result[bestAdIndex].url));
             const ad_domain = parsed.domain; 
 
             // Get btn if exist

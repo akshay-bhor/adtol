@@ -15,19 +15,18 @@ exports.test = async(req, res, next) => {
     //         console.log(Object.keys(cData).find(key => cData[key][0] == cn));
     //     });
         
+    if(req.query.send == 'ua') {
+        const parser = require('ua-parser-js');
 
-    // const parser = require('ua-parser-js');
+        let uastr = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36";
 
-    // let uastr = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36";
+        let ua = parser(req.get('user-agent'));
 
-    // let ua = parser(uastr);
+        console.log(ua.os.version?.split('.')[0] || 0);
 
-    // console.log(ua.device);
+        res.status(200).json(ua);
+    }
 
-    // const r = await Campaigns.findOne({ where: { id: 5 }, attributes: ['uid', 'url', 'cpc'] });
-
-    // console.log(r);
-    // res.redirect('http://adtol.com');
     if(req.query.send == 'ip') {
         const x_forwarded_for = req.get('x-forwarded-for');
         const remote_address = req.connection.remoteAddress;
