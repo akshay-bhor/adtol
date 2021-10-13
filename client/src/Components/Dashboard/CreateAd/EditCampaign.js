@@ -14,6 +14,7 @@ import Loading from "../../UI/Loading";
 import { weekDaysList } from "../../../constants/common";
 import { editCampaign, fetchCampaignData } from "../../../store/actions/campaigns.action";
 import { campaignActions } from "../../../store/reducers/campaigns.reducer";
+import TrafficEstimation from "./TrafficEstimation";
 
 const EditCampaign = () => {
   const dispatch = useDispatch();
@@ -248,27 +249,40 @@ const EditCampaign = () => {
           }}
         >
           {({ values }) => (
-            <CampaignForm 
-              type={type} 
-              edit={true} 
-              banners={banners}
-              setBanners={setBanners}
-              categoriesList={categoryState}
-              setCategories={setCategoryState}
-              languagesList={langState}
-              setLanguages={setLangState}
-              countriesList={countryState}
-              setCountries={setCountryState}
-              devicesList={deviceState}
-              setDevices={setDeviceState}
-              osList={osState}
-              setOs={setOsState}
-              browsersList={browserState}
-              setBrowsers={setBrowserState}
-              daysList={daysState}
-              setDays={setDaysState}
-              trafficEstModalToggle={toggleTrafficEstModal}
-            />
+            <Fragment>
+              <CampaignForm 
+                type={type} 
+                edit={true} 
+                banners={banners}
+                setBanners={setBanners}
+                categoriesList={categoryState}
+                setCategories={setCategoryState}
+                languagesList={langState}
+                setLanguages={setLangState}
+                countriesList={countryState}
+                setCountries={setCountryState}
+                devicesList={deviceState}
+                setDevices={setDeviceState}
+                osList={osState}
+                setOs={setOsState}
+                browsersList={browserState}
+                setBrowsers={setBrowserState}
+                daysList={daysState}
+                setDays={setDaysState}
+                trafficEstModalToggle={toggleTrafficEstModal}
+              />
+              {tfEstModalOpen ? <TrafficEstimation
+                adult={values.adult}
+                categories={categoryState}
+                devices={deviceState}
+                os={osState}
+                countries={countryState}
+                browsers={browserState}
+                languages={langState}
+                campType={type}
+                onClose={toggleTrafficEstModal}
+              />:null}
+            </Fragment>
           )}
         </Formik>
       )}
