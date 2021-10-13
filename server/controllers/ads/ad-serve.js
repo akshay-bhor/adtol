@@ -85,7 +85,7 @@ exports.adServe = async (req, res, next) => {
          *  */ 
 
         // Common query
-        sQuery = `SELECT c.id as campaign_id, a.id as ad_id, c.uid as ad_uid, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.rel, c.btn, c.cpc, c.pro`;
+        sQuery = `SELECT c.id as campaign_id, a.id as ad_id, c.uid as ad_uid, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.adult, c.rel, c.btn, c.cpc, c.pro`;
         wQuery = `WHERE a.match_hash = '${match_hash}' AND c.today_budget_rem >= 0.1 AND c.domain_hash != '${domain_hash}'`;
 
         // Queries
@@ -209,6 +209,8 @@ exports.adServe = async (req, res, next) => {
                     const site_id = ps.dataValues.id;
                     const ad_url = result[bestAdIndex].url;
                     const campaign_id = result[bestAdIndex].campaign_id;
+                    const ad_adult = result[bestAdIndex].adult || 0;
+                    const ad_cpc = result[bestAdIndex].cpc;
                     // Store view
                     const viewStore = Views.create({
                         campaign_id,
@@ -227,6 +229,8 @@ exports.adServe = async (req, res, next) => {
                         browser: bCode,
                         country: cCode,
                         language: ad_lang,
+                        adult: ad_adult,
+                        ad_cpc: ad_cpc,
                         ip: req.ip_addr,
                         day_unix: today_unix,
                         time_unix: time_unix

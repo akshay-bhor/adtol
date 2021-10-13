@@ -692,6 +692,106 @@ exports.uploadBannersHelper = async (req) => {
     }
 }
 
+exports.trafficEstimationHelper = async (req) => {
+    if(!req.userInfo) {
+        const err = new Error('Not Allowed!');
+        err.statusCode = 401;
+        throw err;
+    }
+
+    await check('category').exists().trim().escape().isString().notEmpty().withMessage('Category is required').custom(adTargetingValidation).run(req);
+    await check('country').exists().trim().escape().isString().notEmpty().withMessage('Country is required').custom(adTargetingValidation).run(req);
+    await check('device').exists().trim().escape().isString().notEmpty().withMessage('Device is required').custom(adTargetingValidation).run(req);
+    await check('os').exists().trim().escape().isString().notEmpty().withMessage('OS is required').custom(adTargetingValidation).run(req);
+    await check('browser').exists().trim().escape().isString().notEmpty().withMessage('Browser is required').custom(adTargetingValidation).run(req);
+    await check('language').exists().trim().escape().isString().notEmpty().withMessage('Language is required').custom(adTargetingValidation).run(req);
+    await check('adult').exists().trim().escape().isInt().notEmpty().withMessage('Adult is required')
+
+    try {
+        const errs = validationResult(req); 
+        if(!errs.isEmpty()) {
+            const err = new Error('Validation Failed!');
+            err.statusCode = 422;
+            err.data = errs.array();
+            throw err;
+        }
+
+        // Get data
+        const categories = req.body.category;
+        const countries = req.body.country;
+        const devices = req.body.device;
+        const os = req.body.os;
+        const browsers = req.body.browser;
+        const languages = req.body.language;
+        const adult = req.body.adult || 0;
+
+        // Previous 30 day unix date
+        const today = new Date().toISOString().slice(0, 10);
+        const today_unix = Math.floor(new Date(today).getTime() / 1000);
+        const prevDate = Math.floor(today_unix - (60*60*24*30));
+        console.log(categories)
+        // Get impressions estimate
+        const campEst = await sequelize.query(`SELECT COUNT(id) as impressions, MAX(ad_cpc) as maxCpc, AVG(ad_cpc) as avgCpc FROM views 
+            WHERE adult = ${adult} AND 
+            category IN (${categories}) AND 
+            country IN (${countries}) AND 
+            device IN (${devices}) AND 
+            os IN (${os}) AND 
+            browser IN (${browsers}) AND 
+            language IN (${languages}) AND 
+            day_unix >= ${prevDate}`, {
+            type: QueryTypes.SELECT
+        });
+
+        // Get popups estimate
+        const popEst = await sequelize.query(`SELECT COUNT(id) as pops, MAX(ad_cpc) as maxCpc, AVG(ad_cpc) as avgCpc FROM pops 
+            WHERE adult = ${adult} AND 
+            category IN (${categories}) AND 
+            country IN (${countries}) AND 
+            device IN (${devices}) AND 
+            os IN (${os}) AND 
+            browser IN (${browsers}) AND 
+            language IN (${languages}) AND 
+            day_unix >= ${prevDate}`, {
+            type: QueryTypes.SELECT,
+        });
+
+        const impressions = Math.floor(campEst[0].impressions / 30);
+        const maxCampCpc = campEst[0].maxCpc;
+        const avgCampCpc = campEst[0].avgCpc;
+        const pops = Math.floor(popEst[0].pops / 30);
+        const maxPopCpc = popEst[0].maxCpc;
+        const avgPopCpc = popEst[0].avgCpc;
+
+        const minClicks = Math.floor(impressions * 0.0025);
+        const maxClicks = Math.floor(impressions * 0.01); 
+
+        const campaign = {
+            impressions: impressions,
+            max_cpc: maxCampCpc,
+            avg_cpc: avgCampCpc,
+            min_clicks: minClicks,
+            max_clicks: maxClicks
+        }
+
+        const pop = {
+            pops: pops,
+            max_cpc: maxPopCpc,
+            avg_cpc: avgPopCpc,
+        }
+
+        return {
+            campaign,
+            pop
+        }
+
+    } catch (err) {
+        if(!err.statusCode)
+            err.statusCode = 500;
+        throw err;
+    }
+}
+
 exports.getCampaignTypesHelper = async (req) => {
     if(!req.userInfo) {
         const err = new Error('Not Allowed!');

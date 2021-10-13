@@ -295,6 +295,7 @@ CREATE TABLE `clicks` (
   `browser` int NOT NULL DEFAULT '0',
   `country` int NOT NULL DEFAULT '0',
   `language` int NOT NULL DEFAULT '0',
+  `adult` tinyint(1) NOT NULL DEFAULT '0',
   `ip` varchar(45) NOT NULL DEFAULT '0',
   `ip_tiny` varchar(7) NOT NULL,
   `ad_cpc` float(10,5) NOT NULL,
@@ -305,7 +306,8 @@ CREATE TABLE `clicks` (
   PRIMARY KEY (`id`),
   KEY `iptiny` (`ip_tiny`) USING BTREE,
   KEY `day_unix` (`day_unix`) USING BTREE,
-  KEY `ad_id` (`ad_id`) USING BTREE
+  KEY `ad_id` (`ad_id`) USING BTREE,
+  KEY `estimation` (`category`, `device`, `os`, `browser`, `country`, `language`, `adult`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -501,6 +503,7 @@ CREATE TABLE `pops` (
   `browser` int NOT NULL DEFAULT '0',
   `country` int NOT NULL DEFAULT '0',
   `language` int NOT NULL DEFAULT '0',
+  `adult` tinyint(1) NOT NULL DEFAULT '0',
   `ip` varchar(45) NOT NULL DEFAULT '0',
   `ip_tiny` varchar(7) NOT NULL,
   `ad_cpc` float(10,5) NOT NULL,
@@ -510,7 +513,8 @@ CREATE TABLE `pops` (
   `valid` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `iptiny_dayunix` (`ip_tiny`,`day_unix`) USING BTREE,
-  KEY `ad_id` (`ad_id`) USING BTREE
+  KEY `ad_id` (`ad_id`) USING BTREE,
+  KEY `estimation` (`category`, `device`, `os`, `browser`, `country`, `language`, `adult`, `day_unix`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -953,10 +957,13 @@ CREATE TABLE `views` (
   `browser` int NOT NULL DEFAULT '0',
   `country` int NOT NULL DEFAULT '0',
   `language` int NOT NULL DEFAULT '0',
+  `adult` tinyint(1) NOT NULL DEFAULT '0',
+  `ad_cpc` float(10,5) NOT NULL,
   `ip` varchar(45) NOT NULL DEFAULT '0',
   `day_unix` bigint NOT NULL DEFAULT '0',
   `time_unix` bigint NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `estimation` (`category`, `device`, `os`, `browser`, `country`, `language`, `adult`, `day_unix`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

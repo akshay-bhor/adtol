@@ -23,6 +23,7 @@ router.get('/advertiser', isAuth, advertiserController.advertiser);
 router.get('/campaigns', isAuth, campaignController.campaigns);
 router.post('/campaigns/change-status/:campid', isAuth, campaignController.changeStatus);
 router.post('/campaigns/change-budget/:campid', isAuth, campaignController.changeBudget);
+router.post('/campaigns/traffic-estimation', isAuth, campaignController.trafficEstimattion);
 router.post('/campaigns/upload-banners', isAuth, storeImg.array('banners', 5), bannerSizeValidation, campaignController.uploadBanners);
 router.post('/campaigns/create', isAuth, campaignController.createCampaign);
 router.post('/campaigns/edit/:campid', isAuth, campaignController.editCampaign);

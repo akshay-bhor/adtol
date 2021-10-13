@@ -50,6 +50,7 @@ const EditCampaign = () => {
   const [daysState, setDaysState] = useState(weekDaysList);
   const [banners, setBanners] = useState([]);
   const [stateUpdated, setStateUpdated] = useState(false);
+  const [tfEstModalOpen, setTfEstModalOpen] = useState(false);
 
   useEffect(() => {
     // Campaign Data
@@ -68,6 +69,11 @@ const EditCampaign = () => {
         dispatch(campaignActions.setError(null));
     }
   }, []);
+
+  /** Toggle modal */
+  const toggleTrafficEstModal = () => {
+    setTfEstModalOpen(prev => !prev);
+  }
 
   const updateStates = () => {
     if(stateUpdated) return;
@@ -241,26 +247,29 @@ const EditCampaign = () => {
             onSubmit(values);
           }}
         >
-          <CampaignForm 
-            type={type} 
-            edit={true} 
-            banners={banners}
-            setBanners={setBanners}
-            categoriesList={categoryState}
-            setCategories={setCategoryState}
-            languagesList={langState}
-            setLanguages={setLangState}
-            countriesList={countryState}
-            setCountries={setCountryState}
-            devicesList={deviceState}
-            setDevices={setDeviceState}
-            osList={osState}
-            setOs={setOsState}
-            browsersList={browserState}
-            setBrowsers={setBrowserState}
-            daysList={daysState}
-            setDays={setDaysState}
-          />
+          {({ values }) => (
+            <CampaignForm 
+              type={type} 
+              edit={true} 
+              banners={banners}
+              setBanners={setBanners}
+              categoriesList={categoryState}
+              setCategories={setCategoryState}
+              languagesList={langState}
+              setLanguages={setLangState}
+              countriesList={countryState}
+              setCountries={setCountryState}
+              devicesList={deviceState}
+              setDevices={setDeviceState}
+              osList={osState}
+              setOs={setOsState}
+              browsersList={browserState}
+              setBrowsers={setBrowserState}
+              daysList={daysState}
+              setDays={setDaysState}
+              trafficEstModalToggle={toggleTrafficEstModal}
+            />
+          )}
         </Formik>
       )}
     </Fragment>

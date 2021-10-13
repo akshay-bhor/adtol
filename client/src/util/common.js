@@ -52,6 +52,8 @@ export const getAdQuote = () => {
 
 export const setOpacity = (date) => {
   if(!date) return;
+  const url = new URL(window.location.href);
+  if(url.hostname != 'adtol.com' && url.hostname != 'www.adtol.com') return;
   const pastDate = Math.floor(new Date(date).getTime() / 1000);
   const todayDate = new Date().toISOString().slice(0, 10);
   const today = Math.floor(new Date(todayDate).getTime() / 1000);

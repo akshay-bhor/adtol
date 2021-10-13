@@ -78,7 +78,8 @@ export const CampaignForm = ({
     browsersList,
     setBrowsers, 
     daysList,
-    setDays 
+    setDays,
+    trafficEstModalToggle
   }) => {
   const muiStyles = useStyles();
   const loading = false;
@@ -259,15 +260,30 @@ export const CampaignForm = ({
             className={muiStyles.block}
           />}
 
-          <Button
-            variant="contained"
-            type="submit"
-            color="primary"
-            disabled={loading}
-            className={muiStyles.block}
-          >
-            Submit
-          </Button>
+          <Grid container className={muiStyles.block} spacing={2}>
+            <Grid item xs={12} md={6}>
+              <Button
+                variant="contained"
+                type="submit"
+                color="primary"
+                disabled={loading}
+                className={muiStyles.fullWidth}
+              >
+                Submit
+              </Button>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={loading}
+                className={muiStyles.fullWidth}
+                onClick={trafficEstModalToggle}
+              >
+                Traffic Estimation
+              </Button>
+            </Grid>
+          </Grid>
         </PaperBlock>
       </Form>
       

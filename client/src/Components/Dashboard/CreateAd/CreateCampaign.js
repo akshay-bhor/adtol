@@ -14,6 +14,7 @@ import Loading from "../../UI/Loading";
 import { weekDaysList } from "../../../constants/common";
 import { createCampaign } from "../../../store/actions/campaigns.action";
 import { campaignActions } from "../../../store/reducers/campaigns.reducer";
+import TrafficEstimation from "./TrafficEstimation";
 
 const CreateCampaign = () => {
   const dispatch = useDispatch();
@@ -73,6 +74,7 @@ const CreateCampaign = () => {
   const [browserState, setBrowserState] = useState(browsers);
   const [daysState, setDaysState] = useState(weekDaysList);
   const [banners, setBanners] = useState([]);
+  const [tfEstModalOpen, setTfEstModalOpen] = useState(false);
 
   useEffect(() => {
     // Fetch timezones, country, and settings
@@ -86,6 +88,11 @@ const CreateCampaign = () => {
       dispatch(campaignActions.setError(null));
     }
   }, []);
+
+  /** Toggle modal */
+  const toggleTrafficEstModal = () => {
+    setTfEstModalOpen(prev => !prev);
+  }
 
   /** Check if formdata fetched */
   const formDataFetched = () => {
@@ -180,26 +187,42 @@ const CreateCampaign = () => {
             onSubmit(values);
           }}
         >
-          <CampaignForm 
-            type={type} 
-            edit={false} 
-            banners={banners}
-            setBanners={setBanners}
-            categoriesList={categories}
-            setCategories={setCategoryState}
-            languagesList={languages}
-            setLanguages={setLangState}
-            countriesList={countries}
-            setCountries={setCountryState}
-            devicesList={devices}
-            setDevices={setDeviceState}
-            osList={os}
-            setOs={setOsState}
-            browsersList={browsers}
-            setBrowsers={setBrowserState}
-            daysList={weekDaysList}
-            setDays={setDaysState}
-          />
+          {({ values }) => (
+            <Fragment>
+              <CampaignForm 
+                type={type} 
+                edit={false} 
+                banners={banners}
+                setBanners={setBanners}
+                categoriesList={categories}
+                setCategories={setCategoryState}
+                languagesList={languages}
+                setLanguages={setLangState}
+                countriesList={countries}
+                setCountries={setCountryState}
+                devicesList={devices}
+                setDevices={setDeviceState}
+                osList={os}
+                setOs={setOsState}
+                browsersList={browsers}
+                setBrowsers={setBrowserState}
+                daysList={weekDaysList}
+                setDays={setDaysState}
+                trafficEstModalToggle={toggleTrafficEstModal}
+              />
+              {tfEstModalOpen ? <TrafficEstimation
+                adult={values.adult}
+                categories={categoryState}
+                devices={deviceState}
+                os={osState}
+                countries={countryState}
+                browsers={browserState}
+                languages={langState}
+                campType={type}
+                onClose={toggleTrafficEstModal}
+              />:null}
+            </Fragment>
+          )}
         </Formik>
       )}
     </Fragment>
