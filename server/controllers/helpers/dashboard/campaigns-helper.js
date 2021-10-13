@@ -729,7 +729,7 @@ exports.trafficEstimationHelper = async (req) => {
         const today = new Date().toISOString().slice(0, 10);
         const today_unix = Math.floor(new Date(today).getTime() / 1000);
         const prevDate = Math.floor(today_unix - (60*60*24*30));
-        console.log(categories)
+        
         // Get impressions estimate
         const campEst = await sequelize.query(`SELECT COUNT(id) as impressions, MAX(ad_cpc) as maxCpc, AVG(ad_cpc) as avgCpc FROM views 
             WHERE adult = ${adult} AND 
