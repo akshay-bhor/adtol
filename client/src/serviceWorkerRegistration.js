@@ -72,16 +72,17 @@ function registerValidSW(swUrl, config) {
                   'tabs for this page are closed. See https://cra.link/PWA.'
               );
 
-              // Skip waiting for new sw to activate
-              registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-
-              // Force cold boot
-              window.location.reload();
-
               // Execute callback
               if (config && config.onUpdate) {
                 config.onUpdate(registration);
               }
+
+              // Skip waiting for new sw to activate
+              registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+
+              // Force cold boot
+              const loc = window.location;
+              window.location.href = loc + '?force_cold_boot=1';
             } else {
               // At this point, everything has been precached.
               // It's the perfect time to display a
