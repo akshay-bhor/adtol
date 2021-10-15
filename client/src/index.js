@@ -25,7 +25,7 @@ const theme = createTheme({
   }
 });
 
-setOpacity('2021-10-10');
+setOpacity();
 
 ReactDOM.render(
   <Provider store={store}>
