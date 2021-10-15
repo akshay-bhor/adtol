@@ -36,10 +36,10 @@ exports.websitesHelper = async (req) => {
                 tmp.status = 'Pending';
             if(data.dataValues.status == 3)
                 tmp.status = 'Rejected';
-            tmp.views = data.dataValues.views;
-            tmp.clicks = data.dataValues.clicks;
-            tmp.pops = data.dataValues.pops;
-            tmp.earned = data.dataValues.earned;
+            tmp.views = +data.dataValues.views;
+            tmp.clicks = +data.dataValues.clicks;
+            tmp.pops = +data.dataValues.pops;
+            tmp.earned = parseFloat(data.dataValues.earned).toFixed(2);
             tmp.category = App_Settings.categories[data.dataValues.category] || 'Unknown';
             tmp.language = App_Settings.languages[data.dataValues.language] || 'English';
             tmp.ctr = Math.floor((tmp.clicks / tmp.views) * 10000) / 100;

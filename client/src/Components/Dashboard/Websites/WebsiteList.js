@@ -1,5 +1,5 @@
 import { DataGrid } from "@material-ui/data-grid";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
@@ -13,7 +13,7 @@ import {
 import { websiteActions } from "../../../store/reducers/websites.reducer";
 import ShowError from "../../UI/ShowError";
 import Loading from "../../UI/Loading";
-import { Button, Chip, Icon, makeStyles, Box } from "@material-ui/core";
+import { Button, Chip, Icon, makeStyles, Box, IconButton, Menu } from "@material-ui/core";
 import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -44,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "flex-end",
     flexBasis: "100%",
   },
+  menuBtnContainer: {
+    padding: '5px 10px'
+  }
 }));
 
 const websiteCols = [
@@ -66,15 +69,83 @@ const mapRows = (data) => {
       website: `${item.domain},${item.adult}`,
       category: `${item.category},${item.language}`,
       status: `${item.status}`,
-      views: item.views,
-      clicks: item.clicks,
-      pops: item.pops,
+      views: (+item.views).toLocaleString(),
+      clicks: (+item.clicks).toLocaleString(),
+      pops: (+item.pops).toLocaleString(),
       ctr: item.ctr ? item.ctr.toFixed(2) + "%" : "NA",
-      earned: "$" + item.earned,
+      earned: "$" + (+item.earned).toLocaleString(),
       manage: "Manage",
     };
   });
 };
+
+const ManageMenu = (props) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { id, changeStatusHelper } = props;
+  const muiStyles = useStyles();
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <Fragment>
+      <IconButton 
+        color="primary" 
+        aria-controls={`manage-menu-${id}`} 
+        aria-haspopup="true" 
+        onClick={handleClick}
+        compoenent="span">
+        <Icon>menu</Icon>
+      </IconButton>
+      <Menu
+        id={`manage-menu-${id}`}
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        >
+        <Box component="div" className={muiStyles.menuBtnContainer}>
+          <Link to={`/dashboard/websites/edit/${id}`}>
+            <Button
+              color="primary"
+              className={muiStyles.smallBtn}
+              startIcon={<Icon>edit</Icon>}
+            >
+              Edit
+            </Button>
+          </Link>
+        </Box>
+          <Box component="div" className={muiStyles.menuBtnContainer}>
+            <Link to={`/dashboard/get-adcode`}>
+              <Button
+                color="primary"
+                className={muiStyles.smallBtn}
+                startIcon={<Icon>code</Icon>}
+              >
+                Get Adcode
+              </Button>
+            </Link>
+          </Box>
+        <Box component="div" className={muiStyles.menuBtnContainer}>
+          <Button
+              color="secondary"
+              className={muiStyles.smallBtn}
+              startIcon={<Icon>delete</Icon>}
+              onClick={() => changeStatusHelper(id, true)}
+            >
+              Delete
+          </Button>
+        </Box>
+      </Menu>
+    </Fragment>
+  );
+    
+}
 
 const WebsiteList = () => {
   const muiStyles = useStyles();
@@ -160,35 +231,12 @@ const WebsiteList = () => {
       );
     }
     if (params.colDef.field == "manage") {
+      const id = params.row.id;
       return (
-        <Fragment>
-          <Link to={`/dashboard/websites/edit/${params.row.id}`}>
-            <Button
-              color="primary"
-              className={muiStyles.smallBtn}
-              startIcon={<Icon>edit</Icon>}
-            >
-              Edit
-            </Button>
-          </Link>
-          <Link to={`/dashboard/get-adcode`}>
-            <Button
-              color="primary"
-              className={muiStyles.smallBtn}
-              startIcon={<Icon>code</Icon>}
-            >
-              Get Adcode
-            </Button>
-          </Link>
-          <Button
-              color="secondary"
-              className={muiStyles.smallBtn}
-              startIcon={<Icon>delete</Icon>}
-              onClick={() => changeStatusHelper(params.row.id, true)}
-            >
-              Delete
-          </Button>
-        </Fragment>
+        <ManageMenu 
+          id={id}
+          changeStatusHelper={changeStatusHelper}
+        />
       );
     }
   };

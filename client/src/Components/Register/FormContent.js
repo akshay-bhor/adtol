@@ -79,6 +79,7 @@ const FormContent = (props) => {
               name="mobile"
               type="number"
               label="Phone"
+              inputProps={{min:0}}
               className={muiStyle.block}
             />
             <MySelectField

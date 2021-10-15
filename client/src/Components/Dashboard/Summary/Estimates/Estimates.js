@@ -18,7 +18,7 @@ const Estimates = (props) => {
                         Today so far
                     </Typography>
                     <Typography variant="h4" display="block">
-                        ${props.data.todaySum}
+                        ${(+props.data.todaySum).toLocaleString()}
                     </Typography>
                 </div>
 
@@ -27,10 +27,10 @@ const Estimates = (props) => {
                         Yesterday
                     </Typography>
                     <Typography variant="h4" display="block">
-                        ${props.data.yesterdaySum}
+                        ${(+props.data.yesterdaySum).toLocaleString()}
                     </Typography>
                     <Typography variant="subtitle2" display="block">
-                        ${props.data.vssamedaylastweek}
+                        ${(+props.data.vssamedaylastweek).toLocaleString()}
                     </Typography>
                     <Typography variant="subtitle2" display="block">
                         vs same day last week
@@ -42,10 +42,10 @@ const Estimates = (props) => {
                         Last 7 days
                     </Typography>
                     <Typography variant="h4" display="block">
-                        ${props.data.sum7days}
+                        ${(+props.data.sum7days).toLocaleString()}
                     </Typography>
                     <Typography variant="subtitle2" display="block">
-                        ${props.data.sumprev7days}
+                        ${(+props.data.sumprev7days).toLocaleString()}
                     </Typography>
                     <Typography variant="subtitle2" display="block">
                         vs previous 7 days
@@ -57,10 +57,10 @@ const Estimates = (props) => {
                         This month
                     </Typography>
                     <Typography variant="h4" display="block">
-                        ${props.data.sum30days}
+                        ${(+props.data.sum30days).toLocaleString()}
                     </Typography>
                     <Typography variant="subtitle2" display="block">
-                        ${props.data.sumprev30days}
+                        ${(+props.data.sumprev30days).toLocaleString()}
                     </Typography>
                     <Typography variant="subtitle2" display="block">
                         vs last month
@@ -72,7 +72,7 @@ const Estimates = (props) => {
                         Balance
                     </Typography>
                     <Typography variant="h4" display="block">
-                        ${props.balance}
+                        ${(+props.balance).toLocaleString()}
                     </Typography>
                 </div>
 

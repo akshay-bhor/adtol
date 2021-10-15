@@ -11,7 +11,7 @@ import {
 } from "../../../store/actions/campaigns.action";
 import ShowError from "../../UI/ShowError";
 import Loading from "../../UI/Loading";
-import { Box, Button, Chip, Icon, makeStyles } from "@material-ui/core";
+import { Box, Button, Chip, Icon, IconButton, makeStyles, Menu } from "@material-ui/core";
 import EditBudgetModal from "./EditBudgetModal";
 import { Link } from "react-router-dom";
 
@@ -38,6 +38,9 @@ const useStyles = makeStyles((theme) => ({
   smallIcon: {
     fontSize: "16px",
   },
+  btnContainer: {
+    padding: '5px 10px'
+  }
 }));
 
 const campaignCols = [
@@ -59,15 +62,103 @@ const mapRows = (data) => {
       campaign: item.name,
       type: `${item.campaign_type},${item.adult ? 1 : 2}`,
       status: `${item.status},${item.cstatus}`,
-      views: item.views,
-      clicks: item.clicks,
-      pops: item.pops,
+      views: (+item.views).toLocaleString(),
+      clicks: (+item.clicks).toLocaleString(),
+      pops: (+item.pops).toLocaleString(),
       cpc: "$" + parseFloat(item.cpc),
       budget: "$" + item.budget + ", rem:" + "$" + item.budget_rem,
       manage: "Manage",
     };
   });
 };
+
+const ManageMenu = (props) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { pathParam, id, budget, changeStatusHelper, modalHandler } = props;
+  const muiStyles = useStyles();
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <Fragment>
+      <IconButton 
+        color="primary" 
+        aria-controls={`manage-menu-${id}`} 
+        aria-haspopup="true" 
+        onClick={handleClick}
+        compoenent="span">
+        <Icon>menu</Icon>
+      </IconButton>
+      <Menu
+        id={`manage-menu-${id}`}
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        <Box component="div" className={muiStyles.btnContainer}>
+          <Link 
+            to={`/dashboard/edit-ad/${pathParam}/${id}`}>
+            <Button
+              color="primary"
+              className={muiStyles.smallBtn}
+              startIcon={<Icon>edit</Icon>}
+            >
+              Edit
+            </Button>
+          </Link>
+        </Box>
+        <Box component="div" className={muiStyles.btnContainer}>
+          <Button
+            color="primary"
+            className={muiStyles.smallBtn}
+            startIcon={<Icon>attach_money</Icon>}
+            onClick={() => modalHandler(id, budget)}
+          >
+            Edit Budget
+          </Button>
+        </Box>
+        <Box component="div" className={muiStyles.btnContainer}>
+          <Button
+            color="primary"
+            className={muiStyles.smallBtn}
+            startIcon={<Icon>play_arrow</Icon>}
+            onClick={() => changeStatusHelper(id, "run")}
+          >
+            Run
+          </Button>
+        </Box>
+        <Box component="div" className={muiStyles.btnContainer}>
+          <Button
+            color="primary"
+            className={muiStyles.smallBtn}
+            startIcon={<Icon>pause</Icon>}
+            onClick={() => changeStatusHelper(id, "pause")}
+          >
+            Pause
+          </Button>
+        </Box>
+        <Box component="div" className={muiStyles.btnContainer}>
+          <Button
+            color="secondary"
+            className={muiStyles.smallBtn}
+            startIcon={<Icon>delete</Icon>}
+            onClick={() => changeStatusHelper(id, "delete", true)}
+          >
+            Delete
+          </Button>
+        </Box>
+      </Menu>
+    </Fragment>
+  );
+    
+}
 
 const CampaignList = () => {
   const muiStyles = useStyles();
@@ -142,7 +233,6 @@ const CampaignList = () => {
     }
     if (params.colDef.field == "status") {
       const status = params.value.split(",");
-      const id = params.id;
       return (
         <Fragment>
           <div className={styles.chipContainer}>
@@ -182,20 +272,6 @@ const CampaignList = () => {
                   : muiStyles.info
               }
             />
-            <div className={styles.menuOptions}>
-              <span
-                className="block"
-                onClick={() => changeStatusHelper(id, "run")}
-              >
-                Run
-              </span>
-              <span
-                className="block"
-                onClick={() => changeStatusHelper(id, "pause")}
-              >
-                Pause
-              </span>
-            </div>
           </div>
         </Fragment>
       );
@@ -210,41 +286,25 @@ const CampaignList = () => {
               styles.budgetContainer,
               "bold",
               "subtitle",
-              "pointer",
             ].join(" ")}
-            onClick={() => modalHandler(params.id, budget[1])}
           >
             {budget[1]}
-            <span className={styles.editIcon}>
-              <Icon className={muiStyles.smallIcon}>edit</Icon>
-            </span>
           </div>
         </Fragment>
       );
     }
-    if (params.colDef.field == "manage") { 
+    if (params.colDef.field == "manage") {
       const pathParam = params.row.type.split(',')[0].toLowerCase() === 'pop' ? 'pop':'campaign';
+      const id = params.id;
+      const budget = params.row.budget.split(",")[1];
       return (
-        <Fragment>
-          <Link 
-            to={`/dashboard/edit-ad/${pathParam}/${params.id}`}>
-            <Button
-              color="primary"
-              className={muiStyles.smallBtn}
-              startIcon={<Icon>edit</Icon>}
-            >
-              Edit
-            </Button>
-          </Link>
-          <Button
-            color="secondary"
-            className={muiStyles.smallBtn}
-            startIcon={<Icon>delete</Icon>}
-            onClick={() => changeStatusHelper(params.id, "delete", true)}
-          >
-            Delete
-          </Button>
-        </Fragment>
+        <ManageMenu 
+          id={id}
+          pathParam={pathParam}
+          budget={budget}
+          changeStatusHelper={changeStatusHelper}
+          modalHandler={modalHandler}
+        />
       );
     }
   };

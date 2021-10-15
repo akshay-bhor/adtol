@@ -53,8 +53,8 @@ exports.campaignsHelper = async(req) => {
             campData.views = data.views;
             campData.clicks = data.clicks;
             campData.pops = data.pops;
-            campData.budget = data.budget;
-            campData.budget_rem = data.budget_rem;
+            campData.budget = parseFloat(data.budget).toFixed(2);
+            campData.budget_rem = parseFloat(data.budget_rem).toFixed(2);
             campData.cost = data.cost;
             if(data.adult == 1)
                 campData.adult = true;

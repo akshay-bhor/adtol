@@ -54,9 +54,10 @@ exports.payHistoryHelper = async(req) => {
         //     replacements: [userid, limit, offset],
         //     mapToModel: Payments
         // });
-        const payments = await sequelize.query('SELECT mtx, rzr_order_id, amount, currency, status, processor, time_unix FROM payments WHERE uid = ? ORDER BY id DESC', {
+        const pay_status = 'captured';
+        const payments = await sequelize.query('SELECT mtx, rzr_order_id, amount, currency, status, processor, time_unix FROM payments WHERE uid = ? AND status = ? ORDER BY id DESC', {
             type: QueryTypes.SELECT,
-            replacements: [userid],
+            replacements: [userid, pay_status],
             mapToModel: Payments
         });
 
@@ -67,7 +68,7 @@ exports.payHistoryHelper = async(req) => {
             tmp.order_id = data.rzr_order_id;
             tmp.amount = data.amount;
             tmp.currency = data.currency;
-            tmp.status = data.status;
+            tmp.status = 'Success';
             if(data.processor == 1)
                 tmp.processor = 'Razorpay';
             if(data.processor == 2)
@@ -145,7 +146,7 @@ exports.withdrawHistoryHelper = async (req) => {
             tmp.fee = data.fee;
             tmp.status = data.status;
             if(data.status == 1)
-                tmp.status = 'Approved';
+                tmp.status = 'Success';
             if(data.status == 2)
                 tmp.status = 'Pending';
             if(data.status == 3)

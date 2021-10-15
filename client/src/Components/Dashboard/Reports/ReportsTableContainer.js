@@ -20,9 +20,9 @@ const mapRows = (data, path, colName) => {
   let res = Object.keys(data).map((key) => {
     const returnObj = {
       id: key,
-      views: data[key].views,
-      clicks: data[key].clicks,
-      pops: data[key].pops,
+      views: +data[key].views,
+      clicks: +data[key].clicks,
+      pops: +data[key].pops,
       spent: "$" + parseFloat(data[key].cost).toFixed(2),
       ctr: data[key].ctr ? data[key].ctr + "%" : "NA",
     };

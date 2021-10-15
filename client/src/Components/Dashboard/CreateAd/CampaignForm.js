@@ -203,7 +203,7 @@ export const CampaignForm = ({
             name="cpc"
             type="number"
             step="0.01"
-            min="0.01"
+            inputProps={{min:0.0001}}
             label="CPC"
             placeholder="Cost per Click"
             className={muiStyles.block}
@@ -212,7 +212,7 @@ export const CampaignForm = ({
             name="budget"
             type="number"
             step="0.01"
-            min="0.01"
+            inputProps={{min:1}}
             label="Budget"
             className={muiStyles.block}
           />
@@ -220,7 +220,7 @@ export const CampaignForm = ({
             name="daily_budget"
             type="number"
             step="0.01"
-            min="0.01"
+            inputProps={{min:1}}
             label="Daily Budget"
             className={muiStyles.block}
           />

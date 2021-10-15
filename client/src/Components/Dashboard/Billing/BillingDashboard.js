@@ -156,14 +156,14 @@ const BillingDashboard = () => {
   const renderTableCell = (params) => {
     if (params.colDef.field == "status") {
       const status = params.value;
-      if (params.view === "withdraw") {
+      // if (params.view === "withdraw") {
         return (
           <div className={styles.chipContainer}>
             <Chip
               size="small"
               label={status}
               className={
-                status == "Approved"
+                status == "Success"
                   ? muiStyles.success
                   : status == "Pending"
                   ? muiStyles.warning
@@ -172,27 +172,10 @@ const BillingDashboard = () => {
             />
           </div>
         );
-      }
-      if (params.view === "payment") {
-        return (
-          <div className={styles.chipContainer}>
-            <Chip
-              size="small"
-              label={status}
-              className={
-                status == "captured"
-                  ? muiStyles.success
-                  : status == "created"
-                  ? muiStyles.warning
-                  : muiStyles.error
-              }
-            />
-          </div>
-        );
-      }
+      // }
     }
     if (params.colDef.field == "amount") {
-      return "$" + params.value;
+      return "$" + (+params.value).toLocaleString();
     }
     if (params.colDef.field == "fee") {
       return params.value + "%";

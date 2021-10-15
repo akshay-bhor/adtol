@@ -21,10 +21,10 @@ const mapRows = (data) => {
         {
             id: key,
             campaign: data[key].title,
-            views: data[key].views,
-            clicks: data[key].clicks,
-            pops: data[key].pops,
-            spent: '$'+ parseFloat(data[key].spent).toFixed(2),
+            views: (+data[key].views).toLocaleString(),
+            clicks: (+data[key].clicks).toLocaleString(),
+            pops: (+data[key].pops).toLocaleString(),
+            spent: '$'+ parseFloat(data[key].spent).toFixed(2).toLocaleString(),
             ctr: data[key].ctr ? data[key].ctr+'%': 'NA'
         }
     ));
