@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
@@ -45,7 +45,7 @@ function union(a, b) {
   return [...a, ...not(b, a)];
 }
 
-export default function TransferList(props) {
+const TransferList = (props) => {
   const classes = useStyles();
   const selected = props.selected.slice().map(e => ({...e}));
   const [checked, setChecked] = useState([]);
@@ -171,3 +171,5 @@ export default function TransferList(props) {
     </Grid>
   );
 }
+
+export default memo(TransferList);

@@ -1,5 +1,5 @@
-import { Box, Button, Grid, Icon, makeStyles, Typography } from "@material-ui/core";
-import { Fragment, useState } from "react";
+import { Box, Button, Icon, makeStyles, Typography } from "@material-ui/core";
+import { Fragment, memo, useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCampaignBanners } from "../../../store/actions/campaigns.action";
@@ -172,4 +172,4 @@ const BannersListModal = (props) => {
   );
 };
 
-export default BannersListModal;
+export default memo(BannersListModal);

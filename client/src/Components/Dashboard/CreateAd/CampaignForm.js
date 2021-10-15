@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Form } from "formik";
-import { Fragment, useState } from "react";
+import { Fragment, memo, useState } from "react";
 import { useSelector } from "react-redux";
 import { linkRelList, weekDaysList } from "../../../constants/common";
 import {
@@ -202,8 +202,7 @@ export const CampaignForm = ({
           <MyTextField
             name="cpc"
             type="number"
-            step="0.01"
-            inputProps={{min:0.0001}}
+            inputProps={{min:0.0001, step: 0.0001}}
             label="CPC"
             placeholder="Cost per Click"
             className={muiStyles.block}
@@ -211,16 +210,14 @@ export const CampaignForm = ({
           <MyTextField
             name="budget"
             type="number"
-            step="0.01"
-            inputProps={{min:1}}
+            inputProps={{min:1, step: 1}}
             label="Budget"
             className={muiStyles.block}
           />
           <MyTextField
             name="daily_budget"
             type="number"
-            step="0.01"
-            inputProps={{min:1}}
+            inputProps={{min:1, step: 1}}
             label="Daily Budget"
             className={muiStyles.block}
           />
@@ -297,4 +294,4 @@ export const CampaignForm = ({
   );
 };
 
-export default CampaignForm;
+export default memo(CampaignForm);

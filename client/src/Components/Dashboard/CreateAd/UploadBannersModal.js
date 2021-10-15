@@ -1,5 +1,5 @@
 import { AccordionSummary, Accordion, AccordionDetails, Box, Button, Icon, makeStyles, Typography } from "@material-ui/core";
-import { Fragment } from "react";
+import { Fragment, memo } from "react";
 import { useRef, useState } from "react";
 import { bannerSizes } from "../../../constants/common";
 import { uploadBannersApi } from "../../../services/apiService";
@@ -236,4 +236,4 @@ const UploadBannersModal = (props) => {
   );
 };
 
-export default UploadBannersModal;
+export default memo(UploadBannersModal);
