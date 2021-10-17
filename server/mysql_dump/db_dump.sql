@@ -175,9 +175,11 @@ DROP TABLE IF EXISTS `campaign_types`;
 CREATE TABLE `campaign_types` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL,
+  `desc` varchar(60) DEFAULT NULL,
+  `fields` varchar(100) NOT NULL,
   `icon` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -186,7 +188,6 @@ CREATE TABLE `campaign_types` (
 
 LOCK TABLES `campaign_types` WRITE;
 /*!40000 ALTER TABLE `campaign_types` DISABLE KEYS */;
-INSERT INTO `campaign_types` VALUES (1,'Traffic','traffic');
 /*!40000 ALTER TABLE `campaign_types` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -202,8 +203,8 @@ CREATE TABLE `campaigns` (
   `campaign_title` varchar(60) NOT NULL,
   `campaign_type` int NOT NULL DEFAULT '0',
   `uid` int NOT NULL,
-  `title` varchar(60) NOT NULL,
-  `desc` varchar(300) NOT NULL,
+  `title` varchar(60) DEFAULT NULL,
+  `desc` varchar(300) DEFAULT NULL,
   `url` varchar(2000) NOT NULL,
   `domain_hash` varchar(12) NOT NULL,
   `category` varchar(140) NOT NULL DEFAULT '0',
@@ -307,7 +308,7 @@ CREATE TABLE `clicks` (
   KEY `iptiny` (`ip_tiny`) USING BTREE,
   KEY `day_unix` (`day_unix`) USING BTREE,
   KEY `ad_id` (`ad_id`) USING BTREE,
-  KEY `estimation` (`category`, `device`, `os`, `browser`, `country`, `language`, `adult`) USING BTREE
+  KEY `estimation` (`category`,`device`,`os`,`browser`,`country`,`language`,`adult`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -514,7 +515,7 @@ CREATE TABLE `pops` (
   PRIMARY KEY (`id`),
   KEY `iptiny_dayunix` (`ip_tiny`,`day_unix`) USING BTREE,
   KEY `ad_id` (`ad_id`) USING BTREE,
-  KEY `estimation` (`category`, `device`, `os`, `browser`, `country`, `language`, `adult`, `day_unix`) USING BTREE
+  KEY `estimation` (`category`,`device`,`os`,`browser`,`country`,`language`,`adult`,`day_unix`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -860,13 +861,13 @@ CREATE TABLE `user_info` (
   `upi` varchar(255) DEFAULT NULL,
   `payoneer` varchar(255) DEFAULT NULL,
   `verify` varchar(12) DEFAULT NULL,
-  `verify_exp` int(10) DEFAULT NULL,
+  `verify_exp` int DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uid` (`uid`),
   KEY `verify` (`verify`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -875,7 +876,7 @@ CREATE TABLE `user_info` (
 
 LOCK TABLES `user_info` WRITE;
 /*!40000 ALTER TABLE `user_info` DISABLE KEYS */;
-INSERT INTO `user_info` (`uid`) VALUES (1);
+INSERT INTO `user_info` VALUES (1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2021-10-17 11:56:41','2021-10-17 11:56:41');
 /*!40000 ALTER TABLE `user_info` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -928,7 +929,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1000,'admin','adtolcom@gmail.com',NULL,'$2a$12$iQoF8hYqEBNFwymksAcxV.cyoKHkbqkvKj48QsWoJng7aea9.xh5O',99,7385859262,NULL,NULL,2,NULL,'EvilTech Pvt Ltd',0.00000,0.00000,0.00000,0.00000,0.00000,0,0,0,0,0,0,1,1,'2021-09-30 14:10:55','2021-09-30 14:10:55');
+INSERT INTO `users` VALUES (1000,'admin','adtolcom@gmail.com',NULL,'$2a$12$fbR2gj1s7Nmm1x/HpaBfGu88BcuS8si6t.25wyGr6nJVZxIfhCg1O',99,7385859262,NULL,NULL,2,NULL,'EvilTech Pvt Ltd',0.00000,0.00000,0.00000,0.00000,0.00000,0,0,0,0,0,0,1,1,'2021-10-17 11:56:41','2021-10-17 11:56:41');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -951,6 +952,7 @@ CREATE TABLE `views` (
   `pub_url` varchar(2000) NOT NULL,
   `pub_url_tiny` varchar(7) NOT NULL,
   `ad_type` tinyint(1) NOT NULL,
+  `campaign_type` int NOT NULL,
   `category` int NOT NULL DEFAULT '0',
   `device` int NOT NULL DEFAULT '0',
   `os` int NOT NULL DEFAULT '0',
@@ -963,7 +965,7 @@ CREATE TABLE `views` (
   `day_unix` bigint NOT NULL DEFAULT '0',
   `time_unix` bigint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `estimation` (`category`, `device`, `os`, `browser`, `country`, `language`, `adult`, `day_unix`) USING BTREE
+  KEY `estimation` (`campaign_type`,`category`,`device`,`os`,`browser`,`country`,`language`,`adult`,`day_unix`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1017,4 +1019,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-10-01 13:14:07
+-- Dump completed on 2021-10-17 17:42:40

@@ -85,7 +85,7 @@ exports.adServe = async (req, res, next) => {
          *  */ 
 
         // Common query
-        sQuery = `SELECT c.id as campaign_id, a.id as ad_id, c.uid as ad_uid, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.adult, c.rel, c.btn, c.cpc, c.pro`;
+        sQuery = `SELECT c.id as campaign_id, a.id as ad_id, c.uid as ad_uid, c.campaign_type, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.adult, c.rel, c.btn, c.cpc, c.pro`;
         wQuery = `WHERE a.match_hash = '${match_hash}' AND c.today_budget_rem >= 0.1 AND c.domain_hash != '${domain_hash}'`;
 
         // Queries
@@ -211,6 +211,7 @@ exports.adServe = async (req, res, next) => {
                     const campaign_id = result[bestAdIndex].campaign_id;
                     const ad_adult = result[bestAdIndex].adult || 0;
                     const ad_cpc = result[bestAdIndex].cpc;
+                    const campaign_type = result[bestAdIndex].campaign_type;
                     // Store view
                     const viewStore = Views.create({
                         campaign_id,
@@ -223,6 +224,7 @@ exports.adServe = async (req, res, next) => {
                         pub_url: ref_url,
                         pub_url_tiny,
                         ad_type,
+                        campaign_type,
                         category: ad_cat,
                         device: dCode,
                         os: oCode, 

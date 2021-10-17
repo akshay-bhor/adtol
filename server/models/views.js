@@ -48,6 +48,10 @@ const Views = sequelize.define('views', {
         type: DataTypes.TINYINT(1),
         allowNull: false
     },
+    campaign_type: {
+        type: DataTypes.INTEGER(2),
+        allowNull: false
+    },
     category: {
         type: DataTypes.INTEGER(2),
         allowNull: false,
@@ -107,7 +111,7 @@ const Views = sequelize.define('views', {
         {
             name: 'estimation',
             using: 'BTREE',
-            fields: ['category', 'device', 'os', 'browser', 'country', 'language', 'adult', 'day_unix']
+            fields: ['campaign_type', 'category', 'device', 'os', 'browser', 'country', 'language', 'adult', 'day_unix']
         }
     ]
 });
