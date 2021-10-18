@@ -87,6 +87,8 @@ exports.getSiteDataHelper = async (req) => {
             return {
                 id: data.dataValues.id,
                 name: data.dataValues.name,
+                desc: data.dataValues.desc,
+                fields: data.dataValues.fields,
                 icon: data.dataValues.icon
             }
         });
@@ -225,17 +227,30 @@ exports.addSiteDataHelper = async (req) => {
         }
 
         if(type == 'campType') {
+            // Validate fields
+            const postedFields = req.body.camp_type_fields.split(',').map(field => field.trim());
+            const allowedFields = ['title', 'desc', 'banner', 'btn', 'follow'];
+            for(let field of postedFields) {
+                if(!allowedFields.includes(field)) {
+                    const err = new Error('Posted Field does not exist or not allowed!');
+                    err.statusCode = 422;
+                    throw err;
+                }
+            }
+
             // Get max id
             const query = await sequelize.query('SELECT id FROM campaign_types ORDER BY id DESC LIMIT 1', {
                 type: QueryTypes.SELECT,
                 mapToModel: Campaign_types
             });
-            const maxId = query[0].id;
+            const maxId = query[0]?.id || 0;
             const newId = (maxId + 1);
 
             await Campaign_types.create({
                 id: newId,
                 name: req.body.camp_type,
+                desc: req.body.camp_type_desc,
+                fields: postedFields.join(','),
                 icon: req.body.camp_type_icon
             });
         }

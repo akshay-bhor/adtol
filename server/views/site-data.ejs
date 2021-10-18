@@ -278,6 +278,12 @@
                       <span class="material-icons"><%= data.campTypes[i].icon %></span>
                       &nbsp;&nbsp;
                       <i class="fas fa-trash text-danger" style="cursor: pointer;" @click="deleteSiteData('campType', '<%= data.campTypes[i].id %>')"></i>
+                      <div class="font-weight-bold">
+                        <% data.campTypes[i].fields.split(",").forEach(field => { %>
+                          <%= field %>
+                        <% }) %>
+                      </div>
+                      <div class="block"><%= data.campTypes[i].desc %></div>
                     </li>
                 <% } %>
             </ul>
@@ -285,21 +291,42 @@
         <div style="display: block;"><a target="_blank" href="https://fonts.google.com/icons" nofollow>See Icons</a></div>
 
         <div class="row">
+          <label for="camp_type" class="mt-3">Campaign Type (60 chars max)</label>
           <input
             type="text"
             id="camp_type"
             v-model="camp_type"
             placeholder="App Installs"
             name="camp_type"
-            class="form-control mb-3 mt-3 col-md-6"
+            class="form-control mb-3 col-md-12"
           />
+          <label for="camp_type_desc">Campaign Description (300 chars max)</label>
+          <textarea
+            type="text"
+            id="camp_type_desc"
+            v-model="camp_type_desc"
+            placeholder="Increase your app installs"
+            name="camp_type_desc"
+            rows="3"
+            class="form-control mb-3 col-md-12"
+          ></textarea>
+          <label for="camp_type_fields">Campaign Fields (comma seperated)<br>
+            (title, desc, banner, btn, follow)</label>
+          <input
+            type="text"
+            id="camp_type_fields"
+            v-model="camp_type_fields"
+            name="camp_type_fields"
+            class="form-control mb-3 col-md-12"
+          />
+          <label for="camp_type">Google Icon</label>
           <input
             type="test"
             id="camp_type_icon"
             v-model="camp_type_icon"
             placeholder="get_app"
             name="camp_type_icon"
-            class="form-control mb-3 mt-3 col-md-6"
+            class="form-control mb-3 col-md-12"
           />
         </div>
 
@@ -316,11 +343,11 @@
   </div>
 </div>
 
-<script src="https://unpkg.com/vue@next"></script>
+<script src="https://unpkg.com/vue@3.2.20/dist/vue.global.prod.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <script>
-  const keysApp = {
+  const siteDataApp = {
     data() {
       return {
         cat: null,
@@ -332,6 +359,8 @@
         banner_size: null,
         button: null,
         camp_type: null,
+        camp_type_desc: null,
+        camp_type_fields: 'title,desc,banner,btn,follow',
         camp_type_icon: null
       };
     },
@@ -351,6 +380,8 @@
           if(type == 'button') postData.button = this.button;
           if(type == 'campType') {
             postData.camp_type = this.camp_type;
+            postData.camp_type_desc = this.camp_type_desc;
+            postData.camp_type_fields = this.camp_type_fields;
             postData.camp_type_icon = this.camp_type_icon;
           }
           const res = await axios.post(`/admin/site-data?type=${type}`, postData);
@@ -376,7 +407,7 @@
     },
   };
 
-  Vue.createApp(keysApp).mount("#app");
+  Vue.createApp(siteDataApp).mount("#app");
 </script>
 
 <%- include('includes/end.ejs') %>
