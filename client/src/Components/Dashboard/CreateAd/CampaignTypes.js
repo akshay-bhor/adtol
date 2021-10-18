@@ -64,6 +64,12 @@ const CampaignTypes = () => {
                   >
                     {item.type}
                   </Typography>
+                  <Typography
+                    variant="subtitle2"
+                    className="text-center subtitle"
+                  >
+                    {item.desc}
+                  </Typography>
               </Link>
             ))}
           </Box>

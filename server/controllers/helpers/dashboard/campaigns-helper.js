@@ -302,56 +302,73 @@ exports.manageCampaignHelper = async (req) => {
         throw err;
     }
 
-    if(req.manage === 'edit') await check('campid').exists().trim().escape().isInt().withMessage('Campaign ID is required').run(req);
-    await check('campaign_name').exists().trim().escape().isString().notEmpty().withMessage('Campaign Name is required').isLength({ min:3, max:60 }).withMessage('Min and max allowed characters are 3 & 60').run(req);
-    if(req.manage !== 'edit') await check('campaign_type').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Campaign Type').custom(campaignTypeValidation).run(req);
-    await check('title').exists().trim().escape().isString().notEmpty().withMessage('Title is required').isLength({ min:3, max:60 }).withMessage('Min and max allowed characters are 3 & 60').run(req);
-    await check('desc').exists().trim().escape().isString().notEmpty().withMessage('Description is required').isLength({ min:3, max:300 }).withMessage('Min and max allowed characters are 3 & 300').run(req);
-    await check('url').exists().trim().notEmpty().withMessage('URL is required').isURL().withMessage('URL is invalid').run(req);
-    if(req.body.banners) await check('banners').exists().trim().escape().isString().notEmpty()
-    .withMessage('Please select atleast 1 banner').run(req);
-    await check('category').exists().trim().escape().isString().notEmpty().withMessage('Category is required').custom(adTargetingValidation).run(req);
-    await check('country').exists().trim().escape().isString().notEmpty().withMessage('Country is required').custom(adTargetingValidation).run(req);
-    await check('device').exists().trim().escape().isString().notEmpty().withMessage('Device is required').custom(adTargetingValidation).run(req);
-    await check('os').exists().trim().escape().isString().notEmpty().withMessage('OS is required').custom(adTargetingValidation).run(req);
-    await check('browser').exists().trim().escape().isString().notEmpty().withMessage('Browser is required').custom(adTargetingValidation).run(req);
-    await check('language').exists().trim().escape().isString().notEmpty().withMessage('Language is required').custom(adTargetingValidation).run(req);
-    await check('day').exists().trim().escape().isString().notEmpty().withMessage('Days are required').custom(adTargetingValidation).run(req);
-    await check('timezone').exists().trim().isString().notEmpty().withMessage('Timezone is required').custom(timezoneValidation).run(req);
-    if(req.body.btn) await check('btn').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Button').custom(btnValidation).run(req);
-    if(req.body.rel) await check('rel').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Follow').custom(val => {
-        if(val !== 0 || val !== 1 || val !== 2) throw new Error('Invalid value for Follow');
-        else return true;
-    })
-    await check('cpc').exists().trim().escape().isFloat().notEmpty().withMessage('CPC is required').custom(adSettingsValidation).run(req);
-    await check('adult').exists().trim().escape().isInt().notEmpty().withMessage('Adult is required')
-    .custom(val => {
-        if(val == 0 || val == 1) return true;
-        else throw new Error('Invalid selection for Adult');
-    }).run(req);
-    await check('budget').exists().trim().escape().isFloat().notEmpty().withMessage('Budget is required').custom(adSettingsValidation).run(req);
-    await check('daily_budget').exists().trim().escape().isFloat().notEmpty().withMessage('Daily Budget is required').custom(adSettingsValidation).run(req);
-    if(req.body.run) await check('run').exists().trim().escape().isInt().notEmpty().withMessage('Run is required')
-    .custom(val => {
-        if(val == 1 || val == 2) return true;
-        else throw new Error('Invalid selection for run');
-    }).run(req);
+    try { 
+        // Get type => campaign or pop
+        const reqType = req.query.type;
+
+        if(reqType !== 'campaign' && reqType !== 'pop') {
+            const err = new Error('Something went wrong, try again!');
+            throw err;
+        }
+
+        // Get required fields
+        const requiredFields = [];
+        if(reqType === 'campaign') {
+            // Get fields
+            const campType = +req.body.campaign_type;
+            const getFields = await Campaign_types.findOne({
+                where: {
+                    id: campType
+                }
+            });
+
+            if(!getFields) {
+                throw new Error('Selected Campaign type is Invalid!');
+            }
+
+            getFields.dataValues.fields.split(',').forEach(field => requiredFields.push(+field));
+        }
+
+        if(req.manage === 'edit') await check('campid').exists().trim().escape().isInt().withMessage('Campaign ID is required').run(req);
+        await check('campaign_name').exists().trim().escape().isString().notEmpty().withMessage('Campaign Name is required').isLength({ min:3, max:60 }).withMessage('Min and max allowed characters are 3 & 60').run(req);
+        if(requiredFields.includes('title')) await check('title').exists().trim().escape().isString().notEmpty().withMessage('Title is required').isLength({ min:3, max:60 }).withMessage('Min and max allowed characters are 3 & 60').run(req);
+        if(requiredFields.includes('desc')) await check('desc').exists().trim().escape().isString().notEmpty().withMessage('Description is required').isLength({ min:3, max:300 }).withMessage('Min and max allowed characters are 3 & 300').run(req);
+        await check('url').exists().trim().notEmpty().withMessage('URL is required').isURL().withMessage('URL is invalid').run(req);
+        if(requiredFields.includes('banner')) await check('banners').exists().trim().escape().isString().notEmpty()
+        .withMessage('Please select atleast 1 banner').run(req);
+        await check('category').exists().trim().escape().isString().notEmpty().withMessage('Category is required').custom(adTargetingValidation).run(req);
+        await check('country').exists().trim().escape().isString().notEmpty().withMessage('Country is required').custom(adTargetingValidation).run(req);
+        await check('device').exists().trim().escape().isString().notEmpty().withMessage('Device is required').custom(adTargetingValidation).run(req);
+        await check('os').exists().trim().escape().isString().notEmpty().withMessage('OS is required').custom(adTargetingValidation).run(req);
+        await check('browser').exists().trim().escape().isString().notEmpty().withMessage('Browser is required').custom(adTargetingValidation).run(req);
+        await check('language').exists().trim().escape().isString().notEmpty().withMessage('Language is required').custom(adTargetingValidation).run(req);
+        await check('day').exists().trim().escape().isString().notEmpty().withMessage('Days are required').custom(adTargetingValidation).run(req);
+        await check('timezone').exists().trim().isString().notEmpty().withMessage('Timezone is required').custom(timezoneValidation).run(req);
+        if(requiredFields.includes('btn')) await check('btn').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Button').custom(btnValidation).run(req);
+        if(requiredFields.includes('follow')) await check('rel').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Follow').custom(val => {
+            if(val !== 0 || val !== 1 || val !== 2) throw new Error('Invalid value for Follow');
+            else return true;
+        })
+        await check('cpc').exists().trim().escape().isFloat().notEmpty().withMessage('CPC is required').custom(adSettingsValidation).run(req);
+        await check('adult').exists().trim().escape().isInt().notEmpty().withMessage('Adult is required')
+        .custom(val => {
+            if(val == 0 || val == 1) return true;
+            else throw new Error('Invalid selection for Adult');
+        }).run(req);
+        await check('budget').exists().trim().escape().isFloat().notEmpty().withMessage('Budget is required').custom(adSettingsValidation).run(req);
+        await check('daily_budget').exists().trim().escape().isFloat().notEmpty().withMessage('Daily Budget is required').custom(adSettingsValidation).run(req);
+        if(req.body.run) await check('run').exists().trim().escape().isInt().notEmpty().withMessage('Run is required')
+        .custom(val => {
+            if(val == 1 || val == 2) return true;
+            else throw new Error('Invalid selection for run');
+        }).run(req);
     
-    try {
 
         const errs = validationResult(req); 
         if(!errs.isEmpty()) {
             const err = new Error('Validation Failed!');
             err.statusCode = 422;
             err.data = errs.array();
-            throw err;
-        }
-
-        // Get type => campaign or pop
-        const reqType = req.query.type;
-
-        if(reqType !== 'campaign' && reqType !== 'pop') {
-            const err = new Error('Something went wrong, try again!');
             throw err;
         }
 
@@ -376,7 +393,7 @@ exports.manageCampaignHelper = async (req) => {
         let banner_ids;
         let user_banners;
         let banner_sizes;
-        if(req.body.banners) {
+        if(requiredFields.includes('banner')) {
             banner_ids = req.body.banners.split(',').map(d => +d);
             user_banners = await User_Banners.findAll({ where: { uid: userid } });
             bannerValidation(banner_ids, user_banners);
@@ -385,7 +402,7 @@ exports.manageCampaignHelper = async (req) => {
 
         // Check if banners changed
         let bannersChanged = false;
-        if(req.body.banners && manage === 'edit') {
+        if(requiredFields.includes('banner') && manage === 'edit') {
             banner_ids = req.body.banners.split(',').map(d => +d);
             let oldBanner_ids = await Banners.findAll({ where: { campaign_id: campaign_id } });
             oldBanner_ids = oldBanner_ids.map(data => +data.dataValues.banner_id);
@@ -407,8 +424,8 @@ exports.manageCampaignHelper = async (req) => {
         const campaign_obj = {};
         campaign_obj.campaign_title = req.body.campaign_name;
         campaign_obj.campaign_type = reqType === 'campaign' ? req.body.campaign_type:0;
-        campaign_obj.title = req.body.title;
-        campaign_obj.desc = req.body.desc;
+        campaign_obj.title = req.body.title || null;
+        campaign_obj.desc = req.body.desc || null;
         campaign_obj.url = req.body.url;
         campaign_obj.uid = userid;
         // Domain
@@ -534,7 +551,7 @@ exports.manageCampaignHelper = async (req) => {
 
             if(reqType === 'pop') {
                 const ad_type = 5;
-                const str = `0|2|${ad_type}|${req.body.adult}|${req.body.run}`; 
+                const str = `0|${campaign_obj.status}|${ad_type}|${req.body.adult}|${req.body.run}`; 
                 const match_hash = tinify(str);
 
                 if(manage === 'create') {
@@ -723,7 +740,8 @@ exports.trafficEstimationHelper = async (req) => {
         const os = req.body.os;
         const browsers = req.body.browser;
         const languages = req.body.language;
-        const adult = req.body.adult || 0;
+        const adult = +req.body.adult || 0;
+        const campaign_type = NaN(+req.body.campaign_type) ? 0:+req.body.campaign_type;
 
         // Previous 30 day unix date
         const today = new Date().toISOString().slice(0, 10);
@@ -733,6 +751,7 @@ exports.trafficEstimationHelper = async (req) => {
         // Get impressions estimate
         const campEst = await sequelize.query(`SELECT COUNT(id) as impressions, MAX(ad_cpc) as maxCpc, AVG(ad_cpc) as avgCpc FROM views 
             WHERE adult = ${adult} AND 
+            campaign_type = ${campaign_type} AND 
             category IN (${categories}) AND 
             country IN (${countries}) AND 
             device IN (${devices}) AND 
@@ -808,6 +827,8 @@ exports.getCampaignTypesHelper = async (req) => {
             result.push({
                 id: campaign.dataValues.id,
                 type: campaign.dataValues.name,
+                desc: campaign.dataValues.desc,
+                fields: campaign.dataValues.fields,
                 icon: campaign.dataValues.icon
             });
         });
@@ -979,7 +1000,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, dat
      */
     // Text ad
     const adsArr = [];
-    {
+    if(req.body.title && req.body.desc) {
         const ad_type = 1;
         const str = `0|${+data.status}|${+ad_type}|${+data.adult}|${+data.run}`; 
         let match_hash = tinify(str);
@@ -1018,7 +1039,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, dat
          * cross check stored banner id with banner_sizes ids
          * */
         let has_native = false;
-        for(let banner of user_banners) {
+        for(let banner of user_banners) { // banner.dataValues.size is sizeid
             if(native_banner_ids.includes(banner.dataValues.size) && banner_ids.includes(banner.dataValues.id)) {
                 has_native = true;
                 break;
@@ -1047,7 +1068,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, dat
 
         let has_widget = false;
         for(let user_banner of user_banners) {
-            if(user_banner.dataValues.size === widget_banner_id) {
+            if(user_banner.dataValues.size === widget_banner_id && banner_ids.includes(user_banner.dataValues.id)) {
                 has_widget = true;
                 break;
             }
@@ -1196,26 +1217,6 @@ const bannerValidation = (values, user_banners) => {
             if(!banners.includes(+val)) {
                 throw new Error("Selected banners doesn't exist");
             }
-        }
-
-        return true;
-    } catch (err) {
-        throw new Error(err.message);
-    }
-}
-
-const campaignTypeValidation = async (value, { req }) => {
-    try {
-        const res = await Campaign_types.findAll();
-
-        const cTypes = [];
-
-        for(let cType of res) {
-            cTypes.push(+cType.dataValues.id);
-        }
-        
-        if(!cTypes.includes(+value)) {
-            throw new Error("Selected Campaign Type doesn't exist");
         }
 
         return true;
