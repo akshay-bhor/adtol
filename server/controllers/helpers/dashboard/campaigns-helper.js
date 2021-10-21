@@ -326,7 +326,7 @@ exports.manageCampaignHelper = async (req) => {
                 throw new Error('Selected Campaign type is Invalid!');
             }
 
-            getFields.dataValues.fields.split(',').forEach(field => requiredFields.push(+field));
+            getFields.dataValues.fields.split(',').forEach(field => requiredFields.push(field));
         }
 
         if(req.manage === 'edit') await check('campid').exists().trim().escape().isInt().withMessage('Campaign ID is required').run(req);
@@ -616,7 +616,7 @@ exports.getCampaignInfoHelper = async (req) => {
         const campaign_id = req.params.campid;
         const userid = req.userInfo.id;
         
-        const data = await sequelize.query('SELECT b.banner_id as banner_id, a.type as ad_type, c.campaign_title as campaign_name, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.day, c.timezone, c.rel, c.btn, c.cpc, c.budget_rem as budget, c.today_budget as daily_budget, c.adult FROM campaigns c LEFT JOIN banners b ON c.id = b.campaign_id INNER JOIN ads a ON c.id = a.campaign_id WHERE c.id = ? AND c.uid = ? AND c.status != 4', {
+        const data = await sequelize.query('SELECT b.banner_id as banner_id, a.type as ad_type, c.campaign_title as campaign_name, c.campaign_type, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.day, c.timezone, c.rel, c.btn, c.cpc, c.budget_rem as budget, c.today_budget as daily_budget, c.adult FROM campaigns c LEFT JOIN banners b ON c.id = b.campaign_id INNER JOIN ads a ON c.id = a.campaign_id WHERE c.id = ? AND c.uid = ? AND c.status != 4', {
             type: QueryTypes.SELECT,
             replacements: [campaign_id, userid]
         });
@@ -642,9 +642,9 @@ exports.getCampaignInfoHelper = async (req) => {
 
         // Modify resposne
         delete campaignData.banner_id;
-        campaignData.title = he.decode(campaignData.title);
+        campaignData.title = campaignData.title ? he.decode(campaignData.title):'';
         campaignData.campaign_name = he.decode(campaignData.campaign_name);
-        campaignData.desc = he.decode(campaignData.desc);
+        campaignData.desc = campaignData.desc ? he.decode(campaignData.desc):'';
         campaignData.banners = banner_ids;
         campaignData.category = campaignData.category.split('|').map(d => +d);
         campaignData.country = campaignData.country.split('|').map(d => +d);
@@ -741,7 +741,7 @@ exports.trafficEstimationHelper = async (req) => {
         const browsers = req.body.browser;
         const languages = req.body.language;
         const adult = +req.body.adult || 0;
-        const campaign_type = NaN(+req.body.campaign_type) ? 0:+req.body.campaign_type;
+        const campaign_type = isNaN(+req.body.campaign_type) ? 0:+req.body.campaign_type;
 
         // Previous 30 day unix date
         const today = new Date().toISOString().slice(0, 10);

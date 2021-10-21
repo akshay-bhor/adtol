@@ -23,7 +23,7 @@ const CreateCampaign = () => {
   const location = useLocation();
   const type = params.type; // campaign or pop
   const queryParams = new URLSearchParams(location.search);
-  const campType = queryParams.get("type") || 1;
+  const campType = queryParams.get("type") || null;
 
   /**
    * FormData
@@ -71,6 +71,7 @@ const CreateCampaign = () => {
   }, []);
 
   const getRequiredFields = useCallback(() => {
+    if(!campType) return [];
     return campTypeData.filter(data => data.id == campType)[0].fields.split(',');
   }, [campTypeData, campType]);
 

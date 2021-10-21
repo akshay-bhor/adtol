@@ -41,7 +41,7 @@ exports.getCampaignsListHelper = async (req) => {
 
     // Build query
     let fields =
-      "c.id, c.uid, c.title, c.desc, c.url, c.campaign_type, c.adult, c.cpc, c.views, c.clicks, c.pops, c.budget, c.budget_rem, c.today_budget, c.today_budget_rem, c.spent, c.run, c.status, c.pro";
+      "c.id, c.uid, c.campaign_title, c.title, c.desc, c.url, c.campaign_type, c.adult, c.cpc, c.views, c.clicks, c.pops, c.budget, c.budget_rem, c.today_budget, c.today_budget_rem, c.spent, c.run, c.status, c.pro";
     let resquery;
     let cquery;
     

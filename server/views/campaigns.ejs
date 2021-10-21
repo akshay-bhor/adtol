@@ -73,7 +73,7 @@
                   <tbody v-if="result !== null && !loading">
                       <tr v-for="(res, index) in result" :key="index">
                         <td>
-                            <a :href="res.url">{{res.title}}</a>
+                            <a :href="res.url">{{res.title || res.campaign_title}}</a>
                             <div class="text-secondary">{{res.desc}}</div>
                         </td>
                         <td>

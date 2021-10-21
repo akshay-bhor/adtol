@@ -12,7 +12,7 @@ import CampaignForm from "./CampaignForm";
 import { useParams } from "react-router-dom";
 import Loading from "../../UI/Loading";
 import { weekDaysList } from "../../../constants/common";
-import { editCampaign, fetchCampaignData } from "../../../store/actions/campaigns.action";
+import { editCampaign, fetchCampaignData, fetchCampaignTypes } from "../../../store/actions/campaigns.action";
 import { campaignActions } from "../../../store/reducers/campaigns.reducer";
 import TrafficEstimation from "./TrafficEstimation";
 
@@ -35,6 +35,7 @@ const EditCampaign = () => {
   const browsers = useSelector((state) => state.formdata.browsers);
   const btns = useSelector((state) => state.formdata.btns);
   const campSettings = useSelector((state) => state.formdata.campaign_settings);
+  const campTypeData = useSelector((state) => state.campaign.campaign_types);
   /**
    * End
    */
@@ -64,12 +65,19 @@ const EditCampaign = () => {
     dispatch(fetchCampaignFormData());
     dispatch(fetchCampaignData(postData));
 
+    if(campTypeData.length === 0) dispatch(fetchCampaignTypes());
+
     // Clear campaign data
     return () => {
         dispatch(campaignActions.setCampaignData(null));
         dispatch(campaignActions.setError(null));
     }
   }, []);
+
+  const getRequiredFields = useCallback(() => {
+    if(!campaignData.campaign_type) return [];
+    return campTypeData.filter(data => data.id == campaignData.campaign_type)[0].fields.split(',');
+  }, [campTypeData, campaignData]);
 
   /** Toggle modal */
   const toggleTrafficEstModal = () => {
@@ -136,8 +144,6 @@ const EditCampaign = () => {
   const getInitialData = () => {
     const initData = {
         campaign_name: campaignData.campaign_name,
-        title: campaignData.title,
-        desc: campaignData.desc,
         url: campaignData.url,
         timezone: campaignData.timezone,
         cpc: campaignData.cpc,
@@ -145,10 +151,13 @@ const EditCampaign = () => {
         budget: campaignData.budget,
         daily_budget: campaignData.daily_budget
     };
-    if(type === 'campaign') {
-      initData.rel = campaignData.rel !== undefined ? campaignData.rel:1;
-      initData.btn = campaignData.btn || 0;
-    }
+    
+    const requiredFields = getRequiredFields();
+
+    if(requiredFields.includes('title')) initData.title = campaignData.title;
+    if(requiredFields.includes('desc')) initData.desc = campaignData.desc;
+    if(requiredFields.includes('follow')) initData.rel = campaignData.rel;
+    if(requiredFields.includes('btn')) initData.btn = campaignData.btn;
 
     return initData;
   }
@@ -163,11 +172,12 @@ const EditCampaign = () => {
       os.length > 0 &&
       browsers.length > 0 &&
       btns.length > 0 &&
+      campTypeData.length > 0 &&
       campaignData !== null
     )
       return true;
     else return false;
-  }, [timezones, categories, languages, countries, devices, os, browsers, btns, campaignData]);
+  }, [timezones, categories, languages, countries, devices, os, browsers, btns, campaignData, campTypeData]);
 
   useEffect(() => {
     if(formDataFetched()) updateStates();
@@ -175,25 +185,48 @@ const EditCampaign = () => {
 
   const getValidationSchema = () => {
     const min_cpc = type === 'campaign' ? campSettings.min_cpc:campSettings.min_pop_cpc;
+    const requiredFields = getRequiredFields();
+    const titleSchema = requiredFields.includes('title') 
+    ? 
+      yup.string()
+      .required('title is required')
+      .min(3, "Min length is 3")
+      .max(55, "Max length is 55")
+    : yup.string().optional();
+
+    const descSchema = requiredFields.includes('desc')
+    ?
+      yup
+        .string()
+        .required('Description is required')
+        .min(3, "Min length is 3")
+        .max(300, "Max length is 300")
+      : yup.string().optional();
+
+    const relSchema = requiredFields.includes('follow')
+    ?
+      yup.number()
+      .required('Follow is required')
+    : yup.number().optional();
+
+    const btnSchema = requiredFields.includes('btn')
+    ?
+      yup.number()
+      .required('Button is required')
+    : yup.number().optional();
+
     return yup.object({
       campaign_name: yup
         .string()
         .required("Campaign Name is required")
         .min(3, "Min Length is 3")
         .max(55, "Max Length is 55"),
-      title: yup
-        .string()
-        .required("Title is required")
-        .min(3, "Min length is 3")
-        .max(50, "Max length is 55"),
-      desc: yup
-        .string()
-        .required("Description is required")
-        .min(3, "Min length is 3")
-        .max(300, "Max length is 300"),
+      title: titleSchema,
+      desc: descSchema,
       url: yup.string().max(2000, "Max length is 2000").required("URL is required").url('Invalid URL, make sure to add https://'),
       timezone: yup.string().required('Timezone is required'),
-      rel: yup.number().optional(),
+      rel: relSchema,
+      btn: btnSchema,
       cpc: yup.number().required('CPC is required').when('rel', {
         is: 1,
         then: yup.number().min((min_cpc + 0.001), `Min CPC when DoFollow is $${(min_cpc + 0.001)}`)
@@ -211,6 +244,7 @@ const EditCampaign = () => {
   const onSubmit = (values) => {
     const postData = {
       ...values,
+      campaign_type: campaignData.campaign_type,
       banners: banners.join(','),
       category: categoryState.length === categories.length ? '0':categoryState.join(','),
       country: countryState.length > 150 ? '0':countryState.join(','),
@@ -270,6 +304,7 @@ const EditCampaign = () => {
                 daysList={daysState}
                 setDays={setDaysState}
                 trafficEstModalToggle={toggleTrafficEstModal}
+                requiredFields={getRequiredFields()}
               />
               {tfEstModalOpen ? <TrafficEstimation
                 adult={values.adult}
