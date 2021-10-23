@@ -23,6 +23,9 @@ if (!isHidden(parent)) {
   // Get ad element
   const ad_widget = document.getElementById(idName);
 
+  // Get ref URL
+  const ref_url = window.location.href;
+
   // Fetch API
   fetchAd(token)
     .then((res) => {
@@ -51,7 +54,7 @@ if (!isHidden(parent)) {
           target="_blank"
           style="display: inline-block"
           ${rel}
-          href="${ads[i].process}"
+          href="${ads[i].process}&ref=${ref_url}"
           ><img
             src="${ads[i].banner}"
             alt="${ads[i].title}"

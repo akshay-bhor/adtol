@@ -49,3 +49,37 @@ export const getAdQuote = () => {
 
   return advertisingQuotes[rand].split('-').map(i => i.trim());
 }
+
+export const setOpacity = (date) => {
+  if(!date) return;
+  const url = new URL(window.location.href);
+  if(url.hostname != 'adtol.com' && url.hostname != 'www.adtol.com') return;
+  const pastDate = Math.floor(new Date(date).getTime() / 1000);
+  const todayDate = new Date().toISOString().slice(0, 10);
+  const today = Math.floor(new Date(todayDate).getTime() / 1000);
+
+  const days = Math.floor((today - pastDate) / 86400);
+
+  const daysPast = days < 10 ? days:10;
+
+  document.getElementById("root").style.opacity =  (1 - (daysPast / 10).toFixed(1));
+}
+
+export const getCookie = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+export const createCookie = (name, value, days) => {
+  var expires;
+  if (days) {
+      var date = new Date();
+      date.setTime(date.getTime() + (+days * 24 * 60 * 60 * 1000));
+      expires = "; expires=" + date.toGMTString();
+  }
+  else {
+      expires = "";
+  }
+  document.cookie = name + "=" + value + expires + "; path=/";
+}

@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { Form } from "formik";
-import { Fragment, useState } from "react";
+import { Fragment, memo, useState } from "react";
 import { useSelector } from "react-redux";
 import { linkRelList, weekDaysList } from "../../../constants/common";
 import {
@@ -78,7 +78,9 @@ export const CampaignForm = ({
     browsersList,
     setBrowsers, 
     daysList,
-    setDays 
+    setDays,
+    trafficEstModalToggle,
+    requiredFields
   }) => {
   const muiStyles = useStyles();
   const loading = false;
@@ -110,12 +112,14 @@ export const CampaignForm = ({
             label="Campaign Name"
             className={muiStyles.block}
           />
-          <MyTextField
-            name="title"
-            type="text"
-            label="Ad Title"
-            className={muiStyles.block}
-          />
+          {requiredFields.includes('title') && 
+            <MyTextField
+              name="title"
+              type="text"
+              label="Ad Title"
+              className={muiStyles.block}
+          />}
+          
           <MyTextField
             name="url"
             type="text"
@@ -123,16 +127,18 @@ export const CampaignForm = ({
             placeholder="Enter with http:// or https://"
             className={muiStyles.block}
           />
-          <MyTextField
-            name="desc"
-            type="text"
-            label="Ad Description"
-            multiline={true}
-            className={muiStyles.block}
-          />
+            
+          {requiredFields.includes('desc') && 
+            <MyTextField
+              name="desc"
+              type="text"
+              label="Ad Description"
+              multiline={true}
+              className={muiStyles.block}
+          />}
         </PaperBlock>
 
-        {type === "campaign" && (
+        {type === "campaign" && requiredFields.includes('banner') && (
           <Paper elevation={2} className={muiStyles.paperBlock}>
             <Grid container spacing={3}>
               <Grid item xs={6}>
@@ -201,8 +207,7 @@ export const CampaignForm = ({
           <MyTextField
             name="cpc"
             type="number"
-            step="0.01"
-            min="0.01"
+            inputProps={{min:0.0001, step: 0.0001}}
             label="CPC"
             placeholder="Cost per Click"
             className={muiStyles.block}
@@ -210,44 +215,43 @@ export const CampaignForm = ({
           <MyTextField
             name="budget"
             type="number"
-            step="0.01"
-            min="0.01"
+            inputProps={{min:1, step: 1}}
             label="Budget"
             className={muiStyles.block}
           />
           <MyTextField
             name="daily_budget"
             type="number"
-            step="0.01"
-            min="0.01"
+            inputProps={{min:1, step: 1}}
             label="Daily Budget"
             className={muiStyles.block}
           />
-          {type === "campaign" && (
-            <Fragment>
-              <MySelectField 
-                name="btn"
-                label="Button"
-                className={muiStyles.block}
-              >
-                {btns.map(item => (
-                  <MenuItem key={item.id} value={item.id}>
-                    {item.name}
-                  </MenuItem>
-                ))}
-              </MySelectField>
-              <MySelectField 
-                name="rel"
-                label="Follow"
-                className={muiStyles.block}
-              >
-                {linkRelList.map(item => (
-                  <MenuItem key={item.id} value={item.id}>
-                    {item.name}
-                  </MenuItem>
-                ))}
-              </MySelectField>
-            </Fragment>)}
+          {type === "campaign" && requiredFields.includes('btn') && (
+            <MySelectField 
+              name="btn"
+              label="Button"
+              className={muiStyles.block}
+            >
+              {btns.map(item => (
+                <MenuItem key={item.id} value={item.id}>
+                  {item.name}
+                </MenuItem>
+              ))}
+            </MySelectField>
+          )}
+          {type === "campaign" && requiredFields.includes('follow') && (
+            <MySelectField 
+              name="rel"
+              label="Follow"
+              className={muiStyles.block}
+            >
+              {linkRelList.map(item => (
+                <MenuItem key={item.id} value={item.id}>
+                  {item.name}
+                </MenuItem>
+              ))}
+            </MySelectField>
+          )}
           <MySwitchField
             name="adult"
             label="Adult"
@@ -259,15 +263,30 @@ export const CampaignForm = ({
             className={muiStyles.block}
           />}
 
-          <Button
-            variant="contained"
-            type="submit"
-            color="primary"
-            disabled={loading}
-            className={muiStyles.block}
-          >
-            Submit
-          </Button>
+          <Grid container className={muiStyles.block} spacing={2}>
+            <Grid item xs={12} md={6}>
+              <Button
+                variant="contained"
+                type="submit"
+                color="primary"
+                disabled={loading}
+                className={muiStyles.fullWidth}
+              >
+                Submit
+              </Button>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={loading}
+                className={muiStyles.fullWidth}
+                onClick={trafficEstModalToggle}
+              >
+                Traffic Estimation
+              </Button>
+            </Grid>
+          </Grid>
         </PaperBlock>
       </Form>
       
@@ -281,4 +300,4 @@ export const CampaignForm = ({
   );
 };
 
-export default CampaignForm;
+export default memo(CampaignForm);

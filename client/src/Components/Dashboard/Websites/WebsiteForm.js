@@ -83,6 +83,7 @@ const WebsiteForm = (props) => {
             name="traffic"
             type="number"
             label="Daily Traffic"
+            inputProps={{min:0, step:1}}
             className={muiStyles.block}
           />
 

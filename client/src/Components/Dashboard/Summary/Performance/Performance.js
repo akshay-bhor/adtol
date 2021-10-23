@@ -39,7 +39,7 @@ const Performance = (props) => {
                         CPC
                     </Typography>
                     <Typography variant="h4" display="block">
-                        {typeof +props.data.cpc === "number" ? '$'+props.data.cpc : props.data.cpc }
+                        {!isNaN(props.data.cpc) ? '$'+(+props.data.cpc).toLocaleString() : props.data.cpc }
                     </Typography>
                 </Grid>
             </Grid>

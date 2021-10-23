@@ -12,7 +12,7 @@ const Ads = sequelize.define('ads', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    type: {
+    type: { // 1 - text, 2 - banner, 3 - native, 4 - widget, 5 - pop
         type: DataTypes.TINYINT(1),
         allowNull: false
     },

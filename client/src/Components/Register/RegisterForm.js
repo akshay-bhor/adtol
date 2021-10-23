@@ -11,6 +11,7 @@ import FormContent from "./FormContent";
 import { RECAPTCHA_SITE_KEY } from "../../util/load-scripts";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
+import { createCookie, getCookie } from "../../util/common";
 
 const useStyles = makeStyles((theme) => ({
   block: {
@@ -29,7 +30,7 @@ const RegisterForm = () => {
   const countries = useSelector((state) => state.formdata.countries);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const ref_by = queryParams.get("ref") || '';
+  const ref_by = queryParams.get("ref") || getCookie('ref') || '';
   const history = useHistory();
   const dispatch = useDispatch();
   const muiStyles = useStyles();
@@ -49,6 +50,9 @@ const RegisterForm = () => {
   }, [countries, dispatch]);
 
   useEffect(() => {
+    // Set cookie
+    if(ref_by) createCookie('ref', ref_by, 90);
+
     // On unmount
     return () => {  
       abortAuthRequest();
@@ -94,9 +98,12 @@ const RegisterForm = () => {
             register(values, actions);
           }}
         >
-          <FormContent
-            onSuccess={gSignInHandler}
-          />
+          {({ values }) => (
+            <FormContent
+              onSuccess={gSignInHandler}
+              formValues={values}
+            />
+          )}
         </Formik>
         <div className={`${muiStyles.block} ${muiStyles.link}`}><Link to="/login">Already have an account?</Link></div>
       </div>

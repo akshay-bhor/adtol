@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('../AdTolAPIDoc.json');
 
 const adminHomeControlller = require('../controllers/admin/home');
 const isAuth = require('../middleware/is-auth');
@@ -43,5 +45,17 @@ router.post('/campaigns', isAuth, adminCampaignsData.postCampaignsData);
 router.post('/campaigns/set-status', isAuth, adminCampaignsData.setCampaignStatus);
 router.get('/campaigns/banners', isAuth, adminCampaignsData.getCampaignBanners);
 router.get('/campaigns/toggle-pro', isAuth, adminCampaignsData.getTogglePro);
+
+if(process.env.NODE_ENV === 'development') {
+    router.use('/__docs', swaggerUi.serve);
+    router.get('/__docs', isAuth, (req, res, next) => {
+        if(!req.userInfo || req.userInfo.rank != 1) {
+            const err = new Error("Not allowed!");
+            err.statusCode = 401;
+            next(err);
+        }
+        next();
+    }, swaggerUi.setup(swaggerDocument));
+}
 
 module.exports = router;

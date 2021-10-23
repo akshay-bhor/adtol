@@ -106,6 +106,8 @@ export const createCampaignApi = (data) => conn.post(`/dashboard/campaigns/creat
 
 export const editCampaignApi = (data) => conn.post(`/dashboard/campaigns/edit/${data.params.campaign_id}?type=${data.params.type}`, data);
 
+export const getTrafficEstimation = (data) => conn.post(`/dashboard/campaigns/traffic-estimation`, data);
+
 export const uploadBannersApi = (data) => conn.post('/dashboard/campaigns/upload-banners', data);
 
 export const changeCampaignStatus = (data) => conn.post('/dashboard/campaigns/change-status/' + data.id, data.data);

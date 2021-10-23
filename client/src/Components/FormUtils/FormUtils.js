@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export const MyTextField = ({ label, type, className, disabled, multiline, placeholder, ...props }) => {
+export const MyTextField = ({ label, type, className, disabled, multiline, placeholder, inputProps, ...props }) => {
   const [field, meta] = useField(props);
   const errorText = meta.error && meta.touched ? meta.error : "";
 
@@ -25,6 +25,7 @@ export const MyTextField = ({ label, type, className, disabled, multiline, place
       error={!!errorText}
       variant="outlined"
       disabled={disabled ? true : false}
+      inputProps={inputProps ? {...inputProps}:{}}
       multiline={multiline ? true : false}
       placeholder={placeholder ? placeholder : ''}
       rows={'3'}

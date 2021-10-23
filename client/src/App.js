@@ -7,7 +7,7 @@ import "./App.css";
 import Loading from "./Components/UI/Loading";
 import Layout from "./Components/Layout/Layout";
 import PrivateRoute from "./util/PrivateRoute";
-
+import AppErrorBoundry from "./Components/AppErrorBoundry/AppErrorBoundry";
 /**
  * Lazy Load components
  */
@@ -52,79 +52,81 @@ function App() {
   }, [location]);
 
   return (
-    <Layout>
-      <Suspense fallback={<Loading />}>
-        <Switch>
-          <Route path="/" exact>
-            <HomePage />
-          </Route>
+    <AppErrorBoundry>
+      <Layout>
+        <Suspense fallback={<Loading />}>
+          <Switch>
+            <Route path="/" exact>
+              <HomePage />
+            </Route>
 
-          <Route path="/advertiser" exact>
-            <AdvertiserPage />
-          </Route>
+            <Route path="/advertiser" exact>
+              <AdvertiserPage />
+            </Route>
 
-          <Route path="/publisher" exact>
-            <PublisherPage />
-          </Route>
+            <Route path="/publisher" exact>
+              <PublisherPage />
+            </Route>
 
-          <Route path="/affiliate" exact>
-            <AffililatePage />
-          </Route>
+            <Route path="/affiliate" exact>
+              <AffililatePage />
+            </Route>
 
-          <Route path="/tos" exact>
-            <TermsPage />
-          </Route>
+            <Route path="/tos" exact>
+              <TermsPage />
+            </Route>
 
-          <Route path="/privacy-policy" exact>
-            <PrivacyPolicyPage />
-          </Route>
+            <Route path="/privacy-policy" exact>
+              <PrivacyPolicyPage />
+            </Route>
 
-          <Route path="/refund-policy" exact>
-            <RefundPolicyPage />
-          </Route>
+            <Route path="/refund-policy" exact>
+              <RefundPolicyPage />
+            </Route>
 
-          <Route path="/guidelines" exact>
-            <GuidelinesPage />
-          </Route>
+            <Route path="/guidelines" exact>
+              <GuidelinesPage />
+            </Route>
 
-          <Route path="/contact" exact>
-            <ContactPage />
-          </Route>
+            <Route path="/contact" exact>
+              <ContactPage />
+            </Route>
 
-          <Route path="/login">
-            {!isAuth && <LoginForm />}
-            {isAuth && <Redirect to="/dashboard" />}
-          </Route>
+            <Route path="/login">
+              {!isAuth && <LoginForm />}
+              {isAuth && <Redirect to="/dashboard" />}
+            </Route>
 
-          <Route path="/register">
-            {!isAuth && <Register />}
-            {isAuth && <Redirect to="/dashboard" />}
-          </Route>
+            <Route path="/register">
+              {!isAuth && <Register />}
+              {isAuth && <Redirect to="/dashboard" />}
+            </Route>
 
-          <Route path="/forgot-password">
-            {!isAuth && <ForgotPassword />}
-            {isAuth && <Redirect to="/dashboard" />}
-          </Route>
+            <Route path="/forgot-password">
+              {!isAuth && <ForgotPassword />}
+              {isAuth && <Redirect to="/dashboard" />}
+            </Route>
 
-          <Route path="/reset-password/:token">
-            {!isAuth && <ResetPassword />}
-            {isAuth && <Redirect to="/dashboard" />}
-          </Route>
+            <Route path="/reset-password/:token">
+              {!isAuth && <ResetPassword />}
+              {isAuth && <Redirect to="/dashboard" />}
+            </Route>
 
-          <Route path="/logout">
-            <Logout />
-          </Route>
+            <Route path="/logout">
+              <Logout />
+            </Route>
 
-          <Route path="/dashboard" component={PrivateRoute(Dashboard)} />
+            <Route path="/dashboard" component={PrivateRoute(Dashboard)} />
 
-          <Route path="/account" component={PrivateRoute(Account)} />
+            <Route path="/account" component={PrivateRoute(Account)} />
 
-          <Route path="*">
-            <Redirect to="/" />
-          </Route>
-        </Switch>
-      </Suspense>
-    </Layout>
+            <Route path="*">
+              <Redirect to="/" />
+            </Route>
+          </Switch>
+        </Suspense>
+      </Layout>
+    </AppErrorBoundry>
   );
 }
 

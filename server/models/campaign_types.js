@@ -1,5 +1,5 @@
 const sequelize = require('../utils/db');
-const { DataType, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 
 const Campaign_types = sequelize.define('campaign_types', {
     id: {
@@ -10,6 +10,14 @@ const Campaign_types = sequelize.define('campaign_types', {
     },
     name: {
         type: DataTypes.STRING(20),
+        allowNull: false
+    },
+    desc: {
+        type: DataTypes.STRING(60),
+        allowNull: true
+    },
+    fields: { // title, desc, banner, btn, follow
+        type: DataTypes.STRING(100),
         allowNull: false
     },
     icon: {

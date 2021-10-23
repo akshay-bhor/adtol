@@ -14,7 +14,7 @@ const SummaryBlock = (props) => {
                 {item.title}
               </Typography>
               <Typography variant="h4" display="block">
-                {item.prefix}{item.value}
+                {item.prefix}{(+item.value).toLocaleString()}
               </Typography>
             </div>
           )

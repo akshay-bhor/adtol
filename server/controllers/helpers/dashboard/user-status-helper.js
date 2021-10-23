@@ -21,7 +21,7 @@ exports.userStatusHelper = async (req) => {
 
     // Check if payment details and web and is low
     const check_1 = await sequelize.query(
-      "SELECT p.id as pid, w.id as wid, u.ad_balance as balance FROM users u LEFT JOIN user_info p ON u.id = p.uid LEFT JOIN pub_sites w ON u.id = w.uid WHERE u.id = ? LIMIT 1",
+      "SELECT p.id as pid, p.ac_no, p.upi, p.paypal, p.payoneer, w.id as wid, u.ad_balance as balance FROM users u LEFT JOIN user_info p ON u.id = p.uid LEFT JOIN pub_sites w ON u.id = w.uid WHERE u.id = ? LIMIT 1",
       {
         replacements: [userid],
         type: QueryTypes.SELECT,
@@ -30,7 +30,11 @@ exports.userStatusHelper = async (req) => {
     
     // Parse
     if (check_1[0].balance < 5) isLow = true;
-    if (check_1[0].pid != undefined) hasPay = true;
+    if (check_1[0].pid != undefined &&
+      (check_1[0].ac_no != undefined ||
+       check_1[0].upi != undefined ||
+       check_1[0].paypal != undefined ||
+       check_1[0].payoneer != undefined)) hasPay = true;
     if (check_1[0].wid != undefined) hasWeb = true;
 
     // check if has camp

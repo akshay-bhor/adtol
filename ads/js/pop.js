@@ -113,4 +113,7 @@ const currScript = document.currentScript;
 const scriptId = currScript.getAttribute("id");
 const token = window[`adtol_ad_client_${scriptId}`];
 
-makePopunder(`${baseURL}/api/display/pop/${token}`);    
+// Get ref URL
+const ref_url = window.location.href;
+
+makePopunder(`${baseURL}/api/display/pop/${token}?ref=${ref_url}`);    

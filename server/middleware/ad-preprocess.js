@@ -20,7 +20,7 @@ module.exports = async (req, res, next) => {
         
         // Find user os
         const usrOs = ua.os.name || 'unknown';
-        const usrOsVer = ua.os.version?.split('.')[0];
+        const usrOsVer = ua.os.version?.split('.')[0] || 0;
         
         // Find os Code
         let oCode = 1;

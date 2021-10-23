@@ -23,11 +23,11 @@ const Campaigns = sequelize.define('campaigns', {
     },
     title: {
         type: DataTypes.STRING(60),
-        allowNull: false,
+        allowNull: true,
     },
     desc: {
         type: DataTypes.STRING(300),
-        allowNull: false
+        allowNull: true
     },
     url: {
         type: DataTypes.STRING(2000),

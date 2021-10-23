@@ -74,6 +74,11 @@ const Pops = sequelize.define('pops', {
         allowNull: false,
         defaultValue: 0
     },
+    adult: {
+        type: DataTypes.TINYINT(1),
+        allowNull: false,
+        defaultValue: 0
+    },
     ip: {
         type: DataTypes.STRING(45),
         allowNull: false,
@@ -117,6 +122,11 @@ const Pops = sequelize.define('pops', {
             name: 'ad_id',
             using: 'BTREE',
             fields: ['ad_id']
+        },
+        {
+            name: 'estimation',
+            using: 'BTREE',
+            fields: ['category', 'device', 'os', 'browser', 'country', 'language', 'adult', 'day_unix']
         }
     ]
 });

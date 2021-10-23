@@ -127,9 +127,9 @@ matchAd = (resObj, req) => {
 
     // Find os code
     let osCodeArr = [];
-    Object.keys(App_Settings.os).forEach(key => {
+    Object.keys(App_Settings.os).forEach((key) => {
         if(App_Settings.os[key][0] == usrOs)
-            osCodeArr.push(osCodeArr);
+            osCodeArr.push(+key);
     });
 
     // AD os
@@ -139,26 +139,31 @@ matchAd = (resObj, req) => {
         match_perc += 13; // For os version
     }
     else {
-        const osMatched = false;
+        let osMatched = false;
         for(let i = 0;i < adOs.length;i++) {
             let code = adOs[i];
             if(osCodeArr.includes(code)) {
-                match_perc += 15;
-                osMatched = true;
-                break;
-            }
-        }
-
-        if(osMatched) {
-            // Match os version
-            for(let i = 0;i < adOs.length;i++) {
-                let code = adOs[i];
-                if(App_Settings.os[code][1] <= usrOsVer) {
+                if(!osMatched) {
+                    match_perc += 15;
+                    osMatched = true;
+                }
+                if(+App_Settings.os[code][1] <= +usrOsVer) {
                     match_perc += 13;
                     break;
                 }
             }
         }
+
+        // if(osMatched) {
+        //     // Match os version
+        //     for(let i = 0;i < adOs.length;i++) {
+        //         let code = adOs[i];
+        //         if(+App_Settings.os[code][1] <= +usrOsVer) {
+        //             match_perc += 13;
+        //             break;
+        //         }
+        //     }
+        // }
 
         match_perc += 0;
     }

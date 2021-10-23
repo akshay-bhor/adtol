@@ -33,6 +33,17 @@ exports.changeBudget = async (req, res, next) => {
     }
 }
 
+exports.trafficEstimattion = async (req, res, next) => {
+    try {
+        const result = await campaignsHelper.trafficEstimationHelper(req);
+        
+        res.status(200).json(result);
+
+    } catch (err) {
+        next(err);
+    }
+}
+
 exports.uploadBanners = async (req, res, next) => {
     try {
         const result = await campaignsHelper.uploadBannersHelper(req);

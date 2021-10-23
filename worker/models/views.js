@@ -48,6 +48,10 @@ const Views = sequelize.define('views', {
         type: DataTypes.TINYINT(1),
         allowNull: false
     },
+    campaign_type: {
+        type: DataTypes.INTEGER(2),
+        allowNull: false
+    },
     category: {
         type: DataTypes.INTEGER(2),
         allowNull: false,
@@ -78,6 +82,15 @@ const Views = sequelize.define('views', {
         allowNull: false,
         defaultValue: 0
     },
+    adult: {
+        type: DataTypes.TINYINT(1),
+        allowNull: false,
+        defaultValue: 0
+    },
+    ad_cpc: {
+        type: DataTypes.FLOAT(10, 5),
+        allowNull: false
+    },
     ip: {
         type: DataTypes.STRING(45),
         allowNull: false,
@@ -93,6 +106,14 @@ const Views = sequelize.define('views', {
         allowNull: false,
         defaultValue: 0
     }
+}, {
+    indexes: [
+        {
+            name: 'estimation',
+            using: 'BTREE',
+            fields: ['campaign_type', 'category', 'device', 'os', 'browser', 'country', 'language', 'adult', 'day_unix']
+        }
+    ]
 });
 
 module.exports = Views;

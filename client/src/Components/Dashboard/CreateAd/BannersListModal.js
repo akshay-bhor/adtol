@@ -1,5 +1,5 @@
-import { Box, Button, Grid, Icon, makeStyles, Typography } from "@material-ui/core";
-import { Fragment, useState } from "react";
+import { Box, Button, Icon, makeStyles, Typography } from "@material-ui/core";
+import { Fragment, memo, useState } from "react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCampaignBanners } from "../../../store/actions/campaigns.action";
@@ -101,75 +101,75 @@ const BannersListModal = (props) => {
         onClose={onClose}
         onSave={onSave}
         >
+            <Box component="div">
+                <Typography variant="h6" className={muiStyles.title}>
+                    Choosen Banners
+                </Typography>
+                <Typography variant="subtitle2" className={`${muiStyles.title} subtitle`}>(Click to remove)</Typography>
+                {loading && <div className={muiStyles.hScroller}><Loading /></div>}
+                {!loading && (<div className={muiStyles.hScroller}>
+                    {banners.filter(banner => choosenBanners.includes(banner.id)).map((banner, idx) => {
+                        return (
+                            <div className={muiStyles.imgContainer} key={idx}>
+                                <div className={muiStyles.innerContainer} key={idx}>
+                                    <img src={banner.src} alt={'banner-'+banner.size} 
+                                        onClick={() => removeChoosenBanner(banner.id)}
+                                        className={muiStyles.img} 
+                                    />
+                                    <span component="span" className={muiStyles.imgLabel}>{banner.size}</span>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>)}
                 <Box component="div">
                     <Typography variant="h6" className={muiStyles.title}>
-                        Choosen Banners
+                        Uploaded Banners
                     </Typography>
-                    <Typography variant="subtitle2" className={`${muiStyles.title} subtitle`}>(Click to remove)</Typography>
-                    {loading && <div className={muiStyles.hScroller}><Loading /></div>}
-                    {!loading && (<div className={muiStyles.hScroller}>
-                        {banners.filter(banner => choosenBanners.includes(banner.id)).map((banner, idx) => {
-                            return (
-                                <div className={muiStyles.imgContainer} key={idx}>
-                                    <div className={muiStyles.innerContainer} key={idx}>
-                                        <img src={banner.src} alt={'banner-'+banner.size} 
-                                            onClick={() => removeChoosenBanner(banner.id)}
-                                            className={muiStyles.img} 
-                                        />
-                                        <span component="span" className={muiStyles.imgLabel}>{banner.size}</span>
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>)}
-                    <Box component="div">
-                        <Typography variant="h6" className={muiStyles.title}>
-                            Uploaded Banners
-                        </Typography>
-                        <Typography variant="subtitle2" className={`${muiStyles.title} subtitle`}>(Click to add)</Typography>
-                        <Button 
-                            color="primary" 
-                            size="small"
-                            startIcon={<Icon>refresh</Icon>}
-                            className="fright"
-                            onClick={fetchBanners}
-                        >
-                            Refresh
-                        </Button>
-                        <Button 
-                            color="primary" 
-                            size="small"
-                            startIcon={<Icon>upload</Icon>}
-                            className="mr-10 fright"
-                            onClick={modalToggle}
-                        >
-                            Upload Banners
-                        </Button>
-                    </Box>
-                    {loading && <div className={muiStyles.hScroller}><Loading /></div>}
-                    {!loading && banners.length > 0 && (<div className={muiStyles.hScroller}>
-                        {banners.map((banner, idx) => {
-                            return (
-                                <div className={muiStyles.imgContainer} key={idx}>
-                                    <div className={muiStyles.innerContainer} key={idx}>
-                                        <img src={banner.src} alt={'banner-'+banner.size} 
-                                            onClick={() => addChoosenBanner(banner.id)}
-                                            className={[muiStyles.img, choosenBanners.includes(banner.id) ? muiStyles.imgChoosen:null].join(' ')} 
-                                        />
-                                        <span component="span" className={muiStyles.imgLabel}>{banner.size}</span>
-                                    </div>
-                                </div>
-                            )
-                        })}
-                    </div>)}
-                    {!loading && banners.length === 0 && (
-                        <div className={muiStyles.hScroller}>No Banners found, upload banners and hit refresh!</div>
-                    )}
+                    <Typography variant="subtitle2" className={`${muiStyles.title} subtitle`}>(Click to add)</Typography>
+                    <Button 
+                        color="primary" 
+                        size="small"
+                        startIcon={<Icon>refresh</Icon>}
+                        className="fright"
+                        onClick={fetchBanners}
+                    >
+                        Refresh
+                    </Button>
+                    <Button 
+                        color="primary" 
+                        size="small"
+                        startIcon={<Icon>upload</Icon>}
+                        className="mr-10 fright"
+                        onClick={modalToggle}
+                    >
+                        Upload Banners
+                    </Button>
                 </Box>
+                {loading && <div className={muiStyles.hScroller}><Loading /></div>}
+                {!loading && banners.length > 0 && (<div className={muiStyles.hScroller}>
+                    {banners.map((banner, idx) => {
+                        return (
+                            <div className={muiStyles.imgContainer} key={idx}>
+                                <div className={muiStyles.innerContainer} key={idx}>
+                                    <img src={banner.src} alt={'banner-'+banner.size} 
+                                        onClick={() => addChoosenBanner(banner.id)}
+                                        className={[muiStyles.img, choosenBanners.includes(banner.id) ? muiStyles.imgChoosen:null].join(' ')} 
+                                    />
+                                    <span component="span" className={muiStyles.imgLabel}>{banner.size}</span>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>)}
+                {!loading && banners.length === 0 && (
+                    <div className={muiStyles.hScroller}>No Banners found, upload banners and hit refresh!</div>
+                )}
+            </Box>
         </FullScreenModal>
         {modalOpen ? <UploadBannersModal onClose={modalToggle} />:null}
     </Fragment>
   );
 };
 
-export default BannersListModal;
+export default memo(BannersListModal);

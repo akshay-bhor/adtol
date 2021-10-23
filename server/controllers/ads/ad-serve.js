@@ -50,8 +50,9 @@ exports.adServe = async (req, res, next) => {
         
         // Construct domain hash from ref url
         const match_hash = req.match_hash;
-        const ref_url = extractURL(req.get('Referrer'));
-        const origin = extractHostname(req.get('origin'));
+        const ref_url = extractURL(req.query.ref || req.get('Referrer')) || null;
+        if(!ref_url) throw new Error('Invalid URL');
+        const origin = extractHostname(ref_url);
         // const ref_url = "https://example.com/test.html".split('//')[1];
         // const origin = "https://example.com".split('//')[1];
         let parsed = psl.parse(origin); 
@@ -84,7 +85,7 @@ exports.adServe = async (req, res, next) => {
          *  */ 
 
         // Common query
-        sQuery = `SELECT c.id as campaign_id, a.id as ad_id, c.uid as ad_uid, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.rel, c.btn, c.cpc, c.pro`;
+        sQuery = `SELECT c.id as campaign_id, a.id as ad_id, c.uid as ad_uid, c.campaign_type, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.adult, c.rel, c.btn, c.cpc, c.pro`;
         wQuery = `WHERE a.match_hash = '${match_hash}' AND c.today_budget_rem >= 0.1 AND c.domain_hash != '${domain_hash}'`;
 
         // Queries
@@ -152,7 +153,7 @@ exports.adServe = async (req, res, next) => {
             const link = process.env.ORIGIN + '/api/display/pcs/click?tk=' + encryptAES(JSON.stringify(linkData));
 
             // Get domain from url
-            parsed = psl.parse(result[bestAdIndex].url);
+            parsed = psl.parse(extractHostname(result[bestAdIndex].url));
             const ad_domain = parsed.domain; 
 
             // Get btn if exist
@@ -208,6 +209,9 @@ exports.adServe = async (req, res, next) => {
                     const site_id = ps.dataValues.id;
                     const ad_url = result[bestAdIndex].url;
                     const campaign_id = result[bestAdIndex].campaign_id;
+                    const ad_adult = result[bestAdIndex].adult || 0;
+                    const ad_cpc = result[bestAdIndex].cpc;
+                    const campaign_type = result[bestAdIndex].campaign_type;
                     // Store view
                     const viewStore = Views.create({
                         campaign_id,
@@ -220,12 +224,15 @@ exports.adServe = async (req, res, next) => {
                         pub_url: ref_url,
                         pub_url_tiny,
                         ad_type,
+                        campaign_type,
                         category: ad_cat,
                         device: dCode,
                         os: oCode, 
                         browser: bCode,
                         country: cCode,
                         language: ad_lang,
+                        adult: ad_adult,
+                        ad_cpc: ad_cpc,
                         ip: req.ip_addr,
                         day_unix: today_unix,
                         time_unix: time_unix

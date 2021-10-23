@@ -21,10 +21,10 @@ const mapRows = (data) => {
         {
             id: key,
             website: data[key].url,
-            views: +data[key].views,
-            clicks: +data[key].clicks,
-            pops: +data[key].pops,
-            earned: '$'+ parseFloat(data[key].earned).toFixed(2),
+            views: (+data[key].views).toLocaleString(),
+            clicks: (+data[key].clicks).toLocaleString(),
+            pops: (+data[key].pops).toLocaleString(),
+            earned: '$'+ parseFloat(data[key].earned).toFixed(2).toLocaleString(),
             ctr: data[key].ctr ? data[key].ctr+'%': 'NA'
         }
     ));
