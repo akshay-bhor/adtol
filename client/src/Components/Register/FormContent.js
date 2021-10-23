@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const FormContent = (props) => { 
+const FormContent = (props) => {
   const muiStyle = useStyles();
   const loading = useSelector((state) => state.auth.loading);
   const countries = useSelector((state) => state.formdata.countries);
@@ -90,12 +90,14 @@ const FormContent = (props) => {
               <MenuItem value="1">Individual</MenuItem>
               <MenuItem value="2">Company</MenuItem>
             </MySelectField>
-            <MyTextField
-              name="company_name"
-              type="text"
-              label="Company Name"
-              className={muiStyle.block}
-            />
+            {+props.formValues.ac_type === 2 &&
+              <MyTextField
+                name="company_name"
+                type="text"
+                label="Company Name"
+                className={muiStyle.block}
+              />
+            }
             <MyTextField
               name="ref_by"
               type="text"

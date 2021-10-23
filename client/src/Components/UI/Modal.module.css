@@ -43,6 +43,12 @@
   }
 }
 
+@media (max-width: 767px) {
+  .content {
+    padding: 20px 0;
+  }
+}
+
 @keyframes slide-down {
   from {
     opacity: 0;
