@@ -259,7 +259,8 @@ const CreateCampaign = () => {
                 countries={countryState}
                 browsers={browserState}
                 languages={langState}
-                campType={type}
+                type={type}
+                campType={campType}
                 onClose={toggleTrafficEstModal}
               />:null}
             </Fragment>
