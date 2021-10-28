@@ -3,11 +3,11 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     queryInterface.changeColumn('campaign_types', 'name', {
-      type: Sequelize.STRING(25),
+      type: Sequelize.STRING(30),
       allowNull: false
     });
     queryInterface.changeColumn('campaign_types', 'desc', {
-      type: Sequelize.STRING(80),
+      type: Sequelize.STRING(200),
       allowNull: true
     })    
   },
