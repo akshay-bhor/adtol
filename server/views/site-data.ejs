@@ -291,7 +291,7 @@
         <div style="display: block;"><a target="_blank" href="https://fonts.google.com/icons" nofollow>See Icons</a></div>
 
         <div class="row">
-          <label for="camp_type" class="mt-3">Campaign Type (20 chars max)</label>
+          <label for="camp_type" class="mt-3">Campaign Type (25 chars max)</label>
           <input
             type="text"
             id="camp_type"
@@ -300,7 +300,8 @@
             name="camp_type"
             class="form-control mb-3 col-md-12"
           />
-          <label for="camp_type_desc">Campaign Description (60 chars max)</label>
+          <div class="col-md-12 text-danger">Count: {{camp_type.length}}</div>
+          <label for="camp_type_desc">Campaign Description (80 chars max)</label>
           <textarea
             type="text"
             id="camp_type_desc"
@@ -310,6 +311,7 @@
             rows="3"
             class="form-control mb-3 col-md-12"
           ></textarea>
+          <div class="col-md-12 text-danger">Count: {{camp_type_desc.length}}</div>
           <label for="camp_type_fields">Campaign Fields (comma seperated)<br>
             (title, desc, banner, btn, follow)</label>
           <input
@@ -358,8 +360,8 @@
         tz: null,
         banner_size: null,
         button: null,
-        camp_type: null,
-        camp_type_desc: null,
+        camp_type: '',
+        camp_type_desc: '',
         camp_type_fields: 'title,desc,banner,btn,follow',
         camp_type_icon: null
       };

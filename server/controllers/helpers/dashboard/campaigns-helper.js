@@ -256,7 +256,7 @@ exports.changeBudgetHelper = async (req) => {
         const add = (old_budget - budget);
 
         // Validate
-        if((ad_bal + add) < 0.1) {
+        if((ad_bal + add) < 0) {
             throw new Error('New Budget exceeds available balance!');
         }
 
@@ -334,7 +334,7 @@ exports.manageCampaignHelper = async (req) => {
         if(requiredFields.includes('title')) await check('title').exists().trim().escape().isString().notEmpty().withMessage('Title is required').isLength({ min:3, max:60 }).withMessage('Min and max allowed characters are 3 & 60').run(req);
         if(requiredFields.includes('desc')) await check('desc').exists().trim().escape().isString().notEmpty().withMessage('Description is required').isLength({ min:3, max:300 }).withMessage('Min and max allowed characters are 3 & 300').run(req);
         await check('url').exists().trim().notEmpty().withMessage('URL is required').isURL().withMessage('URL is invalid').run(req);
-        if(requiredFields.includes('banner')) await check('banners').exists().trim().escape().isString().notEmpty()
+        if(requiredFields.includes('banner')) await check('banners').exists().withMessage('Please select atleast 1 banner').trim().escape().isString().notEmpty()
         .withMessage('Please select atleast 1 banner').run(req);
         await check('category').exists().trim().escape().isString().notEmpty().withMessage('Category is required').custom(adTargetingValidation).run(req);
         await check('country').exists().trim().escape().isString().notEmpty().withMessage('Country is required').custom(adTargetingValidation).run(req);
@@ -503,7 +503,7 @@ exports.manageCampaignHelper = async (req) => {
                 const add = (old_budget_rem - new_budget);
 
                 // Validate
-                if((ad_balance + add) < 0.1) {
+                if((ad_balance + add) < 0) {
                     throw new Error('New Budget exceeds available balance!');
                 }
 
