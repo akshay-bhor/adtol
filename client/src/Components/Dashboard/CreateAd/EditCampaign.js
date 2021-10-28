@@ -314,7 +314,8 @@ const EditCampaign = () => {
                 countries={countryState}
                 browsers={browserState}
                 languages={langState}
-                campType={type}
+                type={type}
+                campType={campaignData.campaign_type}
                 onClose={toggleTrafficEstModal}
               />:null}
             </Fragment>

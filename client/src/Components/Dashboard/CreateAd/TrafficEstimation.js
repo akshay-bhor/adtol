@@ -22,7 +22,8 @@ const TrafficEstimation = (props) => {
                     os: props.os.join(','),
                     browser: props.browsers.join(','),
                     language: props.languages.join(','),
-                    adult: props.adult || 0
+                    adult: props.adult || 0,
+                    campaign_type: props.campType
                 }
 
                 const res = await getTrafficEstimation(postData);
@@ -43,7 +44,7 @@ const TrafficEstimation = (props) => {
             {loading ? <Loading />:null}
             {!loading && estimates && (
                 <Box component="div">
-                    {props.campType == 'campaign' ? 
+                    {props.type == 'campaign' ? 
                         <Box component="div">
                             <Box component="div" className="mt-10">
                                 <Typography variant="subtitle1">We estimate you'll receive 
@@ -63,7 +64,7 @@ const TrafficEstimation = (props) => {
                             </Box>
                         </Box>:null}
 
-                        {props.campType == 'pop' ? 
+                        {props.type == 'pop' ? 
                         <Box component="div">
                             <Box component="div" className="mt-10">
                                 <Typography variant="subtitle1">We estimate you'll receive 

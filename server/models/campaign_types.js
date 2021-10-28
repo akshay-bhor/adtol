@@ -9,11 +9,11 @@ const Campaign_types = sequelize.define('campaign_types', {
         autoIncrement: true
     },
     name: {
-        type: DataTypes.STRING(20),
+        type: DataTypes.STRING(30),
         allowNull: false
     },
     desc: {
-        type: DataTypes.STRING(60),
+        type: DataTypes.STRING(200),
         allowNull: true
     },
     fields: { // title, desc, banner, btn, follow

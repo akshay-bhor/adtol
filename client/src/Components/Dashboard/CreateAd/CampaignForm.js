@@ -29,6 +29,15 @@ const useStyles = makeStyles((theme) => ({
       width: "100%",
     },
   },
+  filedNotice: {
+    width: "60%",
+    display: 'flex',
+    alignItems: 'center',
+    margin: '0 auto',
+    ["@media(max-width:780px)"]: {
+      width: "100%",
+    }
+  },
   btn: {
     float: "left",
     alignSelf: "flex-start",
@@ -215,17 +224,21 @@ export const CampaignForm = ({
           <MyTextField
             name="budget"
             type="number"
-            inputProps={{min:1, step: 1}}
+            inputProps={{min:1, step: 0.0001}}
             label="Budget"
             className={muiStyles.block}
           />
           <MyTextField
             name="daily_budget"
             type="number"
-            inputProps={{min:1, step: 1}}
+            inputProps={{min:1, step: 0.0001}}
             label="Daily Budget"
             className={muiStyles.block}
           />
+          {edit && <Box component="div" className={['small','subtitle', muiStyles.filedNotice].join(' ')}>
+            <Icon>info</Icon>&nbsp;&nbsp;
+            Daily Budget changes takes effect next day!
+          </Box>}
           {type === "campaign" && requiredFields.includes('btn') && (
             <MySelectField 
               name="btn"

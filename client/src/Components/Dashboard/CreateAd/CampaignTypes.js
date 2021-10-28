@@ -22,14 +22,15 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    width: "200px",
-    padding: "20px",
-    height: "200px",
+    width: "240px",
+    padding: "10px",
+    height: "240px",
     marginTop: "20px",
     border: "2px solid #ccc",
     borderRadius: "10px",
     cursor: "pointer",
     color: theme.palette.primary.main,
+    overflow: 'hidden'
   },
 }));
 

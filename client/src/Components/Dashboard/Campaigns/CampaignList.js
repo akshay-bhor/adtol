@@ -121,7 +121,7 @@ const ManageMenu = (props) => {
             startIcon={<Icon>attach_money</Icon>}
             onClick={() => modalHandler(id, budget)}
           >
-            Edit Budget
+            Adjust Budget
           </Button>
         </Box>
         <Box component="div" className={muiStyles.btnContainer}>

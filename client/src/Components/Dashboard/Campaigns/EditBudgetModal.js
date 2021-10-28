@@ -66,6 +66,7 @@ const EditBudgetModal = (props) => { console.log(props.data);
               name="budget"
               type="number"
               label="budget"
+              inputProps={{min:1, step: 0.0001}}
               className={muiStyle.input}
             />
             <Button
