@@ -7,6 +7,7 @@ const { App_Settings } = require('../../../common/settings');
 const sequelize = require("../../../utils/db");
 const User = require("../../../models/users");
 const { QueryTypes } = require("sequelize");
+const { sendPaymentSuccessMail } = require("../../../common/sendMails");
 
 exports.createOrderHelper = async (req) => {
     if(!req.userInfo) {
@@ -148,6 +149,9 @@ exports.verifyPaymentHelper = async (req) => {
             await ts.rollback();
             throw new Error(err);
         }
+
+        // Send Payment Success Mail
+        sendPaymentSuccessMail(req.userInfo.mail, req.userInfo.user, amount, rzr_payment_id, 'Payment Gateway');
 
         // Return
         return {

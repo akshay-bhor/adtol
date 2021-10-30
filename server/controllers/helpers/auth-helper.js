@@ -10,6 +10,7 @@ const crypto = require('crypto');
 const User_Info = require('../../models/user_info');
 const { EmailTransporter } = require('../../common/emailTransporter');
 const { App_Settings } = require('../../common/settings');
+const { sendWelcomeMail, sendForgotPassMail } = require('../../common/sendMails');
 const filter = new Filter();
 
 exports.registerHelper = async (req) => { 
@@ -112,6 +113,9 @@ exports.registerHelper = async (req) => {
         //Create token
         const tokenObj = new Token();
         const token = await tokenObj.createAccessToken(cUser);
+        
+        // Send welcome msg
+        sendWelcomeMail(req.body.mail, req.body.user);
 
         // Return object
         return {
@@ -415,25 +419,7 @@ exports.forgetPassHelper = async (req) => {
         }
 
         // Send Email
-        EmailTransporter.sendMail({
-            to: mail,
-            from: 'support@adtol.com',
-            subject: 'Adtol - Forgot Password',
-            html: `
-                <p>We received a password reset request for your account associated with this email.
-                Click below to reset your password</p>
-                <a href="${process.env.ORIGIN}/reset-password/${rand}" 
-                style="box-sizing:border-box;-webkit-appearance:none;-moz-appearance:none;appearance:none;
-                background-color:#3f51b5;border-radius:4px;
-                color:#fff;cursor:pointer;display:inline-block;font-size:14px;font-weight:400;
-                line-height:1;margin:10px;padding:10px 15px;text-decoration:none;text-align:center;
-                text-transform:uppercase;font-family:Montserrat,sans-serif;font-weight:700">Reset</a>
-                <br />
-                <span style="color:red">Please note that this link is only valid for 10 minutes! Do not share this link with anyone!</span>
-                <br>
-                <p>You if haven't requested password reset then please ignore this email.</p>
-            `
-        }).catch(e => { console.log(e); });
+        sendForgotPassMail(mail, rand);
 
         // return object
         return {

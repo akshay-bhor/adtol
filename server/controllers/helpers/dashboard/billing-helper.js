@@ -1,6 +1,6 @@
 const { check, validationResult } = require('express-validator');
 const { QueryTypes } = require('sequelize');
-const { App_Settings } = require('../../../common/settings');
+const { sendWdStatusMail, sendPaymentSuccessMail } = require('../../../common/sendMails');
 const { createUniquePaymentId } = require('../../../common/util');
 const Payments = require('../../../models/payments');
 const Settings = require('../../../models/settings');
@@ -301,6 +301,21 @@ exports.withdrawHelper = async (req) => {
             throw new Error(err);
         }
 
+
+        if(processor == 1)
+            wProcessor = 'Bank';
+        else if(processor == 2)
+             wProcessor = 'Paypal';
+        else if(processor == 3)
+            wProcessor = 'Payoneer';
+        else if(processor == 4)
+            wProcessor = 'System';
+        else    
+            wProcessor = 'NA';
+
+        // Send Mail
+        sendWdStatusMail(req.userInfo.mail, req.userInfo.user, wdId, amt, fee, 'Pending', wProcessor);
+
         // Return
         return {
             msg: 'Success'
@@ -377,6 +392,9 @@ exports.convertPubBalHelper = async (req) => {
             await ts.rollback();
             throw new Error(err);
         }
+
+        // Send Payment Success Mail 
+        sendPaymentSuccessMail(req.userInfo.mail, req.userInfo.user, amount, mtx, 'Publisher Balance');
 
         // Return
         return {

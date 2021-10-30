@@ -4,6 +4,7 @@ const Pub_Sites = require("../../../models/publisher_sites");
 const User = require("../../../models/users");
 const sequelize = require("../../../utils/db");
 const { App_Settings } = require('../../../common/settings');
+const { sendWebsiteApprovedMail, sendWebsiteRejectedMail } = require("../../../common/sendMails");
 
 exports.adminSitesListHelper = async (req) => {
   if (!req.userInfo || req.userInfo.rank != 1) {
@@ -39,7 +40,7 @@ exports.adminSitesListHelper = async (req) => {
 
     // Query builder
     let sQuery = `WHERE `;
-    if(sort == 1) sQuery += `status != 4`;
+    if(sort == 1) sQuery += `status != 9`;
     if(sort == 2) sQuery += `status = 2`;
     if(sort == 3) sQuery += `status = 3`;
     if(uid) sQuery += ` AND uid = ${uid}`;
@@ -68,6 +69,7 @@ exports.adminSitesListHelper = async (req) => {
       if (d.status == 1) d.status = "Active";
       if (d.status == 2) d.status = "Pending";
       if (d.status == 3) d.status = "Rejected";
+      if (d.status == 4) d.status = "Deleted";
       d.category = App_Settings.categories[d.category];
       d.language = App_Settings.languages[d.language];
       d.earned = d.earned.toFixed(2);
@@ -111,6 +113,23 @@ exports.adminChangeSiteStatus = async (req) => {
                 id: siteid
             }
         });
+        
+        // Find userInfo
+        const uInfo = await sequelize.query('SELECT u.mail, u.user, p.domain from users u INNER JOIN pub_sites p ON p.uid = u.id WHERE p.id = ?', {
+          type: QueryTypes.SELECT,
+          replacements: [siteid]
+        })
+
+        const mail = uInfo[0].mail;
+        const user = uInfo[0].user;
+        const domain = uInfo[0].domain;
+
+        if(status == 1) {
+          sendWebsiteApprovedMail(mail, user, domain);
+        }
+        if(status == 3) {
+          sendWebsiteRejectedMail(mail, user, domain);
+        }
 
         return {
             msg: 'success'

@@ -1,5 +1,6 @@
 const { QueryTypes } = require("sequelize");
 const { EmailTransporter } = require("../../../common/emailTransporter");
+const { sendWdStatusMail } = require("../../../common/sendMails");
 const User = require("../../../models/users");
 const Withdraw = require("../../../models/withdraw");
 const sequelize = require("../../../utils/db");
@@ -119,7 +120,7 @@ exports.adminChangeWithdrawsStatusHelper = async (req) => {
 
     // Get user email
     const data = await sequelize.query(
-      "SELECT u.id as uid, u.mail as email, w.mtx, w.amount, w.fee, w.processor from users u INNER JOIN withdraws w ON u.id = w.uid WHERE w.id = ?",
+      "SELECT u.id as uid, u.mail as email, u.user as username, w.mtx, w.amount, w.fee, w.processor from users u INNER JOIN withdraws w ON u.id = w.uid WHERE w.id = ?",
       {
         type: QueryTypes.SELECT,
         replacements: [wd_id],
@@ -148,24 +149,10 @@ exports.adminChangeWithdrawsStatusHelper = async (req) => {
         : data[0].processor === 3
         ? "Payoneer"
         : `System - <span style='color:red'>Abuse</span>`;
+    const userName = data[0].username;
 
     // Send Mail
-    EmailTransporter.sendMail({
-      to: mail,
-      from: "support@adtol.com",
-      subject: `AdTol - Your withdrawal request ID: ${mtx} is ${wstatus}`,
-      html: `
-          Hello,
-          Your USD withdrawal request has been ${wstatus}, following are the details of your request.
-          <br />
-          <span style="display:block"><b>Withdraw ID:</b> ${mtx}</span>
-          <span style="display:block"><b>Amount:</b> $${amt}</span>
-          <span style="display:block"><b>Fee:</b> $${fee}</span>
-          <span style="display:block"><b>Processed Via:</b> ${processor}</span>
-      `,
-    }).catch((e) => {
-      console.log(e);
-    });
+    sendWdStatusMail(mail, userName, mtx, amt, fee, wstatus, processor);
 
     return {
       msg: "success",

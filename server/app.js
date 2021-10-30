@@ -7,7 +7,7 @@ const app = express();
 const cluster = require('cluster');
 const helmet = require('helmet');
 // const { verifyEmailTransport } = require('./common/emailTransporter');
-const { sendAlertMail } = require('./common/util');
+const { sendAlertMail } = require('./common/sendMails');
 let retryCount = 0;
 
 if(cluster.isMaster) {

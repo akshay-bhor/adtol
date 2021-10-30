@@ -7,6 +7,7 @@ const Banner_Sizes = require("../../../models/banner_sizes");
 const { encryptAES } = require("../../../common/encrypt");
 const crypto = require('crypto');
 const { Op } = require("sequelize");
+const { sendWebsitePendingMail } = require("../../../common/sendMails");
 
 
 exports.websitesHelper = async (req) => {
@@ -149,6 +150,9 @@ exports.addWebsiteHelper = async (req) => {
             traffic: traffic,
             adult: adult
         });
+
+        // Send Mail
+        sendWebsitePendingMail(req.userInfo.mail, req.userInfo.user, domain);
 
         // Return
         return {

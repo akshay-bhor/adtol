@@ -21,6 +21,7 @@ const Campaigns = require("../../../models/campaigns");
 const Devices = require("../../../models/devices");
 const Os = require("../../../models/os");
 const Browsers = require("../../../models/browsers");
+const { sendCampaignCreatedMail } = require("../../../common/sendMails");
 
 exports.campaignsHelper = async(req) => {
     if(!req.userInfo) {
@@ -580,6 +581,11 @@ exports.manageCampaignHelper = async (req) => {
         } catch (err) { console.log(err);
             await ts.rollback();
             throw new Error('Something went wrong, try again');
+        }
+
+        // Send Campaign Created/Pending Mail
+        if(campaign_obj.status == 2) {
+            sendCampaignCreatedMail(req.userInfo.mail, req.userInfo.user, campaign_obj.campaign_title);
         }
 
         return {
@@ -1185,7 +1191,7 @@ const adSettingsValidation = async (value, { req, location, path }) => {
             if(req.manage === 'create') {
                 // Check user balance
                 const user_info = await User.findOne({ where: { id: req.userInfo.id } });
-                if(+value >= user_info.dataValues.ad_balance) {
+                if(+value > user_info.dataValues.ad_balance) {
                     throw new Error(`Campaign budget can't be over available balance - $${user_info.dataValues.ad_balance}`);
                 }
             }

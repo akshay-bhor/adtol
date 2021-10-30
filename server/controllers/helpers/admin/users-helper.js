@@ -6,6 +6,7 @@ const { tinify, createUniquePaymentId } = require("../../../common/util");
 const Token = require("../../../common/token");
 const Withdraw = require("../../../models/withdraw");
 const Payments = require("../../../models/payments");
+const { sendAcSuspendMail } = require("../../../common/sendMails");
 
 exports.adminUsersListHelper = async (req) => {
   if (!req.userInfo || req.userInfo.rank != 1) {
@@ -108,10 +109,12 @@ exports.adminUserStatusChangeHelper = async (req) => {
       // Get user status
       const userInfo = await User.findOne({
         where: { id: uid },
-        attributes: ["status", "pub_balance"],
+        attributes: ["user", "mail", "status", "pub_balance"],
       });
       const userStatus = userInfo.dataValues.status;
       const pubBalance = userInfo.dataValues.pub_balance;
+      const userName = userInfo.dataValues.user;
+      const userMail = userInfo.dataValues.mail;
 
       // Status to set
       let setStatus = 2;
@@ -220,6 +223,7 @@ exports.adminUserStatusChangeHelper = async (req) => {
         );
 
         // Send Mail
+        sendAcSuspendMail(userMail, userName);
       }
 
       // Token Blacklist
