@@ -1,5 +1,5 @@
 const { QueryTypes } = require("sequelize");
-const User = require("../../../server/models/users");
+const User = require("../../models/users");
 const { sendBalanceExhaustedMail } = require("../../common/util");
 const Campaigns = require("../../models/campaigns");
 const sequelize = require("../../utils/db")
