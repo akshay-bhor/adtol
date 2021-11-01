@@ -174,7 +174,7 @@ const capturePayment = async (id, amt, currency) => {
         return true;
     } catch (err) {
         // throw new Error(err.response.data.error.description);
-        throw new Error('Error verifying payment, if amount is deducted from your account it will be refunded withing 5 to 7 days!');
+        throw new Error('Error verifying payment, if amount is deducted from your account it will be refunded within 5 to 7 days!');
     }
 }
 

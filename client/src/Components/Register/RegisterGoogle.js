@@ -68,9 +68,12 @@ const RegisterGoogle = () => {
             register(values, actions);
           }}
         >
-          <FormContent
-            isGoogle={'true'}
-          />
+          {({ values }) => (
+            <FormContent
+              isGoogle={'true'}
+              formValues={values}
+            />
+          )}
         </Formik>
         
       </div>
