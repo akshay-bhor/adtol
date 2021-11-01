@@ -1,4 +1,6 @@
 const { QueryTypes } = require("sequelize");
+const User = require("../../models/users");
+const { sendBalanceExhaustedMail } = require("../../common/util");
 const Campaigns = require("../../models/campaigns");
 const sequelize = require("../../utils/db")
 const { cronLogWrite } = require("../cron-logger")
@@ -12,7 +14,7 @@ exports.allocateDailyBudget = async () => {
      */
     try {
         // Fetch all campaigns
-        const camps = await sequelize.query('SELECT id, uid, budget_rem, today_budget, today_budget_rem FROM campaigns WHERE status = 1 AND (run = 1 OR run = 3)', {
+        const camps = await sequelize.query('SELECT id, uid, campaign_title, budget_rem, today_budget, today_budget_rem FROM campaigns WHERE status = 1 AND (run = 1 OR run = 3)', {
             type: QueryTypes.SELECT,
             mapToModel: Campaigns
         });
@@ -23,6 +25,7 @@ exports.allocateDailyBudget = async () => {
             let today_budget = data.today_budget;
             let today_budget_rem = data.today_budget_rem;
             let userid = data.uid;
+            let campaign_name = data.campaign_title;
             
             // Check deficit
             let deficiet = today_budget - today_budget_rem;
@@ -30,7 +33,12 @@ exports.allocateDailyBudget = async () => {
             // Check remaining budget
             if(budget_rem < deficiet) {
                 deficiet = budget_rem;
-                // Send email or something
+                // Get user Info
+                const uInfo = await User.findOne({ where: { id: userid } });
+                const userMail = uInfo.dataValues.mail;
+                const userName = uInfo.dataValues.user;
+                // Send alert mail
+                sendBalanceExhaustedMail(userMail, userName, campaign_name);
             }
 
             if(deficiet > 0) { 

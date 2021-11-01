@@ -3,6 +3,7 @@ const User = require("../../../models/users");
 const sequelize = require("../../../utils/db");
 const Campaigns = require("../../../models/campaigns");
 const { tinify } = require("../../../common/util");
+const { sendCampaignApprovedMail, sendCampaignRejectedMail } = require("../../../common/sendMails");
 
 exports.getCampaignsListHelper = async (req) => {
   if (!req.userInfo || req.userInfo.rank != 1) {
@@ -111,13 +112,16 @@ exports.setCampaignStatusHelper = async (req) => {
         const campId = req.body.id;
 
         // Get campaigns
-        const campaigns = await sequelize.query('SELECT c.id, a.id as adid, c.bot, c.status, a.type, c.adult, c.run FROM campaigns c INNER JOIN ads a ON c.id = a.campaign_id WHERE c.id = ? AND c.status != 4', {
+        const campaigns = await sequelize.query('SELECT c.id, c.uid, c.campaign_title, a.id as adid, c.bot, c.status, a.type, c.adult, c.run FROM campaigns c INNER JOIN ads a ON c.id = a.campaign_id WHERE c.id = ? AND c.status != 4', {
             type: QueryTypes.SELECT,
             replacements: [campId]
         });
         if(campaigns.length == 0) {
             throw new Error('Not Found or Deleted!');
         }
+
+        const userId = campaigns[0].uid;
+        const campaign_name = campaigns[0].campaign_title;
 
         for(let data of campaigns) {
             let id = data.id;
@@ -153,6 +157,18 @@ exports.setCampaignStatusHelper = async (req) => {
                 type: QueryTypes.UPDATE,
                 replacements: [nstatus, match_hash, id, ad_id]
             });
+        }
+
+        // Get UserInfo
+        const uInfo = await User.findOne({ where: { id: userId } });
+
+        // Send Campaign Created/Pending Mail
+        if(nstatus == 1) {
+            sendCampaignApprovedMail(uInfo.dataValues.mail, uInfo.dataValues.user, campaign_name);
+        }
+
+        if(nstatus == 3) {
+            sendCampaignRejectedMail(uInfo.dataValues.mail, uInfo.dataValues.user, campaign_name);
         }
 
         // Return

@@ -7,6 +7,7 @@ const { App_Settings } = require('../../../common/settings');
 const sequelize = require("../../../utils/db");
 const User = require("../../../models/users");
 const { QueryTypes } = require("sequelize");
+const { sendPaymentSuccessMail } = require("../../../common/sendMails");
 
 exports.createOrderHelper = async (req) => {
     if(!req.userInfo) {
@@ -149,6 +150,9 @@ exports.verifyPaymentHelper = async (req) => {
             throw new Error(err);
         }
 
+        // Send Payment Success Mail
+        sendPaymentSuccessMail(req.userInfo.mail, req.userInfo.user, amount, rzr_payment_id, 'Payment Gateway');
+
         // Return
         return {
             msg: 'success'
@@ -170,7 +174,7 @@ const capturePayment = async (id, amt, currency) => {
         return true;
     } catch (err) {
         // throw new Error(err.response.data.error.description);
-        throw new Error('Error verifying payment, if amount is deducted from your account it will be refunded withing 5 to 7 days!');
+        throw new Error('Error verifying payment, if amount is deducted from your account it will be refunded within 5 to 7 days!');
     }
 }
 

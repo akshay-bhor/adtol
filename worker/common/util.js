@@ -97,3 +97,22 @@ exports.sendAlertMail = async (sub, msg) => {
         html: `${msg}`
     }).catch(e => { console.log(e); });
 }
+
+exports.sendBalanceExhaustedMail = async (to, user, campaign_name) => {
+    EmailTransporter.sendMail({
+        to: to,
+        from: 'support@adtol.com',
+        subject: `AdTol.com - Balance Exhausted`,
+        html: `
+            Dear <b>${user}</b>,<br><br>
+
+            Your Budget for the Campaign, <b>${campaign_name}</b> has been <font color="red"><b>EXHAUSTED</b></font>!<br>
+            <b><a href="https://adtol.com/dashboard/campaigns">Add Balance</a> to the campaign to keep Ads Running!</b><br>
+
+            <br>
+            Regards,<br>
+            Admin,<br>
+            Adtol.com
+        `
+    }).catch(e => { console.log(e); });
+}

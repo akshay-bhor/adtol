@@ -1,6 +1,6 @@
 const { check, validationResult } = require("express-validator");
 const Filter = require('bad-words');
-const { EmailTransporter } = require("../../common/emailTransporter");
+const { sendContactMail } = require("../../common/sendMails");
 const filter = new Filter();
 
 exports.sendMessageHelper = async (req) => {
@@ -30,30 +30,8 @@ exports.sendMessageHelper = async (req) => {
         }
 
         // Send Email
-        EmailTransporter.sendMail({
-            to: 'adtol.com@gmail.com',
-            from: 'support@adtol.com',
-            subject: `Alert - You Got a New Message From ${name}`,
-            html: `
-                This is to inform you that you have got a new message on AdTol.
-                Here's the transcript of the message - 
-
-                <div><b>Name:</b> ${name}</div>
-                <div><b>Email:</b> ${email}</div>
-                <div><b>Subject:</b> ${subject}</div>
-                <div><b>Message:</b> ${message}</div>
-
-                <span style="display:block">click here to reply -</span>
-                <a href="mailto:${email}?subject=RE:${subject}"
-                style="box-sizing:border-box;-webkit-appearance:none;-moz-appearance:none;appearance:none;
-                background-color:#3f51b5;border-radius:4px;
-                color:#fff;cursor:pointer;display:inline-block;font-size:14px;font-weight:400;
-                line-height:1;margin:10px;padding:10px 15px;text-decoration:none;text-align:center;
-                text-transform:uppercase;font-family:Montserrat,sans-serif;font-weight:700">Reply</a>
-                <br />
-            `
-        }).catch(e => { console.log(e); });
-
+        sendContactMail(email, name, subject, message);
+        
         // return object
         return {
             msg: 'Success'
