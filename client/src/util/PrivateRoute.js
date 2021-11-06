@@ -1,13 +1,13 @@
-import { Redirect } from "react-router";
+import { Navigate } from "react-router";
 import { validAuthToken } from "./common";
 
-const PrivateRoute = WrappedComponent => props => {
+const PrivateRoute = ({Component}) => {
     // Check localstorage token
     if(validAuthToken() !== false) {
-        return (<WrappedComponent {...props} />)
+        return <Component />
     }
     return (
-        <Redirect to={'/register'} />
+        <Navigate to={'/register'} />
     );
 } 
 

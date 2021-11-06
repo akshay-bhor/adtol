@@ -7,7 +7,7 @@ import Navbar from "../UI/Navigation/Navbar";
 import OneTap from "../GoogleSignIn/OneTap";
 import { useLocation } from "react-router";
 import SnackBar from "../UI/SnackBar";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Layout = (props) => {
   const dispatch = useDispatch();
@@ -17,11 +17,11 @@ const Layout = (props) => {
   const alert = useSelector((state) => state.ui.alert);
   const snack = useSelector((state) => state.ui.snack);
   const location = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if(needRedirect) {
-      history.push(needRedirect);
+      navigate(needRedirect);
     }
   }, [needRedirect]);
 

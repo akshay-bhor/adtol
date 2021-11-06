@@ -2,7 +2,7 @@ import { Formik } from "formik";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Helmet } from "react-helmet";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { abortWebsiteRequest, updateWebsite } from "../../../store/actions/websites.action";
 import PaperBlock from "../Common/PaperBlock";
 import { websiteFormValidationSchema } from "./ValidationSchema";
@@ -10,7 +10,7 @@ import WebsiteForm from "./WebsiteForm";
 
 const EditWebsite = () => {
     const websiteData = useSelector((state) => state.website.data);
-    const history = useHistory();
+    const navigate = useNavigate();
     const params = useParams(); 
     const dispatch = useDispatch();
     const [formValues, setFormValues] = useState();
@@ -32,7 +32,7 @@ const EditWebsite = () => {
             });
         }
 
-        if(websiteData.length === 0) history.push("/dashboard/websites");
+        if(websiteData.length === 0) navigate("/dashboard/websites");
         else extractFormValues();
 
         // cleanup

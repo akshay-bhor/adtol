@@ -8,7 +8,7 @@ import {
   ListItemText,
   makeStyles,
 } from "@material-ui/core";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { SidenavMenuItems } from "../../../constants/common";
 import List from "@material-ui/core/List";
@@ -58,10 +58,10 @@ const DashboardNavMenu = (props) => {
       {SidenavMenuItems.map((item) => {
         return (
           <div key={item.id}>
-            <NavLink exact
+            <NavLink end
               to={item.url}
               onClick={item.disabled ? preventRouting : toggleMobileDrawer}
-              activeClassName={muiStyles.active}
+              className={({ isActive }) => (isActive ? muiStyles.active:'')}
             >
               <ListItem
                 button
@@ -80,10 +80,10 @@ const DashboardNavMenu = (props) => {
                 <List component="div" disablePadding>
                   {item.childs.map((child) => {
                     return (
-                      <NavLink exact
+                      <NavLink end
                         to={child.url} 
                         key={child.id} 
-                        activeClassName={muiStyles.active}
+                        className={({ isActive }) => (isActive ? muiStyles.active:'')}
                         onClick={toggleMobileDrawer}
                       >
                         <ListItem button className={muiStyles.subNested}>

@@ -1,5 +1,5 @@
 import { Fragment, useEffect } from "react";
-import { Redirect, Route, Switch } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import RegisterGoogle from "./RegisterGoogle";
 import RegisterForm from "./RegisterForm";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,16 +19,16 @@ const Register = () => {
       <Helmet>
         <title>Register - AdTol</title>
       </Helmet>
-      <Switch>
-        <Route path="/register" exact>
-          {!gToken && <RegisterForm />}
-          {gToken && <Redirect to="/register/google" />}
-        </Route>
-        <Route path="/register/google">
-          {gToken && <RegisterGoogle />}
-          {!gToken && <Redirect to="/register" />}
-        </Route>
-      </Switch>
+      <Routes>
+        <Route path="/register"
+          element={!gToken ? <RegisterForm />
+          : <Navigate to="/register/google" />}
+        />
+        <Route path="/register/google"
+          element={gToken ? <RegisterGoogle />
+          : <Navigate to="/register" />}
+        />
+      </Routes>
     </Fragment>
   );
 };

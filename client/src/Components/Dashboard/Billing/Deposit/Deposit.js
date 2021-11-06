@@ -15,7 +15,7 @@ import styles from "../../Dashboard.module.css";
 import * as yup from "yup";
 import { MySelectField, MyTextField } from "../../../FormUtils/FormUtils";
 import { Button, makeStyles, MenuItem } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import BillingConfirmModal from "../BillingConfirmModal";
 
 const useStyles = makeStyles({
@@ -69,7 +69,7 @@ const Deposit = () => {
   const modalOpen = useSelector((state) => state.billing.modalOpen);
   const payFormData = useSelector((state) => state.billing.payFormData);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const muiStyles = useStyles();
   let validationSchema;
 
@@ -90,7 +90,7 @@ const Deposit = () => {
   const handleSubmit = (values) => {
     dispatch(billingActions.setPayFormData(values));
     if (values.processor === 2) handleModalToggle(true);
-    if (values.processor === 1) history.push("/dashboard/billing/payment");
+    if (values.processor === 1) navigate("/dashboard/billing/payment");
   };
 
   const submitForm = () => {

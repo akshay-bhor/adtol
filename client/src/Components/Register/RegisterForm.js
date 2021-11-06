@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { handleRegister, abortAuthRequest } from "../../store/actions/auth.action";
 import { abortFormDataRequest, fetchCountries } from "../../store/actions/formdata.action";
 import LoadReCaptcha from "../Common/LoadReCaptcha";
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import FormContent from "./FormContent";
 import { RECAPTCHA_SITE_KEY } from "../../util/load-scripts";
 import { Link } from "react-router-dom";
@@ -31,12 +31,12 @@ const RegisterForm = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const ref_by = queryParams.get("ref") || getCookie('ref') || '';
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const muiStyles = useStyles();
 
   const gSignInHandler = (data) => {
-    history.push('/register/google');
+    navigate('/register/google');
   }
 
   useEffect(() => {

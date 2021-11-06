@@ -2,7 +2,7 @@ import { Icon, Typography } from "@material-ui/core";
 import { Button, Grid, makeStyles } from "@material-ui/core";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import {
   abortBillingRequest,
@@ -70,7 +70,7 @@ const Payment = () => {
   const loading = useSelector((state) => state.billing.loading);
   const userData = useSelector((state) => state.user);
   const [rzrPayObj, setRzrPayObj] = useState(null);
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const muiStyles = useStyles();
 
@@ -109,7 +109,7 @@ const Payment = () => {
 
   useEffect(() => {
     if (!payFormData || payFormData.amt < 1) {
-      history.push("/dashboard/billing/deposit");
+      navigate("/dashboard/billing/deposit");
     }
 
     return () => {

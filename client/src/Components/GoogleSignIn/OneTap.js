@@ -9,7 +9,7 @@ import {
 import { scriptActions } from "../../store/reducers/script.reducer";
 import { uiActions } from "../../store/reducers/ui.reducer";
 import { authActions } from "../../store/reducers/auth.reducer";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
 import { handleOneTapGLogin } from "../../store/actions/auth.action";
 
@@ -17,7 +17,7 @@ const OneTap = () => {
   const dispatch = useDispatch();
   const scriptLoaded = useSelector((state) => state.script.one_tap);
   const needRegister = useSelector((state) => state.auth.requireRegister);
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
 
   const googleSignInHandler = useCallback(
@@ -63,7 +63,7 @@ const OneTap = () => {
 
     // Check if require Register
     if (needRegister && location.pathname.search("register") === -1) {
-      history.push("/register");
+      navigate("/register");
     } else {
       if (!scriptLoaded) loadOneTapScript();
       else initOneTap();
