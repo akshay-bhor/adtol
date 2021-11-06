@@ -20,11 +20,11 @@ const Register = () => {
         <title>Register - AdTol</title>
       </Helmet>
       <Routes>
-        <Route path="/register"
+        <Route path=""
           element={!gToken ? <RegisterForm />
           : <Navigate to="/register/google" />}
         />
-        <Route path="/register/google"
+        <Route path="google"
           element={gToken ? <RegisterGoogle />
           : <Navigate to="/register" />}
         />

@@ -116,7 +116,7 @@ function App() {
               <Navigate to="/dashboard" />}
             />
 
-            <Route path="/register"
+            <Route path="/register/*"
               element={!isAuth ? <Register />:
               <Navigate to="/dashboard" />}
             />
