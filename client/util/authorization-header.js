@@ -1,6 +1,6 @@
 const authorizationHeader = () => {
     // Get token
-    if(typeof window !== 'undefined' && window.localStorage) {
+    if(process.browser) {
         const token = window.localStorage.getItem('authToken');
         const header = {
             Authorization: `Bearer ${token}`
@@ -14,7 +14,7 @@ const authorizationHeader = () => {
 export const getAuthorizationToken = () => {
     // Get token
     let token;
-    if(typeof window !== 'undefined' && window.localStorage) {
+    if(process.browser) {
         token = window.localStorage.getItem('authToken');
     }
 
