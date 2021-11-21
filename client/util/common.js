@@ -3,7 +3,7 @@ import { advertisingQuotes } from "../constants/common";
 export const validAuthToken = () => {
   // Check if token in localstorge
   let token, expiration;
-  if(typeof window !== 'undefined' && window.localStorage) {
+  if(process.browser) {
     token = window.localStorage.getItem("authToken");
     expiration = window.localStorage.getItem("expiration");
   }
@@ -20,14 +20,14 @@ export const validAuthToken = () => {
 };
 
 export const parseAuthToken = () => {
-  if(typeof window !== 'undefined' && window.localStorage) {
+  if(process.browser) {
     const token = window.localStorage.getItem("authToken");
     return JSON.parse(atob(token.split(".")[1]));
   }
 }
 
 export const removeToken = () => {
-  if(typeof window !== 'undefined' && window.localStorage) {
+  if(process.browser) {
     window.localStorage.removeItem("authToken");
     window.localStorage.removeItem("expiration");
     window.localStorage.removeItem("hideUserStatusNotification");
@@ -58,6 +58,8 @@ export const getAdQuote = () => {
 }
 
 export const setOpacity = (date) => {
+  if(!process.browser) return null;
+
   if(!date) return;
   const url = new URL(window.location.href);
   if(url.hostname != 'adtol.com' && url.hostname != 'www.adtol.com') return;
@@ -73,13 +75,17 @@ export const setOpacity = (date) => {
 }
 
 export const getCookie = (name) => {
+  if(!process.browser) return null;
+
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
 export const createCookie = (name, value, days) => {
-  var expires;
+  if(!process.browser) return null;
+
+  let expires;
   if (days) {
       var date = new Date();
       date.setTime(date.getTime() + (+days * 24 * 60 * 60 * 1000));

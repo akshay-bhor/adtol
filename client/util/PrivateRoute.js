@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { validAuthToken } from "./common";
 
 const PrivateRoute = WrappedComponent => props => {
-    if(typeof window === 'undefined') return null;
+    if(!process.browser) return null;
 
     const router = useRouter();
 

@@ -1,5 +1,5 @@
 import NotAuth from "../../../util/NotAuth";
-import RegisterGoogle from "../../Components/Register/RegisterGoogle";
+import RegisterGoogle from "../../../Components/Register/RegisterGoogle";
 
 const GoogleRegisterPage = () => {
     return (

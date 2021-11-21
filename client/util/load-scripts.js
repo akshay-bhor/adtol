@@ -19,6 +19,8 @@ export const scriptSrc = {
 };
 
 export const loadScript = (id, url) => {
+  if(typeof window === undefined) return null;
+
   return new Promise((resolve, reject) => {
     let scriptExist = document.getElementById(id);
 
@@ -41,6 +43,8 @@ export const loadScript = (id, url) => {
 };
 
 export const removeScript = (id, className = null) => {
+  if(typeof window === undefined) return null;
+  
   const script = document.getElementById(id);
   if(script) { script.remove(); }
   if(className !== null && className !== undefined) { 

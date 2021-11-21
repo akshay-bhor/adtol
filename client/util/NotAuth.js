@@ -5,7 +5,7 @@ const NotAuth = WrappedComponent => props => {
     const router = useRouter();
 
     // Check localstorage token
-    if(validAuthToken() === false || typeof window === 'undefined') {
+    if(validAuthToken() === false || !process.browser) {
         return <WrappedComponent {...props} />
     }
     else {
