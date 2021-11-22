@@ -4,16 +4,16 @@ import { validAuthToken } from "./common";
 const NotAuth = WrappedComponent => props => {
     const router = useRouter();
 
+    useEffect(() => {
+        if(validAuthToken() === true) router.replace('/dashboard');
+    }, []);
+
     // Check localstorage token
     if(validAuthToken() === false || !process.browser) {
         return <WrappedComponent {...props} />
     }
     else {
-        router.replace('/dashboard');
-
-        return (
-            null
-        );   
+        return null;
     }
 } 
 
