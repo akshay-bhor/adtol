@@ -60,7 +60,7 @@ const UserStatusNotification = () => {
                 {!userStatus.hasCamp && 
                     <Alert severity="warning" className={muiStyles.fullWidth}>
                         You haven't added any campaigns yet
-                        <Link href="/dashboard/campaign-type"><a className="fright link">Add</a></Link>
+                        <Link href="/dashboard/campaign-types"><a className="fright link">Add</a></Link>
                     </Alert>}
 
                 {!userStatus.hasPay && 

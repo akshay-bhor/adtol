@@ -61,7 +61,7 @@ const OneTap = () => {
 
     // Check if require Register
     if (needRegister && router.pathname.search("register") === -1) {
-      router.push("/register");
+      router.push("/register/google");
     } else {
       if (!scriptLoaded) loadOneTapScript();
       else initOneTap();

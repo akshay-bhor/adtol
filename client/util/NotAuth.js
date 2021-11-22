@@ -9,7 +9,7 @@ const NotAuth = WrappedComponent => props => {
         return <WrappedComponent {...props} />
     }
     else {
-        router.push('/dashboard');
+        router.replace('/dashboard');
 
         return (
             null

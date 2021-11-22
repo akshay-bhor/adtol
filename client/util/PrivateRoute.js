@@ -11,7 +11,7 @@ const PrivateRoute = WrappedComponent => props => {
         return <WrappedComponent {...props} />
     }
     else {
-        router.push('/register');
+        router.replace('/register');
 
         return (
             null
