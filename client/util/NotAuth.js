@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { validAuthToken } from "./common";
 
 const NotAuth = WrappedComponent => props => {
