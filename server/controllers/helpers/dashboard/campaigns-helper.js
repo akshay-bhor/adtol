@@ -349,7 +349,7 @@ exports.manageCampaignHelper = async (req) => {
         if(requiredFields.includes('follow')) await check('rel').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Follow').custom(val => {
             if(val !== 0 || val !== 1 || val !== 2) throw new Error('Invalid value for Follow');
             else return true;
-        })
+        }).run(req);
         await check('cpc').exists().trim().escape().isFloat().notEmpty().withMessage('CPC is required').custom(adSettingsValidation).run(req);
         await check('adult').exists().trim().escape().isInt().notEmpty().withMessage('Adult is required')
         .custom(val => {

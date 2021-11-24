@@ -26,7 +26,7 @@
 on:
   push:
     branches:
-      - 'feature/next' # push on develop branch 
+      - 'develop' # push on develop branch 
 
 name: Deploy Dev Version to Amazon ECS
 

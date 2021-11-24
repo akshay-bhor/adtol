@@ -7,7 +7,7 @@ const Banner_Sizes = require("../../../models/banner_sizes");
 const { encryptAES } = require("../../../common/encrypt");
 const crypto = require('crypto');
 const { Op } = require("sequelize");
-const { sendWebsitePendingMail } = require("../../../common/sendMails");
+const { sendWebsitePendingMail, sendWebsiteApprovedMail } = require("../../../common/sendMails");
 
 
 exports.websitesHelper = async (req) => {
@@ -359,6 +359,11 @@ exports.getAdcodeHelper = async (req) => {
     await check('webid').exists().withMessage('Please select a website!').trim().escape().isInt().withMessage('Invalid Website ID!').run(req);
     // Count for widget ad
     await check('count').trim().escape().isInt().withMessage('Count should be between 3 and 12!').run(req);
+    if(req.body.rel) await check('rel').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Follow').custom(val => {
+        if(val !== 0 || val !== 1 || val !== 2) throw new Error('Invalid value for Follow');
+        else return true;
+    }).run(req);
+    await check('category').exists().trim().escape().isString().notEmpty().withMessage('Category is required').custom(categoryValidation).run(req);
 
     try {
         // Check user input errors
@@ -560,4 +565,20 @@ exports.formdataHelper = async (req) => {
         categories: Object.keys(cats).map(key => ({ id: +key, name: cats[key] })),
         languages: Object.keys(lang).map(key => ({ id: +key, name: lang[key] })),
     };
+}
+
+const categoryValidation = (value) => {
+    if(value == 0) return true; // 0 is all values
+        
+    const data = App_Settings.categories;
+
+    const values = value.split(',');
+    const compareData = Object.keys(data).map(d => +d);
+
+    for(let val of values) {
+        if(!compareData.includes(+val)) {
+            throw new Error(`Invalid selection for Categories`);
+        }
+    }
+    return true;
 }
