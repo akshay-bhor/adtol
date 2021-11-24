@@ -6,8 +6,9 @@ import {
   makeStyles,
   MenuItem,
   Tooltip,
+  Typography,
 } from "@material-ui/core";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import Head from "next/head";
 import * as yup from "yup";
@@ -27,6 +28,9 @@ import {
 } from "../../FormUtils/FormUtils";
 import AdCodeContainer from "./AdCodeContainer";
 import { websiteActions } from "../../../store/reducers/websites.reducer";
+import { fetchWebsiteFormData } from "../../../store/actions/formdata.action";
+import TransferList from "../../FormUtils/TransferList";
+import { linkRelList } from "../../../constants/common";
 
 const useStyles = makeStyles((theme) => ({
   btnContainer: {
@@ -57,15 +61,19 @@ const AdCode = () => {
   const websites = useSelector((state) => state.website.data);
   const loading = useSelector((state) => state.website.loading);
   const err = useSelector((state) => state.website.error);
-  const fetched = useSelector((state) => state.website.fetched);
+  const webFetched = useSelector((state) => state.website.fetched);
+  const categories = useSelector((state) => state.formdata.categories);
   const adCodes = useSelector((state) => state.website.adCodes);
+  const [categoriesSelected, setCategoriesSelected] = useState();
   const dispatch = useDispatch();
   const muiStyles = useStyles();
 
   useEffect(() => {
-    if (!fetched) {
+    if (!webFetched) {
       dispatch(fetchWebsites());
     }
+
+    dispatch(fetchWebsiteFormData());
 
     // Reset error
     return () => {
@@ -75,6 +83,8 @@ const AdCode = () => {
   }, []);
 
   const submitForm = (data) => {
+    if(data.rel == '' || data.rel == null) delete data.rel;
+    data.category = categoriesSelected.length === categories.length ? '0':categoriesSelected.join(',');
     dispatch(fetchAdCodes(data));
   };
 
@@ -107,18 +117,19 @@ const AdCode = () => {
         </Link>
       </Box>
       <PaperBlock heading="Get Adcode" fullWidth="true">
-        {loading && websites.length === 0 && !err && (
+        {loading && websites.length === 0 && categories.length === 0 && !err && (
           <div className={styles.loader}>
             <Loading />
           </div>
         )}
 
-        {websites.length !== 0 && (
+        {websites.length !== 0 && categories.length !== 0 && (
           <Formik
             initialValues={{
               webid: "",
               count: 3,
               adult: false,
+              rel: ''
             }}
             validationSchema={adCodeValidationSchema}
             onSubmit={(values) => {
@@ -146,6 +157,27 @@ const AdCode = () => {
                 label="Widget Ad Count"
                 className={muiStyles.block}
               />
+
+              <Box component="div" className={muiStyles.block}>
+                <Typography variant="subtitle1" className={'text-left mb-10'}>Choose Ad Categories</Typography>
+                <TransferList 
+                  list={categories}
+                  selected={categories}
+                  setState={setCategoriesSelected}
+                />
+              </Box>
+
+              <MySelectField 
+                name="rel"
+                label="Follow"
+                className={muiStyles.block}
+              >
+                {linkRelList.map(item => (
+                  <MenuItem key={item.id} value={item.id}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+              </MySelectField>
 
               <div
                 className={[muiStyles.block, muiStyles.switchBlock].join(" ")}
@@ -180,7 +212,7 @@ const AdCode = () => {
           </Formik>
         )}
 
-        {!loading && websites.length === 0 && fetched && (
+        {!loading && websites.length === 0 && webFetched && (
           <span className={"bold text-center"}>
             No websites found, please add atleast one website and try again!
           </span>

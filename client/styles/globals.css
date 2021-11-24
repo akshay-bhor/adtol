@@ -32,8 +32,16 @@ code {
   margin-top: 5px!important;
 }
 
+.mb-5 {
+  margin-bottom: 5px!important;
+}
+
 .mt-10 {
   margin-top: 10px!important;
+}
+
+.mb-10 {
+  margin-bottom: 10px!important;
 }
 
 .mt-60 {
@@ -82,6 +90,14 @@ code {
 
 .text-center {
   text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
 }
 
 .bold {
