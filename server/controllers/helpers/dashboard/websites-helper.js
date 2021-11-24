@@ -140,6 +140,9 @@ exports.addWebsiteHelper = async (req) => {
             throw err;
         }
 
+        // set default status to approved
+        const status = 1;
+
         // Insert
         const insert = Pub_Sites.create({
             uid: userid,
@@ -148,11 +151,13 @@ exports.addWebsiteHelper = async (req) => {
             category: catId,
             language: langId,
             traffic: traffic,
-            adult: adult
+            adult: adult,
+            status: status
         });
 
         // Send Mail
-        sendWebsitePendingMail(req.userInfo.mail, req.userInfo.user, domain);
+        // sendWebsitePendingMail(req.userInfo.mail, req.userInfo.user, domain);
+        sendWebsiteApprovedMail(req.userInfo.mail, req.userInfo.user, domain);
 
         // Return
         return {
