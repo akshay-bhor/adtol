@@ -347,13 +347,13 @@ exports.manageCampaignHelper = async (req) => {
         await check('timezone').exists().trim().isString().notEmpty().withMessage('Timezone is required').custom(timezoneValidation).run(req);
         if(requiredFields.includes('btn')) await check('btn').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Button').custom(btnValidation).run(req);
         if(requiredFields.includes('follow')) await check('rel').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Follow').custom(val => {
-            if(val !== 0 || val !== 1 || val !== 2) throw new Error('Invalid value for Follow');
+            if(+val !== 0 && +val !== 1 && +val !== 2) throw new Error('Invalid value for Follow');
             else return true;
         }).run(req);
         await check('cpc').exists().trim().escape().isFloat().notEmpty().withMessage('CPC is required').custom(adSettingsValidation).run(req);
         await check('adult').exists().trim().escape().isInt().notEmpty().withMessage('Adult is required')
         .custom(val => {
-            if(val == 0 || val == 1) return true;
+            if(+val == 0 || +val == 1) return true;
             else throw new Error('Invalid selection for Adult');
         }).run(req);
         await check('budget').exists().trim().escape().isFloat().notEmpty().withMessage('Budget is required').custom(adSettingsValidation).run(req);

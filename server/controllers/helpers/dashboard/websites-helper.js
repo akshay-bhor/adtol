@@ -360,7 +360,7 @@ exports.getAdcodeHelper = async (req) => {
     // Count for widget ad
     await check('count').trim().escape().isInt().withMessage('Count should be between 3 and 12!').run(req);
     if(req.body.rel) await check('rel').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Follow').custom(val => {
-        if(val !== 0 || val !== 1 || val !== 2) throw new Error('Invalid value for Follow');
+        if(+val !== 0 && +val !== 1 && +val !== 2) throw new Error('Invalid value for Follow');
         else return true;
     }).run(req);
     await check('category').exists().trim().escape().isString().notEmpty().withMessage('Category is required').custom(categoryValidation).run(req);
@@ -399,6 +399,8 @@ exports.getAdcodeHelper = async (req) => {
         // Get user input
         const webid = req.body.webid;
         let adult = req.body.adult ? 1:0;
+        const webCats = req.body.category;
+        const webRel = req.body.rel ? req.body.rel:null;
 
         // Script extension based on env
         let scriptEXT = 'js';
@@ -433,6 +435,8 @@ exports.getAdcodeHelper = async (req) => {
         webInfoObj.ad_hash = webInfo.dataValues.hash;
         webInfoObj.ad_lang = webInfo.dataValues.language;
         webInfoObj.ad_cat = webInfo.dataValues.category;
+        webInfoObj.web_cat = webCats;
+        if(webRel) webInfoObj.web_rel = webRel;
         webInfoObj.ad_count = 1;
         webInfoObj.type = 'adcode';
 

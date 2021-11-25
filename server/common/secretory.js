@@ -1,5 +1,6 @@
 const { App_Settings } = require('./settings');
 const parser = require('ua-parser-js');
+const { intersectionArr } = require('./util');
 
 exports.secretory = (result, req) => {
     /**
@@ -17,7 +18,11 @@ exports.secretory = (result, req) => {
 
      for(let i = 0;i < adPoolLength;i++) {
          // Return if best ad is found first
-         let matchPerc = matchAd(result[i], req);
+         const matchPerc = matchAd(result[i], req);
+
+         // Skip if 0
+         if(matchPerc === 0) continue;
+
          if(matchPerc >= 99 && ad_count == 1) {
              ad_match_keys.push(i);
              ad_match_perc.push(matchPerc);
@@ -71,17 +76,47 @@ matchAd = (resObj, req) => {
     let match_perc = 0;
 
     /**
+     * Match DoFollow
+     */
+    const webRel = +req.webInfo.web_rel || null; // webRel is null for old adcodes
+    const adRel = resObj.rel || null; // adRel is null for pop ads
+    if(adRel !== null && webRel !== null) { 
+        if(webRel !== 1 && adRel == 1) return 0;
+    } 
+
+    /**
      * Match Category
      *  */ 
     // Get categories for ad
     const adCats = resObj.category.split('|').map(d => +d); // Convert to int
     // Get website category
     const webCat = req.webInfo.ad_cat;
-    if(adCats[0] == 0 || adCats.includes(webCat)) { 
-        match_perc += 15;
+    // Get allowed category from adcode
+    const allowedCats = req.webInfo.web_cat || null;
+
+    /** 
+     * Old Without Categories
+     * -- Merge these two after some time --
+     *  */
+    if(!allowedCats) {
+        if(adCats[0] == 0 || adCats.includes(webCat)) { 
+            match_perc += 15;
+        }
+        else {
+            match_perc += 0;
+        }
     }
-    else {
-        match_perc += 0;
+    else { /** New With Categories in AdCode */
+        const webAllowedCats = allowedCats.split(',').map(v => +v);
+        if(adCats[0] == 0 || 
+            (adCats.includes(webCat) && webAllowedCats[0] == 0) || 
+            (adCats.includes(webCat) && intersectionArr(webAllowedCats, adCats).length > 0)
+          ) { 
+            match_perc += 15;
+        }
+        else {
+            match_perc += 0;
+        }
     }
     
     /**
