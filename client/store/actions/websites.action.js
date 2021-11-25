@@ -1,6 +1,7 @@
 import { websiteActions } from "../reducers/websites.reducer";
 import { abortRequest, addWebsite, deleteWebsiteApi, editWebsite, getAdcode, getWebsitesList } from "../../services/apiService";
 import { uiActions } from "../reducers/ui.reducer";
+import { authActions } from "../reducers/auth.reducer";
 
 const _websiteGetRequest = (sendRequest) => {
     return async (dispatch) => {
@@ -31,12 +32,15 @@ const _websitePostRequest = (sendRequest, data) => {
     try {
       dispatch(websiteActions.setError(null));
       dispatch(websiteActions.setSuccess(null));
-      await sendRequest(data);
+      const res = await sendRequest(data);
 
       dispatch(websiteActions.setLoading(false));
       dispatch(websiteActions.setSuccess(true));
 
       dispatch(uiActions.showSnack({severity: 'success', message: "Request completed successfully"}))
+
+      // Return data if any
+      return res.data;
 
     } catch (err) {
       dispatch(websiteActions.setError(err));
@@ -58,8 +62,9 @@ export const updateWebsite = (data) => {
 
 export const createWebsite = (data) => {
   return async (dispatch) => {
-    await dispatch(_websitePostRequest(addWebsite, data));
-    dispatch(websiteActions.setFetched(false));
+    const res = await dispatch(_websitePostRequest(addWebsite, data));
+    await dispatch(websiteActions.setFetched(false));
+    if(res) dispatch(authActions.setRedirect(`/dashboard/get-adcode?selected=${res.id}`));
   }
 }
 

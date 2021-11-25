@@ -144,7 +144,7 @@ exports.addWebsiteHelper = async (req) => {
         const status = 1;
 
         // Insert
-        const insert = Pub_Sites.create({
+        const insert = await Pub_Sites.create({
             uid: userid,
             domain: domain,
             hash: dHash,
@@ -154,14 +154,15 @@ exports.addWebsiteHelper = async (req) => {
             adult: adult,
             status: status
         });
-
+        
         // Send Mail
         // sendWebsitePendingMail(req.userInfo.mail, req.userInfo.user, domain);
         sendWebsiteApprovedMail(req.userInfo.mail, req.userInfo.user, domain);
 
         // Return
         return {
-            msg: 'success'
+            msg: 'success',
+            id: insert.dataValues.id
         };
 
     } catch(err) {

@@ -31,6 +31,7 @@ import { websiteActions } from "../../../store/reducers/websites.reducer";
 import { fetchWebsiteFormData } from "../../../store/actions/formdata.action";
 import TransferList from "../../FormUtils/TransferList";
 import { linkRelList } from "../../../constants/common";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
   btnContainer: {
@@ -44,6 +45,18 @@ const useStyles = makeStyles((theme) => ({
     ["@media(max-width:780px)"]: {
       width: "100%",
     },
+  },
+  formGroup: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start'
+  },
+  catContainer: {
+    margin: '15px auto'
+  },
+  label: {
+    fontSize: "1.2em",
+    fontWeight: "500",
   },
   switchBlock: {
     overflow: "hidden",
@@ -65,9 +78,11 @@ const AdCode = () => {
   const categories = useSelector((state) => state.formdata.categories);
   const adCodes = useSelector((state) => state.website.adCodes);
   const [categoriesSelected, setCategoriesSelected] = useState();
+  const router = useRouter();
   const dispatch = useDispatch();
   const muiStyles = useStyles();
-
+  const siteSelected = +router.query.selected || '';
+  
   useEffect(() => {
     if (!webFetched) {
       dispatch(fetchWebsites());
@@ -126,12 +141,13 @@ const AdCode = () => {
         {websites.length !== 0 && categories.length !== 0 && (
           <Formik
             initialValues={{
-              webid: "",
+              webid: siteSelected,
               count: 3,
               adult: false,
               rel: ''
             }}
             validationSchema={adCodeValidationSchema}
+            enableReinitialize={true}
             onSubmit={(values) => {
               submitForm(values);
             }}
@@ -158,13 +174,15 @@ const AdCode = () => {
                 className={muiStyles.block}
               />
 
-              <Box component="div" className={muiStyles.block}>
-                <Typography variant="subtitle1" className={'text-left mb-10'}>Choose Ad Categories</Typography>
-                <TransferList 
-                  list={categories}
-                  selected={categories}
-                  setState={setCategoriesSelected}
-                />
+              <Box component="div" className={muiStyles.formGroup}>
+                <Box component="div" className={muiStyles.catContainer}>
+                  <Typography className={muiStyles.label}>Choose Ad Categories</Typography>
+                  <TransferList 
+                    list={categories}
+                    selected={categories}
+                    setState={setCategoriesSelected}
+                  />
+                </Box>
               </Box>
 
               <MySelectField 

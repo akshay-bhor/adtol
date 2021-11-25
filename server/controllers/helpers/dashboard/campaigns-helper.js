@@ -40,7 +40,7 @@ exports.campaignsHelper = async(req) => {
         // Get campaign types
         const campTypes = await Campaign_types.findAll();
 
-        const campaigns = await sequelize.query('SELECT id, campaign_title, campaign_type, cpc, views, clicks, pops, budget, budget_rem, spent, adult, run, status, pro FROM campaigns WHERE uid = ? AND status != 4',
+        const campaigns = await sequelize.query('SELECT id, campaign_title, campaign_type, cpc, views, clicks, pops, budget, budget_rem, today_budget, today_budget_rem, spent, adult, run, status, pro FROM campaigns WHERE uid = ? AND status != 4',
         {
             type: QueryTypes.SELECT,
             replacements: [userid]
@@ -56,7 +56,9 @@ exports.campaignsHelper = async(req) => {
             campData.pops = data.pops;
             campData.budget = parseFloat(data.budget).toFixed(2);
             campData.budget_rem = parseFloat(data.budget_rem).toFixed(2);
-            campData.cost = data.cost;
+            campData.daily_budget = parseFloat(data.today_budget).toFixed(2);
+            campData.daily_budget_rem = parseFloat(data.today_budget_rem).toFixed(2);
+            campData.cost = data.spent.toFixed(2);
             if(data.adult == 1)
                 campData.adult = true;
             else    

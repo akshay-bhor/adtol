@@ -52,6 +52,7 @@ const campaignCols = [
   { field: "pops", headerName: "Pops", flex: 0.6, headerAlign: 'center' },
   { field: "cpc", headerName: "CPC", flex: 0.6, headerAlign: 'center' },
   { field: "budget", headerName: "Budget", flex: 0.8, headerAlign: 'center' },
+  { field: "daily_budget", headerName: "Daily Budget", flex: 0.6, headerAlign: 'center' },
   { field: "manage", headerName: "Manage", flex: 0.6, headerAlign: 'center' },
 ];
 
@@ -67,6 +68,7 @@ const mapRows = (data) => {
       pops: (+item.pops).toLocaleString(),
       cpc: "$" + parseFloat(item.cpc),
       budget: "$" + item.budget + ", rem:" + "$" + item.budget_rem,
+      daily_budget: "$" + item.daily_budget + ", rem:" + "$" + item.daily_budget_rem,
       manage: "Manage",
     };
   });
@@ -291,6 +293,23 @@ const CampaignList = () => {
             ].join(" ")}
           >
             {budget[1]}
+          </div>
+        </Fragment>
+      );
+    }
+    if (params.colDef.field == "daily_budget") {
+      const daily_budget = params.value.split(",");
+      return (
+        <Fragment>
+          <div className="bold">{daily_budget[0]}</div>
+          <div
+            className={[
+              styles.budgetContainer,
+              "bold",
+              "subtitle",
+            ].join(" ")}
+          >
+            {daily_budget[1]}
           </div>
         </Fragment>
       );
