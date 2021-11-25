@@ -58,7 +58,7 @@ if (!isHidden(parent)) {
           ><img
             src="${ads[i].banner}"
             alt="${ads[i].title}"
-            style="position: relative" /></a
+            style="position: relative;max-width:100%!important;height:auto;" /></a
         ><a target="_blank" href="https://www.adtol.com"
           ><img
             src="${res.adchoices}"
