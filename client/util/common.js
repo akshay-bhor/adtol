@@ -22,7 +22,13 @@ export const validAuthToken = () => {
 export const parseAuthToken = () => {
   if(process.browser) {
     const token = window.localStorage.getItem("authToken");
-    return JSON.parse(atob(token.split(".")[1]));
+    try {
+      const userData = JSON.parse(atob(token.split(".")[1]));
+      return userData;
+    }
+    catch (err) {
+      return null;
+    }
   }
 }
 

@@ -1,5 +1,6 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import Head from "next/head";
+import { useRouter } from "next/router";
 import Heading from '../Common/Heading';
 import MidContent from './MidContent';
 import advertiserImg from '../../../public/assets/svg/advertiser.svg';
@@ -13,6 +14,7 @@ import styles from "../Common/Content.module.css";
 import PointList from '../Common/PointList';
 import LayeredQuote from '../Common/LayeredQuote';
 import { getAdQuote } from '../../../util/common';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
     quoteContainer: {
@@ -108,6 +110,12 @@ const points = [
 
 const HomePage = () => {
     const muiStyles = useStyles();
+    const loggedIn = useSelector((state) => state.auth.loggedIn);
+    const router = useRouter();
+
+    useEffect(() => {
+        if(loggedIn) router.push('/dashboard');
+    }, []);
 
     const adQuote = () => {
         const [quote, author] = getAdQuote();

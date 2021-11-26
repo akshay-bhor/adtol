@@ -123,7 +123,7 @@ const ManageMenu = (props) => {
           </Link>
         </Box>
           <Box component="div" className={muiStyles.menuBtnContainer}>
-            <Link href={`/dashboard/get-adcode`}>
+            <Link href={`/dashboard/get-adcode?selected=${id}`}>
               <a>
                 <Button
                   color="primary"

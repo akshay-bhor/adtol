@@ -77,7 +77,7 @@ export const autoLogin = () => {
       dispatch(authActions.login());
       // Load User
       const userData = parseAuthToken();
-      dispatch(userActions.loadUser(userData));
+      if(userData) dispatch(userActions.loadUser(userData));
     }
   };
 };
