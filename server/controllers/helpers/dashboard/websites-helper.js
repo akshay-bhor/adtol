@@ -401,8 +401,8 @@ exports.getAdcodeHelper = async (req) => {
         const webid = req.body.webid;
         let adult = req.body.adult ? 1:0;
         const webCats = req.body.category;
-        const webRel = req.body.rel ? req.body.rel:null;
-
+        const webRel = req.body.rel !== null ? req.body.rel:null;
+        
         // Script extension based on env
         let scriptEXT = 'js';
         if(process.env.NODE_ENV === 'development') scriptEXT = 'dev.js';
@@ -437,7 +437,7 @@ exports.getAdcodeHelper = async (req) => {
         webInfoObj.ad_lang = webInfo.dataValues.language;
         webInfoObj.ad_cat = webInfo.dataValues.category;
         webInfoObj.web_cat = webCats;
-        if(webRel) webInfoObj.web_rel = webRel;
+        if(webRel !== null) webInfoObj.web_rel = webRel;
         webInfoObj.ad_count = 1;
         webInfoObj.type = 'adcode';
 
