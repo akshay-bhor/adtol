@@ -40,7 +40,7 @@ exports.campaignsHelper = async(req) => {
         // Get campaign types
         const campTypes = await Campaign_types.findAll();
 
-        const campaigns = await sequelize.query('SELECT id, campaign_title, campaign_type, cpc, views, clicks, pops, budget, budget_rem, spent, adult, run, status, pro FROM campaigns WHERE uid = ? AND status != 4',
+        const campaigns = await sequelize.query('SELECT id, campaign_title, campaign_type, cpc, views, clicks, pops, budget, budget_rem, today_budget, today_budget_rem, spent, adult, run, status, pro FROM campaigns WHERE uid = ? AND status != 4',
         {
             type: QueryTypes.SELECT,
             replacements: [userid]
@@ -56,7 +56,9 @@ exports.campaignsHelper = async(req) => {
             campData.pops = data.pops;
             campData.budget = parseFloat(data.budget).toFixed(2);
             campData.budget_rem = parseFloat(data.budget_rem).toFixed(2);
-            campData.cost = data.cost;
+            campData.daily_budget = parseFloat(data.today_budget).toFixed(2);
+            campData.daily_budget_rem = parseFloat(data.today_budget_rem).toFixed(2);
+            campData.cost = data.spent.toFixed(2);
             if(data.adult == 1)
                 campData.adult = true;
             else    
@@ -347,13 +349,13 @@ exports.manageCampaignHelper = async (req) => {
         await check('timezone').exists().trim().isString().notEmpty().withMessage('Timezone is required').custom(timezoneValidation).run(req);
         if(requiredFields.includes('btn')) await check('btn').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Button').custom(btnValidation).run(req);
         if(requiredFields.includes('follow')) await check('rel').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Follow').custom(val => {
-            if(val !== 0 || val !== 1 || val !== 2) throw new Error('Invalid value for Follow');
+            if(+val !== 0 && +val !== 1 && +val !== 2) throw new Error('Invalid value for Follow');
             else return true;
-        })
+        }).run(req);
         await check('cpc').exists().trim().escape().isFloat().notEmpty().withMessage('CPC is required').custom(adSettingsValidation).run(req);
         await check('adult').exists().trim().escape().isInt().notEmpty().withMessage('Adult is required')
         .custom(val => {
-            if(val == 0 || val == 1) return true;
+            if(+val == 0 || +val == 1) return true;
             else throw new Error('Invalid selection for Adult');
         }).run(req);
         await check('budget').exists().trim().escape().isFloat().notEmpty().withMessage('Budget is required').custom(adSettingsValidation).run(req);

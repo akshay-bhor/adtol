@@ -7,7 +7,7 @@ const Banner_Sizes = require("../../../models/banner_sizes");
 const { encryptAES } = require("../../../common/encrypt");
 const crypto = require('crypto');
 const { Op } = require("sequelize");
-const { sendWebsitePendingMail } = require("../../../common/sendMails");
+const { sendWebsitePendingMail, sendWebsiteApprovedMail } = require("../../../common/sendMails");
 
 
 exports.websitesHelper = async (req) => {
@@ -140,23 +140,29 @@ exports.addWebsiteHelper = async (req) => {
             throw err;
         }
 
+        // set default status to approved
+        const status = 1;
+
         // Insert
-        const insert = Pub_Sites.create({
+        const insert = await Pub_Sites.create({
             uid: userid,
             domain: domain,
             hash: dHash,
             category: catId,
             language: langId,
             traffic: traffic,
-            adult: adult
+            adult: adult,
+            status: status
         });
-
+        
         // Send Mail
-        sendWebsitePendingMail(req.userInfo.mail, req.userInfo.user, domain);
+        // sendWebsitePendingMail(req.userInfo.mail, req.userInfo.user, domain);
+        sendWebsiteApprovedMail(req.userInfo.mail, req.userInfo.user, domain);
 
         // Return
         return {
-            msg: 'success'
+            msg: 'success',
+            id: insert.dataValues.id
         };
 
     } catch(err) {
@@ -354,6 +360,11 @@ exports.getAdcodeHelper = async (req) => {
     await check('webid').exists().withMessage('Please select a website!').trim().escape().isInt().withMessage('Invalid Website ID!').run(req);
     // Count for widget ad
     await check('count').trim().escape().isInt().withMessage('Count should be between 3 and 12!').run(req);
+    if(req.body.rel) await check('rel').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Follow').custom(val => {
+        if(+val !== 0 && +val !== 1 && +val !== 2) throw new Error('Invalid value for Follow');
+        else return true;
+    }).run(req);
+    await check('category').exists().trim().escape().isString().notEmpty().withMessage('Category is required').custom(categoryValidation).run(req);
 
     try {
         // Check user input errors
@@ -389,6 +400,8 @@ exports.getAdcodeHelper = async (req) => {
         // Get user input
         const webid = req.body.webid;
         let adult = req.body.adult ? 1:0;
+        const webCats = req.body.category;
+        const webRel = req.body.rel ? req.body.rel:null;
 
         // Script extension based on env
         let scriptEXT = 'js';
@@ -423,6 +436,8 @@ exports.getAdcodeHelper = async (req) => {
         webInfoObj.ad_hash = webInfo.dataValues.hash;
         webInfoObj.ad_lang = webInfo.dataValues.language;
         webInfoObj.ad_cat = webInfo.dataValues.category;
+        webInfoObj.web_cat = webCats;
+        if(webRel) webInfoObj.web_rel = webRel;
         webInfoObj.ad_count = 1;
         webInfoObj.type = 'adcode';
 
@@ -555,4 +570,20 @@ exports.formdataHelper = async (req) => {
         categories: Object.keys(cats).map(key => ({ id: +key, name: cats[key] })),
         languages: Object.keys(lang).map(key => ({ id: +key, name: lang[key] })),
     };
+}
+
+const categoryValidation = (value) => {
+    if(value == 0) return true; // 0 is all values
+        
+    const data = App_Settings.categories;
+
+    const values = value.split(',');
+    const compareData = Object.keys(data).map(d => +d);
+
+    for(let val of values) {
+        if(!compareData.includes(+val)) {
+            throw new Error(`Invalid selection for Categories`);
+        }
+    }
+    return true;
 }

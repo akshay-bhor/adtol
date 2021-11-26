@@ -88,3 +88,15 @@ exports.executeAllQueries = async (queries) => {
 
     return Promise.all(promises);
 }
+
+exports.intersectionArrObj = (a, b) => { 
+    const a_ids = a.map(v => +v.id);
+    const b_ids = b.map(v => +v.id);
+    return a_ids.filter((value) => b_ids.indexOf(value.id) !== -1);
+}
+
+exports.intersectionArr = (a, b) => { 
+    const a_ids = a.map(v => +v);
+    const b_ids = b.map(v => +v);
+    return a_ids.filter((value) => b_ids.indexOf(value) !== -1);
+}
