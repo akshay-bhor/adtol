@@ -55,7 +55,7 @@ if (!isHidden(parent)) {
                 src="${ads[i].banner}"
                 alt="${ads[i].title}"
               />
-              <a target="_blank" href="https://www.adtol.com">
+              <a target="_blank"${rel} href="https://www.adtol.com">
                 <img
                     src="${res.adchoices}"
                     alt="ad"

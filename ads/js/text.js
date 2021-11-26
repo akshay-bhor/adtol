@@ -65,6 +65,7 @@ if (!isHidden(parent)) {
         <div style="color: #333; text-align: left !important">
           <a
             target="_blank"
+            ${rel}
             style="
               margin: 2px;
               padding: 2px;

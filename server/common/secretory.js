@@ -55,7 +55,7 @@ exports.secretory = (result, req) => {
      return ad_match_keys;
 }
 
-processArr = (keyArr, percArr, count) => {
+const processArr = (keyArr, percArr, count) => {
     // Check count
     if(keyArr.length <= count) {
         return;
@@ -71,15 +71,15 @@ processArr = (keyArr, percArr, count) => {
     return;
 }
 
-matchAd = (resObj, req) => {
+const matchAd = (resObj, req) => {
 
     let match_perc = 0;
 
     /**
      * Match DoFollow
      */
-    const webRel = +req.webInfo.web_rel || null; // webRel is null for old adcodes
-    const adRel = resObj.rel || null; // adRel is null for pop ads
+    const webRel = req.webInfo.web_rel != null ? +req.webInfo.web_rel : null; // webRel is null for old adcodes
+    const adRel = resObj.rel != null ? +resObj.rel : null; // adRel is null for pop ads
     if(adRel !== null && webRel !== null) { 
         if(webRel !== 1 && adRel == 1) return 0;
     } 

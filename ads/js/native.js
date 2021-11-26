@@ -74,6 +74,7 @@ if (!isHidden(parent)) {
         >
           <a
             target="_blank"
+            ${rel}
             style="font-size:16px;display:inline-block;text-decoration:none;overflow:hidden;text-overflow:ellipsis;line-height:24px"
             href="${ads[i].process}"
             >${ads[i].title}</a

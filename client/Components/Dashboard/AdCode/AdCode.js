@@ -30,7 +30,6 @@ import AdCodeContainer from "./AdCodeContainer";
 import { websiteActions } from "../../../store/reducers/websites.reducer";
 import { fetchWebsiteFormData } from "../../../store/actions/formdata.action";
 import TransferList from "../../FormUtils/TransferList";
-import { linkRelList } from "../../../constants/common";
 import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
@@ -70,6 +69,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const linkRelList = [
+  {
+    id: 0,
+    name: "Nofollow: Lower Revenue & No Sharing of Page Authority"
+  },
+  {
+    id: 1,
+    name: "DoFollow: Higher Revenue & Share Page Authority"
+  },
+  {
+    id: 2,
+    name: "Nofollow Noreferrer Noopener: Lower Revenue, No Sharing of Page Authority & Anonymous Referrer"
+  }
+];
+
 const AdCode = () => {
   const websites = useSelector((state) => state.website.data);
   const loading = useSelector((state) => state.website.loading);
@@ -81,7 +95,8 @@ const AdCode = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const muiStyles = useStyles();
-  const siteSelected = +router.query.selected || '';
+  const siteQuery = +router.query.selected || '';
+  const [siteSelected, setSiteSelected] = useState(siteQuery);
   
   useEffect(() => {
     if (!webFetched) {
@@ -98,7 +113,7 @@ const AdCode = () => {
   }, []);
 
   const submitForm = (data) => {
-    if(data.rel == '' || data.rel == null) delete data.rel;
+    if(data.rel == null) delete data.rel;
     data.category = categoriesSelected.length === categories.length ? '0':categoriesSelected.join(',');
     dispatch(fetchAdCodes(data));
   };
@@ -111,6 +126,7 @@ const AdCode = () => {
       .min(3, "Min count is 3")
       .max(12, "Max count is 12"),
     adult: yup.boolean(),
+    rel: yup.number().optional()
   });
 
   return (
