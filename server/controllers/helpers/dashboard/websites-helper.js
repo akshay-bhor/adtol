@@ -360,7 +360,7 @@ exports.getAdcodeHelper = async (req) => {
     await check('webid').exists().withMessage('Please select a website!').trim().escape().isInt().withMessage('Invalid Website ID!').run(req);
     // Count for widget ad
     await check('count').trim().escape().isInt().withMessage('Count should be between 3 and 12!').run(req);
-    if(req.body.rel) await check('rel').exists().trim().escape().isInt().notEmpty().withMessage('Invalid Follow').custom(val => {
+    if(req.body.rel !== undefined) await check('rel').exists().trim().escape().isInt().withMessage('Invalid Follow').notEmpty().withMessage('Invalid Follow').custom(val => {
         if(+val !== 0 && +val !== 1 && +val !== 2) throw new Error('Invalid value for Follow');
         else return true;
     }).run(req);
@@ -401,7 +401,7 @@ exports.getAdcodeHelper = async (req) => {
         const webid = req.body.webid;
         let adult = req.body.adult ? 1:0;
         const webCats = req.body.category;
-        const webRel = req.body.rel !== null ? req.body.rel:null;
+        const webRel = req.body.rel !== undefined ? req.body.rel:null;
         
         // Script extension based on env
         let scriptEXT = 'js';
@@ -440,7 +440,7 @@ exports.getAdcodeHelper = async (req) => {
         if(webRel !== null) webInfoObj.web_rel = webRel;
         webInfoObj.ad_count = 1;
         webInfoObj.type = 'adcode';
-
+        
         // Create Ad Codes for banners
         let code = '';
         let bannerAdCodes = [];

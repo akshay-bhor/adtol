@@ -113,7 +113,7 @@ const AdCode = () => {
   }, []);
 
   const submitForm = (data) => {
-    if(data.rel == null) delete data.rel;
+    if(data.rel.length == 0 || data.rel == null) delete data.rel;
     data.category = categoriesSelected.length === categories.length ? '0':categoriesSelected.join(',');
     dispatch(fetchAdCodes(data));
   };
