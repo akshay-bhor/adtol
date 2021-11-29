@@ -40,21 +40,21 @@ exports.adminSitesListHelper = async (req) => {
 
     // Query builder
     let sQuery = `WHERE `;
-    if(sort == 1) sQuery += `status != 9`;
-    if(sort == 2) sQuery += `status = 2`;
-    if(sort == 3) sQuery += `status = 3`;
-    if(uid) sQuery += ` AND uid = ${uid}`;
-    if(site) sQuery += ` AND hash = '${site}'`;
+    if(sort == 1) sQuery += `s.status != 9`;
+    if(sort == 2) sQuery += `s.status = 2`;
+    if(sort == 3) sQuery += `s.status = 3`;
+    if(uid) sQuery += ` AND s.uid = ${uid}`;
+    if(site) sQuery += ` AND s.hash = '${site}'`;
 
 
     // Build query
     let fields =
-      "id, uid, domain, category, language, traffic, adult, views, clicks, pops, earned, status";
+      "s.id, s.uid, u.user, s.domain, s.category, s.language, s.traffic, s.adult, s.views, s.clicks, s.pops, s.earned, s.status";
     let resquery;
     let cquery;
     
-    resquery = `SELECT ${fields} FROM pub_sites ${sQuery} ORDER BY id DESC ${limitQuery}`;
-    cquery = `SELECT COUNT(id) as total FROM pub_sites ${sQuery}`;
+    resquery = `SELECT ${fields} FROM pub_sites s INNER JOIN users u ON s.uid = u.id ${sQuery} ORDER BY id DESC ${limitQuery}`;
+    cquery = `SELECT COUNT(id) as total FROM pub_sites s ${sQuery}`;
 
     let result = await sequelize.query(resquery, {
       type: QueryTypes.SELECT,

@@ -29,7 +29,7 @@ const RegisterRequirements = () => {
         <li>Have minimum 200 unique visitors per day.</li>
         <li>Select adult, if you have nsfw content.</li>
         </ol>
-        <p>For more info, read our <Link href="/publisher-guidelines"><a className={muiStyles.link}>Publisher Guidelines</a></Link>.</p>
+        <p>For more info, read our <Link href="/guidelines"><a className={muiStyles.link}>Publisher Guidelines</a></Link>.</p>
         <h3>Advertiser Requirement</h3>
         <b>Your Website Must:</b>
         <ol>
@@ -37,7 +37,7 @@ const RegisterRequirements = () => {
         <li>Not contain any illegal content.</li>
         <li>Not link/redirect to any illegal website.</li>
         </ol>
-        <p>For more info, read our <Link href="/advertiser-guidelines"><a className={muiStyles.link}>Advertiser Guidelines</a></Link>.</p>
+        <p>For more info, read our <Link href="/guidelines"><a className={muiStyles.link}>Advertiser Guidelines</a></Link>.</p>
       </Box>    
     );
 }
