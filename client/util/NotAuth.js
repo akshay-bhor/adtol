@@ -6,7 +6,7 @@ const NotAuth = WrappedComponent => props => {
     const router = useRouter();
 
     useEffect(() => {
-        if(validAuthToken() === true) router.replace('/dashboard');
+        if(validAuthToken() !== false) router.replace('/dashboard');
     }, []);
 
     // Check localstorage token
