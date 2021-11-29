@@ -1,4 +1,4 @@
-import { Typography } from "@material-ui/core";
+import { Typography, Box, Tooltip } from "@material-ui/core";
 import styles from "./common.module.css";
 import PaperBlockPrimary from "./PaperBlockPrimary";
 
@@ -14,7 +14,12 @@ const SummaryBlock = (props) => {
                 {item.title}
               </Typography>
               <Typography variant="h4" display="block">
-                {item.prefix}{(+item.value).toLocaleString()}
+                {item.tooltip ? 
+                  <Tooltip title={+item.value} arrow>
+                    <Box>{item.prefix}{(parseFloat(item.value).toFixed(2)).toLocaleString()}</Box>
+                  </Tooltip> : 
+                  <Box>{item.prefix}{(+item.value).toLocaleString()}</Box>
+                }
               </Typography>
             </div>
           )

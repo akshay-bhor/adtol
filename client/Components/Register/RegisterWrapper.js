@@ -21,7 +21,11 @@ const RegisterWrapper = (props) => {
   return (
     <Fragment>
       <Head>
-        <title>Register - AdTol</title>
+        <title>Join The Best Ad Network for Publishers & Advertisers - Adtol</title>
+        <meta
+          name="description"
+          content="Join The Best Ad Network for Publishers to Monetize Websites & Blogs and Advertisers to Advertise Products, Grow Business & Make Profit. Join Adtol Now!"
+        />
       </Head>
       {props.children}
     </Fragment>

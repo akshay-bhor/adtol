@@ -9,11 +9,8 @@ import { MyTextField, MySelectField, MyCheckboxField } from "../FormUtils/FormUt
 
 const useStyles = makeStyles(theme => ({
   block: {
-    width: "60%",
-    margin: "15px auto",
-    ["@media(max-width:780px)"]: {
-      width: "100%",
-    },
+    width: "100%",
+    margin: "15px auto"
   },
   btn: {
     float:'left',
@@ -101,7 +98,7 @@ const FormContent = (props) => {
             <MyTextField
               name="ref_by"
               type="text"
-              label="Have a Referrel Code?"
+              label="Have a Referral Code?"
               className={muiStyle.block}
             />
             <MyCheckboxField
@@ -111,16 +108,16 @@ const FormContent = (props) => {
               className={muiStyle.block}
             />
             <div className={[styles.submitContainer, 'w-60'].join(' ')}>
-            <Button
-              variant="contained"
-              className={muiStyle.btn}
-              type="submit"
-              color="primary"
-              disabled={loading || countries.length === 0 || !hasRecaptcha}
-            >
-              {loading ? "Please Wait..." : "Register"}
-            </Button>
-            {!props.isGoogle && <GoogleSignIn onSuccess={props.onSuccess} />}
+              <Button
+                variant="contained"
+                className={muiStyle.btn}
+                type="submit"
+                color="primary"
+                disabled={loading || countries.length === 0 || !hasRecaptcha}
+              >
+                {loading ? "Please Wait..." : "Register"}
+              </Button>
+              {!props.isGoogle && <GoogleSignIn onSuccess={props.onSuccess} />}
             </div>
           </Form>
 

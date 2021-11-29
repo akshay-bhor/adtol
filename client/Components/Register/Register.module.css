@@ -21,11 +21,9 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
-    max-width: 60%;
-    margin:auto
 }
 
-@media(max-width:780px) {
+@media(max-width:1080px) {
     .registerContainer {
         width: 98%;
     }

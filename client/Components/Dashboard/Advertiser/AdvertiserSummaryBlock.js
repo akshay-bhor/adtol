@@ -23,13 +23,15 @@ const AdvertiserSummaryBlock = (props) => {
             key: 4,
             title: 'Spending',
             value: data.ad_spending,
-            prefix: '$'
+            prefix: '$',
+            tooltip: true
         },
         {
             key: 5,
             title: 'Balance',
             value: data.ad_balance,
-            prefix: '$'
+            prefix: '$',
+            tooltip: true
         }
     ]
 

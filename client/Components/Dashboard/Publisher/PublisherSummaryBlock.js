@@ -23,13 +23,15 @@ const PublisherSummaryBlock = (props) => {
             key: 4,
             title: 'Earning',
             value: data.pub_earning,
-            prefix: '$'
+            prefix: '$',
+            tooltip: true
         },
         {
             key: 5,
             title: 'Balance',
             value: data.pub_balance,
-            prefix: '$'
+            prefix: '$',
+            tooltip: true
         }
     ]
 

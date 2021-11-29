@@ -9,6 +9,8 @@ import LoadReCaptcha from "../Common/LoadReCaptcha";
 import FormContent from "./FormContent";
 import { abortRequest } from "../../services/apiService";
 import RegisterWrapper from "./RegisterWrapper";
+import { Grid } from "@material-ui/core";
+import RegisterRequirements from "./RegisterRequirements";
 
 const SITE_KEY = '6LcIF9waAAAAAM6J1cr9odD8vAi3Yh73Gi2HqG16';
 
@@ -56,27 +58,33 @@ const RegisterGoogle = () => {
       <LoadReCaptcha />
       <div className={styles.registerContainer}>
         <h2 className={`${styles.block} ${styles.center}`}>Complete your Google Registration</h2>
-        <Formik
-          initialValues={{
-            user: "",
-            country: "",
-            mobile: "",
-            ac_type: "",
-            company_name: "",
-          }}
-          validationSchema={googleRegisterValidationSchema}
-          onSubmit={(values, actions) => {
-            register(values, actions);
-          }}
-        >
-          {({ values }) => (
-            <FormContent
-              isGoogle={'true'}
-              formValues={values}
-            />
-          )}
-        </Formik>
-        
+        <Grid container spacing={2}>
+          <Grid item lg={5} md={12}>
+            <RegisterRequirements />
+          </Grid>
+          <Grid item lg={7} md={12}>
+            <Formik
+              initialValues={{
+                user: "",
+                country: "",
+                mobile: "",
+                ac_type: "",
+                company_name: "",
+              }}
+              validationSchema={googleRegisterValidationSchema}
+              onSubmit={(values, actions) => {
+                register(values, actions);
+              }}
+            >
+              {({ values }) => (
+                <FormContent
+                  isGoogle={'true'}
+                  formValues={values}
+                />
+              )}
+            </Formik>
+          </Grid>
+        </Grid>
       </div>
     </RegisterWrapper>
   );
