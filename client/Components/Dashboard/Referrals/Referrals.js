@@ -44,12 +44,14 @@ const initSummaryData = [
     title: "Total Earnings",
     value: "",
     prefix: "$",
+    tooltip: true
   },
   {
     key: 3,
     title: "Balance",
     value: "",
     prefix: "$",
+    tooltip: true
   },
 ];
 
