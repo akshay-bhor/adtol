@@ -59,11 +59,11 @@ if (!isHidden(parent)) {
             src="${ads[i].banner}"
             alt="${ads[i].title}"
             style="position: relative;max-width:100%!important;height:auto;" /></a
-        ><a target="_blank"${rel} href="https://www.adtol.com"
+        ><a target="_blank"${rel} href="https://adtol.com"
           ><img
             src="${res.adchoices}"
             alt="ad"
-            title="Ads by AdTol.com"
+            title="Ads by Adtol.com - The Best Ad Network for Publishers & Advertisers"
             style="position: absolute; top: 0; right: 0; width: 16px"
         /></a>
       </div>
