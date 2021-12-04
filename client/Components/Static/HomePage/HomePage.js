@@ -147,7 +147,7 @@ const HomePage = () => {
             <MidContent class='mid_container' heading='Publisher' img={publisherImg.src} link='/publisher'>
                 {pub}
             </MidContent>
-            <MidContent class='mid_container' heading='Referral' img={referrelImg.src} link='/referrel'>
+            <MidContent class='mid_container' heading='Referral' img={referrelImg.src} link='/affiliate'>
                 {ref}
             </MidContent>
             <MidContent class='mid_container' 
