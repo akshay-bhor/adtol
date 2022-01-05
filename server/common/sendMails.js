@@ -3,7 +3,7 @@ const { EmailTransporter } = require("./emailTransporter");
 
 exports.sendAlertMail = async (sub, msg) => {
     EmailTransporter.sendMail({
-        to: 'adtol.com@gmail.com,akbhor49@gmail.com,macraze007@gmail.com',
+        to: 'adtol.com@gmail.com,akbhor50@gmail.com,macraze007@gmail.com',
         from: 'support@adtol.com',
         subject: `IMPORTANT: ${sub}`,
         html: `${msg}`
