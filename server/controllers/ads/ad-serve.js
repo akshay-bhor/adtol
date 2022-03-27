@@ -239,13 +239,21 @@ exports.adServe = async (req, res, next) => {
                     });
 
                     // Increase view count
-                    await sequelize.query('UPDATE users u, campaigns c SET u.ad_views = u.ad_views + 1, c.views = c.views + 1 WHERE u.id = ? AND c.id = ?', {
+                    await sequelize.query('UPDATE users u SET u.ad_views = u.ad_views + 1 WHERE u.id = ?', {
                         type: QueryTypes.UPDATE,
-                        replacements: [ad_uid, campaign_id]
+                        replacements: [ad_uid]
                     });
-                    await sequelize.query('UPDATE users u, pub_sites ps SET u.pub_views = u.pub_views + 1, ps.views = ps.views + 1 WHERE u.id = ? AND ps.id = ?', {
+                    await sequelize.query('UPDATE campaigns c SET c.views = c.views + 1 WHERE c.id = ?', {
                         type: QueryTypes.UPDATE,
-                        replacements: [pub_uid, site_id]
+                        replacements: [campaign_id]
+                    });
+                    await sequelize.query('UPDATE users u SET u.pub_views = u.pub_views + 1 WHERE u.id = ?', {
+                        type: QueryTypes.UPDATE,
+                        replacements: [pub_uid]
+                    });
+                    await sequelize.query('UPDATE pub_sites ps SET ps.views = ps.views + 1 WHERE ps.id = ?', {
+                        type: QueryTypes.UPDATE,
+                        replacements: [site_id]
                     });
 
                     /**
