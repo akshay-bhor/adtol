@@ -17,7 +17,9 @@ const User = mongoose.model('users', new Schema({
     gid: {
         type: String,
         required: false,
-        unique:true
+        index: true,
+        unique: true,
+        sparse: true
     },
     pass: {
         type: String,
@@ -50,7 +52,7 @@ const User = mongoose.model('users', new Schema({
     },
     company_name: {
         type: String,
-        required: true,
+        required: false,
         default: 'NA'
     },
     pub_earnings: {

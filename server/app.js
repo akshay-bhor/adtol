@@ -89,7 +89,7 @@ else {
     // sequelize.sync();
     mongoose.connect(process.env.MONGO_URI).then(() => {
         app.listen(process.env.PORT || 3000, function() {
-            // loadSettings();
+            loadSettings();
             // verifyEmailTransport();
         });
     }).catch((err) => {

@@ -4,6 +4,7 @@ const Token_Blacklist = require('../models/token_blacklist');
 const { QueryTypes } = require('sequelize');
 const sequelize = require('../utils/db');
 const fs = require('fs');
+const { default: mongoose } = require('mongoose');
 
 module.exports = class Token {
 
@@ -38,18 +39,18 @@ module.exports = class Token {
             exp: expTime
         });
 
-        if(store) return store.dataValues.id;
+        if(store) return store._id;
         else return false;
     }
 
     createAccessToken = async (cUser) => {
         // Get immutable data to create token
         const userInfo = {}
-        userInfo.id = cUser.dataValues.id;
-        userInfo.user = cUser.dataValues.user;
-        userInfo.mail = cUser.dataValues.mail;
-        userInfo.status = cUser.dataValues.status;
-        userInfo.rank = cUser.dataValues.rank;
+        userInfo.id = cUser._id;
+        userInfo.user = cUser.user;
+        userInfo.mail = cUser.mail;
+        userInfo.status = cUser.status;
+        userInfo.rank = cUser.rank;
         userInfo.role = 'access';
 
         //Expiration Time => 90 days
@@ -60,46 +61,49 @@ module.exports = class Token {
         return token;
     }
 
-    addTokenBlacklist = async (uid, all = 0) => {
+    addTokenBlacklist = async (uid) => {
         // Get issued tokens
         const list = [];
-        const tokens = await Issued_Tokens.findAll({
-            where: {
-                uid: uid,
-                blacklisted: 0
-            },
-            order: [
-                ['id','ASC']
-            ]
-        });
+        // const tokens = await Issued_Tokens.findAll({
+        //     where: {
+        //         uid: uid,
+        //         blacklisted: 0
+        //     },
+        //     order: [
+        //         ['id','ASC']
+        //     ]
+        // });
+        const tokens = await Issued_Tokens.find({ uid: uid, blacklisted: 0 }).sort({ '_id': 1 });
         tokens.forEach(data => {
-            list.push({tid: data.dataValues.id});
+            list.push({tid: data._id.toString()});
         });
 
-        if(all == 0) {
-            // Remove last value as it is just issued
-            const last = list.pop();
-            const lastEle = last.tid; 
+        // if(all == 0) {
+        //     // Remove last value as it is just issued
+        //     const last = list.pop();
+        //     const lastEle = last.tid; 
 
-            // BlackList issued tokens except last
-            sequelize.query('UPDATE issued_tokens SET blacklisted = 1 WHERE uid = ? AND id != ?', {
-                replacements: [uid, lastEle],
-                type: QueryTypes.UPDATE,
-                mapToModel: Issued_Tokens
-            });
-        }  
-        if(all == 1) {
+        //     // BlackList issued tokens except last
+        //     // sequelize.query('UPDATE issued_tokens SET blacklisted = 1 WHERE uid = ? AND id != ?', {
+        //     //     replacements: [uid, lastEle],
+        //     //     type: QueryTypes.UPDATE,
+        //     //     mapToModel: Issued_Tokens
+        //     // });
+        //     Issued_Tokens.updateMany({ '_id': { $ne: mongoose.Types.ObjectId(lastEle) }, uid: uid }, { blacklisted: 1 });
+        // }  
+        // if(all == 1) {
             // BlackList issued tokens
-            sequelize.query('UPDATE issued_tokens SET blacklisted = 1 WHERE uid = ?', {
-                replacements: [uid],
-                type: QueryTypes.UPDATE,
-                mapToModel: Issued_Tokens
-            });
-        } 
+            // sequelize.query('UPDATE issued_tokens SET blacklisted = 1 WHERE uid = ?', {
+            //     replacements: [uid],
+            //     type: QueryTypes.UPDATE,
+            //     mapToModel: Issued_Tokens
+            // });
+            await Issued_Tokens.updateMany({ uid: uid }, { blacklisted: 1 });
+        // } 
 
         if(list.length >= 1) {
             // Bulk create blacklist tokens
-            Token_Blacklist.bulkCreate(list);
+            await Token_Blacklist.insertMany(list);
         }
     }
 }
