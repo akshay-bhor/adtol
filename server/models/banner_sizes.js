@@ -24,3 +24,4 @@ const Banner_Sizes = mongoose.model('banner_sizes', new Schema({
 // });
 
 module.exports = Banner_Sizes;
+

@@ -33,27 +33,27 @@ const Summary_Os = mongoose.model('summary_os', new Schema({
         index: true
     },
     views: {
-        type: DataTypes.INTEGER,
+        type: Number,
         required: true,
         default: 0
     },
     clicks: {
-        type: DataTypes.INTEGER,
+        type: Number,
         required: true,
         default: 0
     },
     pops: {
-        type: DataTypes.INTEGER,
+        type: Number,
         required: true,
         default: 0
     },
     cost: {
-        type: DataTypes.FLOAT(15, 5),
+        type: Number,
         required: true,
         default: 0
     },
     day_unix: {
-        type: DataTypes.INTEGER(10),
+        type: Number,
         required: true,
         default: 0
     }
@@ -142,3 +142,4 @@ const Summary_Os = mongoose.model('summary_os', new Schema({
 // });
 
 module.exports = Summary_Os;
+

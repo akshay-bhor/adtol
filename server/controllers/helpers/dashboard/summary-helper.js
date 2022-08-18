@@ -1,5 +1,9 @@
 const { executeAllQueries } = require('../../../common/util');
 const { App_Settings } = require('../../../common/settings');
+const Summary_device = require('../../../models/summary_device');
+const Summary_country = require('../../../models/summary_country');
+const Users = require('../../../models/users');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 exports.summaryHelper = async(req) => {
     if(!req.userInfo) {
@@ -10,50 +14,152 @@ exports.summaryHelper = async(req) => {
 
     try {
         // Userid
-        const userid = req.userInfo.id;
-       
+        const userid = req.userInfo._id;
+
         // Todays Date in Unix
         let today = new Date().toISOString().slice(0, 10);
         let today_unix = Math.floor(new Date(today).getTime() / 1000);
         // Yesterday
         const yesterday_unix = today_unix - (60*60*24);
-        
+
         // Date 60 days back
-        let sixty_days_in_sec = (60 * 60 * 24 * 60);
+        let sixty_days_in_sec = (60 * 60 * 24 * 360);
         let past_date_unix = today_unix - sixty_days_in_sec;
         // 14 days back
         let two_weeks = (60*60*24*14);
         let past_two_weeks_unix = today_unix - two_weeks;
 
-        const queries = [
-            { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as earned, day_unix FROM summary_device WHERE pub_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
-            { "name": "countrystats", "query": "SELECT SUM(views) as cviews, SUM(clicks) as cclicks, SUM(pops) as cpops, SUM(cost) as cearned, country FROM summary_country WHERE pub_uid = "+ userid +" AND day_unix = "+ today_unix +" GROUP BY country ORDER BY cearned DESC LIMIT 5" },
-            { "name": "devices", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as dearned, device FROM summary_device WHERE pub_uid=" + userid +" AND day_unix = "+ today_unix +" GROUP BY device" },
-            
-            { "name": "user", "query": "SELECT pub_balance, ad_balance FROM users WHERE id = "+ userid +"" },
-            
-            { "name": "stats", "query": "SELECT SUM(views) as ad_views, SUM(clicks) as ad_clicks, SUM(pops) as ad_pops, SUM(cost) as spent, day_unix FROM summary_device WHERE ad_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
-            { "name": "countrystats", "query": "SELECT SUM(views) as cviews, SUM(clicks) as cclicks, SUM(pops) as cpops, SUM(cost) as cspent, country FROM summary_country WHERE ad_uid = "+ userid +" AND day_unix = "+ today_unix +" GROUP BY country ORDER BY cspent DESC LIMIT 5" },
-            { "name": "devices", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as dspent, device FROM summary_device WHERE ad_uid =" + userid +" AND day_unix = "+ today_unix +" GROUP BY device" },
-        ];
+        // const queries = [
+        //     { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as earned, day_unix FROM summary_device WHERE pub_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
+        //     { "name": "countrystats", "query": "SELECT SUM(views) as cviews, SUM(clicks) as cclicks, SUM(pops) as cpops, SUM(cost) as cearned, country FROM summary_country WHERE pub_uid = "+ userid +" AND day_unix = "+ today_unix +" GROUP BY country ORDER BY cearned DESC LIMIT 5" },
+        //     { "name": "devices", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as dearned, device FROM summary_device WHERE pub_uid=" + userid +" AND day_unix = "+ today_unix +" GROUP BY device" },
+        //
+        //     { "name": "user", "query": "SELECT pub_balance, ad_balance FROM users WHERE id = "+ userid +"" },
+        //
+        //     { "name": "stats", "query": "SELECT SUM(views) as ad_views, SUM(clicks) as ad_clicks, SUM(pops) as ad_pops, SUM(cost) as spent, day_unix FROM summary_device WHERE ad_uid=" + userid +" AND day_unix >= "+ past_date_unix +" GROUP BY day_unix ORDER BY day_unix DESC" },
+        //     { "name": "countrystats", "query": "SELECT SUM(views) as cviews, SUM(clicks) as cclicks, SUM(pops) as cpops, SUM(cost) as cspent, country FROM summary_country WHERE ad_uid = "+ userid +" AND day_unix = "+ today_unix +" GROUP BY country ORDER BY cspent DESC LIMIT 5" },
+        //     { "name": "devices", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as dspent, device FROM summary_device WHERE ad_uid =" + userid +" AND day_unix = "+ today_unix +" GROUP BY device" },
+        // ];
 
-        const result = await executeAllQueries(queries);
-        let pubRes = result[0];     
-        let countryRes = result[1];   
-        let devicesRes = result[2];
+        const pubRes = await Summary_device.aggregate([
+            {
+                $match: {"$and":[{pub_uid: new ObjectId(userid)},{day_unix:{$gte:past_date_unix}}]}
+            },
+            {
+                $group:{
+                    _id: "$day_unix",
+                    views: {$sum:"$views"},
+                    clicks:{$sum:"$clicks"},
+                    pops:{$sum:"$pops"},
+                    earn:{$sum:"$cost"},
+                }
+            },
+            {
+                $sort:{
+                    _id:-1
+                }
+            }
+        ]);
 
-        let adRes = result[4];     
-        let ad_countryRes = result[5];
-        let ad_deviceRes = result[6];
-        
-       
+        const countryRes = await Summary_country.aggregate([
+            {
+                $match: {"$and": [{pub_uid: new ObjectId(userid)}, {day_unix: today_unix}]}
+            },
+            {
+                $group: {
+                    cviews: {$sum: "$views"},
+                    cclicks: {$sum: "$clicks"},
+                    cpops: {$sum: "$pops"},
+                    cearned: {$sum: "$cost"},
+                    _id: "$country",
+                }
+            },
+            {
+                $sort: {
+                    cearned: -1
+                }
+            },
+            {$limit: 5}
+        ]);
+
+        const devicesRes = await Summary_device.aggregate([{
+            $match: {"$and":[{pub_uid: new ObjectId(userid)},{day_unix:today_unix}]}
+        },
+            {
+                $group:{
+                    views: {$sum:"$views"},
+                    clicks:{$sum:"$clicks"},
+                    pops:{$sum:"$pops"},
+                    dearned:{$sum:"$cost"},
+                    _id:"$device"
+                }},
+        ]);
+
+        const user = await Users.findOne({_id: userid});
+
+        const adRes = await Summary_device.aggregate([{
+            $match: {"$and":[{ad_uid: new ObjectId(userid)},{day_unix:{$gte:past_date_unix}}]}
+        },
+            {$group:{
+                    ad_views: {$sum:"$views"},
+                    ad_clicks:{$sum:"$clicks"},
+                    ad_pops:{$sum:"$pops"},
+                    spent:{$sum:"$cost"},
+                    _id:"$day_unix"
+                }},
+            {$sort:{
+                    _id:-1
+                }
+            }
+        ]);
+
+        const ad_countryRes = await Summary_country.aggregate([{
+            $match: {"$and":[{ad_uid: new ObjectId(userid)},{day_unix:today_unix}]}
+        },
+            {
+                $group:{
+                    cviews: {$sum:"$views"},
+                    cclicks:{$sum:"$clicks"},
+                    cpops:{$sum:"$pops"},
+                    cspent:{$sum:"$cost"},
+                    _id:"$country",
+                }},
+            {$sort:{
+                    cspent:-1
+                }
+            },
+            {$limit:5}
+        ]);
+
+        const ad_deviceRes = await Summary_device.aggregate([{
+            $match: {"$and":[{ad_uid: new ObjectId(userid)},{day_unix:today_unix}]}
+        },
+            {$group:{
+                    views: {$sum:"$views"},
+                    clicks:{$sum:"$clicks"},
+                    pops:{$sum:"$pops"},
+                    dspent:{$sum:"$cost"},
+                    _id:"$device"
+                }},
+        ]);
+
+        // const result = await executeAllQueries(queries);
+        // let pubRes = result[0];
+        // let countryRes = result[1];
+        // let devicesRes = result[2];
+        //
+        // let adRes = result[4];
+        // let ad_countryRes = result[5];
+        // let ad_deviceRes = result[6];
+
+
         // Get today earned
         let todayEarned = 0;
 
         // Yesterday vs same day last week
         let yesterdayEarned = 0;
         let vssamedaylastweek = 0;
-        
+
         // last 7 days
         let earned7days = 0;
         let earnedprev7days = 0;
@@ -61,62 +167,62 @@ exports.summaryHelper = async(req) => {
         // last 30 days
         let earned30days = 0;
         let earnedprev30days = 0;
-        
-        let i = 0;
-        while(i < pubRes.length) {
 
+        let i = 0;
+
+        while(i < pubRes.length) {
             // Today
-            if(pubRes[i].day_unix == today_unix) { 
+            if(pubRes[i]._id == today_unix) {
                 todayEarned += pubRes[i].earned || 0;
             }
 
             // Yesterday
-            if(pubRes[i].day_unix == yesterday_unix) {
+            if(pubRes[i]._id == yesterday_unix) {
                 yesterdayEarned += pubRes[i].earned || 0;
             }
 
             // Vssamedaylastweek
-            if(pubRes[i].day_unix == (today_unix - (60*60*24*8))) {
+            if(pubRes[i]._id == (today_unix - (60*60*24*8))) {
                 vssamedaylastweek += pubRes[i].earned || 0;;
             }
-            
+
             // Last 7 days
-            if(pubRes[i].day_unix >= (today_unix - (60*60*24*7))) { 
+            if(pubRes[i]._id >= (today_unix - (60*60*24*7))) {
                 earned7days += pubRes[i].earned || 0;
             }
-            
+
             // Prev 7 days
-            if(pubRes[i].day_unix >= (today_unix - (60*60*24*14)) && pubRes[i].day_unix < (today_unix - (60*60*24*7))) {     
+            if(pubRes[i]._id >= (today_unix - (60*60*24*14)) && pubRes[i]._id < (today_unix - (60*60*24*7))) {
                 earnedprev7days += pubRes[i].earned || 0;
             }
 
             // Last 30 days
-            if(pubRes[i].day_unix >= (today_unix - (60*60*24*30))) {
+            if(pubRes[i]._id >= (today_unix - (60*60*24*30))) {
                 earned30days += pubRes[i].earned || 0;
             }
-            
+
             // Prev 30 days
-            if(pubRes[i].day_unix >= (today_unix - (60*60*24*60)) && pubRes[i].day_unix < (today_unix - (60*60*24*30))) {
+            if(pubRes[i]._id >= (today_unix - (60*60*24*60)) && pubRes[i]._id < (today_unix - (60*60*24*30))) {
                 earnedprev30days += pubRes[i].earned || 0;
             }
             i++;
         }
 
         // Performance
-        let { views, pops, clicks } = findBy(pubRes, today_unix, 'day_unix');
+        let { views, pops, clicks } = findBy(pubRes, today_unix, '_id');
         let cpc = 'NA';
         if(clicks != 0) cpc = (todayEarned / clicks).toFixed(3);
 
         // Publisher balance
-        let pub_balance = result[3][0]['pub_balance'];
-        
+        let pub_balance = user.pub_balance;
+
         // Countries
         let countryStats = {};
-        countryRes.forEach(c => { 
+        countryRes.forEach(c => {
             // Find country Name
-            let cid = c.country; 
+            let cid = c._id;
             let [ccode, cname] = App_Settings.countries[cid] || [0, 'Unknown'];
-            
+
             countryStats[cname] = {
                 "earned": c.cearned.toFixed(2),
                 "views": c.cviews,
@@ -124,35 +230,35 @@ exports.summaryHelper = async(req) => {
                 "pops": c.cpops
             };
         });
-        
+
         // devices
         const devices = {};
         const all_devices = App_Settings.devices;
         for(let i = 1;i < Object.keys(all_devices).length;i++) {
             Object.keys(all_devices).forEach(key => {
-                devices[all_devices[key]] = devicesRes.filter(data => +data.device === +key)[0] ||  
-                    { 
-                        views: 0, clicks: 0, pops: 0, earned: 0
-                    };
+                devices[all_devices[key]] = devicesRes.filter(data => +data._id === +key)[0] ||
+                  {
+                      views: 0, clicks: 0, pops: 0, earned: 0
+                  };
             });
         }
         /**
          * Ad Pop
          * Mysql db search cost probably too high, paused for now
          */
-        // let pop_earn_today = 0;
-        // let pop_earn_yesterday = 0;
-        // {
-        //     let { pearned } = findBy(adunitspop, today_unix, 'day_unix');
-        //     pop_earn_today += pearned;
-        // }
-        // {
-        //     let { pearned } = findBy(adunitspop, yesterday_unix, 'day_unix');
-        //     pop_earn_yesterday += pearned;
-        // }
-        // ad_units['pop'] = [pop_earn_today.toFixed(2), pop_earn_yesterday.toFixed(2)]; 
+          // let pop_earn_today = 0;
+          // let pop_earn_yesterday = 0;
+          // {
+          //     let { pearned } = findBy(adunitspop, today_unix, 'day_unix');
+          //     pop_earn_today += pearned;
+          // }
+          // {
+          //     let { pearned } = findBy(adunitspop, yesterday_unix, 'day_unix');
+          //     pop_earn_yesterday += pearned;
+          // }
+          // ad_units['pop'] = [pop_earn_today.toFixed(2), pop_earn_yesterday.toFixed(2)];
 
-        // Response
+          // Response
         let pub_estimates = {};
         pub_estimates.todaySum = todayEarned.toFixed(2);
         pub_estimates.yesterdaySum = yesterdayEarned.toFixed(2);
@@ -167,21 +273,17 @@ exports.summaryHelper = async(req) => {
         performance.clicks = clicks;
         performance.cpc = cpc;
 
-
-
-
-
         /**
          * Advertiser
          */
 
-        // Get today spent
+          // Get today spent
         let todaySpent = 0;
 
         // Yesterday vs same day last week
         let yesterdaySpent = 0;
         let ad_vssamedaylastweek = 0;
-        
+
         // last 7 days
         let spent7days = 0;
         let spentprev7days = 0;
@@ -194,37 +296,37 @@ exports.summaryHelper = async(req) => {
         while(i < adRes.length) {
 
             // Today
-            if(adRes[i].day_unix == today_unix) { 
+            if(adRes[i]._id == today_unix) {
                 todaySpent += adRes[i].spent || 0;
             }
-            
+
             // Yesterday
-            if(adRes[i].day_unix == yesterday_unix) {
+            if(adRes[i]._id == yesterday_unix) {
                 yesterdaySpent += adRes[i].spent || 0;
             }
-            
+
             // Vssamedaylastweek
-            if(adRes[i].day_unix == (today_unix - (60*60*24*8))) { 
+            if(adRes[i]._id == (today_unix - (60*60*24*8))) {
                 ad_vssamedaylastweek += adRes[i].spent || 0;
             }
-            
+
             // Last 7 days
-            if(adRes[i].day_unix >= (today_unix - (60*60*24*7))) { 
+            if(adRes[i]._id >= (today_unix - (60*60*24*7))) {
                 spent7days += adRes[i].spent || 0;
             }
-            
+
             // Prev 7 days
-            if(adRes[i].day_unix >= (today_unix - (60*60*24*14)) && adRes[i].day_unix < (today_unix - (60*60*24*7))) {
+            if(adRes[i]._id >= (today_unix - (60*60*24*14)) && adRes[i]._id < (today_unix - (60*60*24*7))) {
                 spentprev7days += adRes[i].spent || 0;
             }
-            
+
             // Last 30 days
-            if(adRes[i].day_unix >= (today_unix - (60*60*24*30))) {
+            if(adRes[i]._id >= (today_unix - (60*60*24*30))) {
                 spent30days += adRes[i].spent || 0;
             }
-            
+
             // Prev 30 days
-            if(adRes[i].day_unix >= (today_unix - (60*60*24*60)) && adRes[i].day_unix < (today_unix - (60*60*24*30))) {
+            if(adRes[i]._id >= (today_unix - (60*60*24*60)) && adRes[i]._id < (today_unix - (60*60*24*30))) {
                 spentprev30days += adRes[i].spent || 0;
             }
 
@@ -240,15 +342,15 @@ exports.summaryHelper = async(req) => {
         if(ad_clicks != 0) ad_cpc = (todaySpent / ad_clicks).toFixed(3);
 
         // Publisher balance
-        let ad_balance = result[3][0]['ad_balance'];
-        
+        let ad_balance = user.ad_balance;
+
         // Countries
         let ad_countryStats = {};
         ad_countryRes.forEach(c => {
             // Find country Name
-            let cid = c.country; 
+            let cid = c._id;
             let [ccode, cname] = App_Settings.countries[cid] || [0, 'Unknown'];
-            
+
             ad_countryStats[cname] = {
                 "spent": c.cspent.toFixed(2),
                 "views": c.cviews,
@@ -261,10 +363,10 @@ exports.summaryHelper = async(req) => {
         const ad_devices = {};
         for(let i = 1;i < Object.keys(all_devices).length;i++) {
             Object.keys(all_devices).forEach(key => {
-                ad_devices[App_Settings.devices[key]] = ad_deviceRes.filter(data => +data.device === +key)[0] ||  
-                { 
-                    views: 0, clicks: 0, pops: 0, spent: 0
-                };;
+                ad_devices[App_Settings.devices[key]] = ad_deviceRes.filter(data => +data._id === +key)[0] ||
+                  {
+                      views: 0, clicks: 0, pops: 0, spent: 0
+                  };;
             });
         }
         // Ad pop
@@ -284,7 +386,7 @@ exports.summaryHelper = async(req) => {
         let ad_estimates = {};
         ad_estimates.todaySum = todaySpent.toFixed(2);
         ad_estimates.yesterdaySum = yesterdaySpent.toFixed(2);
-        ad_estimates.vssamedaylastweek = ad_vssamedaylastweek.toFixed(2); 
+        ad_estimates.vssamedaylastweek = ad_vssamedaylastweek.toFixed(2);
         ad_estimates.sum7days = spent7days.toFixed(2);
         ad_estimates.sumprev7days = spentprev7days.toFixed(2);
         ad_estimates.sum30days = spent30days.toFixed(2);
@@ -317,16 +419,16 @@ exports.summaryHelper = async(req) => {
 }
 
 const findBy = (arr, s, key, log = 0) => {
-    
+
     if(log == 1) console.log(arr.length);
     for(let i = 0;i < arr.length;i++) {
 
-        if(arr[i][key] == s) { 
+        if(arr[i][key] == s) {
             return arr[i];
         }
     }
     // arr.forEach(d => {
-    //     if(d.day_unix == s) { 
+    //     if(d.day_unix == s) {
     //         if(log == 1) { console.log(arr[i]); console.log(arr[i][key]); }
     //         re = d;
     //     }

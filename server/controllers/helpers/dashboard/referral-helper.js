@@ -14,21 +14,23 @@ exports.referralsHelper = async (req) => {
     try {
 
         // Userid
-        const userid = req.userInfo.id;
+        const userid = req.userInfo._id;
 
         // Get earned, balance
-        const ures = await User.findOne({ where: { id: userid }, attributes: ['ref_earnings', 'pub_balance'] });
-        const ref_earnings = ures.dataValues.ref_earnings;
-        const balance = ures.dataValues.pub_balance;
+        const ures = await User.findOne({ _id: userid }, {'ref_earnings':1, 'pub_balance':1});
+        const ref_earnings = ures.ref_earnings;
+        const balance = ures.pub_balance;
 
         // Get referred users
-        const rures = await sequelize.query('SELECT COUNT(id) as refs FROM users WHERE ref_by = ?', {
-            type: QueryTypes.SELECT,
-            replacements: [userid],
-            mapToModel: User
-        });
+        // const rures = await sequelize.query('SELECT COUNT(id) as refs FROM users WHERE ref_by = ?', {
+        //     type: QueryTypes.SELECT,
+        //     replacements: [userid],
+        //     mapToModel: User
+        // });
 
-        const referred = rures[0].refs;
+        const rures = await User.count({ ref_by: userid });
+
+        const referred = rures;
 
         // Get Stats
         const today = new Date().toISOString().slice(0, 10);
@@ -36,15 +38,9 @@ exports.referralsHelper = async (req) => {
 
         // 2 Month before
         const two_month_before = (today_unix - (60*60*24*60));
-        
+
         // Get stats
-        const stats = await Ref_Stats.findAll({ where: { 
-                day_unix: {
-                    [Op.gte]: two_month_before
-                },
-                ref_uid: userid
-            } 
-        });
+        const stats = await Ref_Stats.find({day_unix:{$gte:two_month_before}});
 
         const ref_stats = {};
         ci = 0;
@@ -52,7 +48,7 @@ exports.referralsHelper = async (req) => {
             let minus_unix = 0;
             if(i != 0) {
                 minus_unix = (60*60*24*i);
-            } 
+            }
 
             let date = new Date((today_unix - minus_unix) * 1000).toISOString().slice(0, 10);
             ref_stats[date] = {};
@@ -75,7 +71,7 @@ exports.referralsHelper = async (req) => {
             balance: balance,
             referred: referred,
             ref_stats: ref_stats,
-            share_link_code: share_link_code
+            share_link_code: userid
         };
 
     } catch (err) {

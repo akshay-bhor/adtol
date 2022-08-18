@@ -24,3 +24,4 @@ const Timezones = mongoose.model('timezones', new Schema({
 // });
 
 module.exports = Timezones;
+

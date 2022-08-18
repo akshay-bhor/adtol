@@ -3,7 +3,7 @@
 <div class="jumbotron">
     <div class="container-md" id="app">
       <% if(error) { %> <%- include('includes/err.ejs') %> <% } %>
-   
+
         <div class="row" style="align-items: flex-end">
           <div class="col">
             <label for="username">Username</label>
@@ -16,7 +16,7 @@
               required
             />
           </div>
-  
+
           <div class="col">
             <label for="sort">Sort</label>
             <select name="sort" id="sort" class="form-control" v-model="sort">
@@ -25,7 +25,7 @@
               <option value="3">Rejected</option>
             </select>
           </div>
-  
+
           <div class="col">
             <input
               type="submit"
@@ -37,19 +37,19 @@
             />
           </div>
         </div>
-  
+
       <!-- Campaigns List -->
       <div class="d-block mt-5" id="site-list">
 
         <div class="row justify-content-between" style="align-items: flex-end">
             <div class="col-md-3 font-weight-bold" style="align-self:flex-start">
                 {{total}} Total
-            </div>    
+            </div>
             <div class="col-md-3 d-flex justify-content-end">
                 <select class="form-control" id="cpage" v-model="page">
                     <option v-for="p in pages">{{p}}</option>
                 </select>
-                <button class="btn btn-primary" @click="fetchCampaigns()">Go</buttom>        
+                <button class="btn btn-primary" @click="fetchCampaigns()">Go</buttom>
             </div>
         </div>
 
@@ -73,8 +73,7 @@
                   <tbody v-if="result !== null && !loading">
                       <tr v-for="(res, index) in result" :key="index">
                         <td>
-                            <b>user: {{res.user}}</b><br>
-                            <a :href="res.url" target="_blank">{{res.title || res.campaign_title}}</a>
+                            <a :href="res.url">{{res.title || res.campaign_title}}</a>
                             <div class="text-secondary">{{res.desc}}</div>
                         </td>
                         <td>
@@ -83,19 +82,19 @@
                             <span class="badge"
                               style="cursor: pointer;"
                               :class="{ 'badge-danger': res.pro == 1, 'badge-success': res.pro == 0 }"
-                              @click="togglePro(res.id)"
+                              @click="togglePro(res._id)"
                             >{{res.pro ? 'Pro':'Non-Pro'}}</span>
                         </td>
                         <td>
-                            <span class="badge" :class="{ 
-                                'badge-danger': res.status == 'Rejected' || res.status == 'Deleted', 
+                            <span class="badge" :class="{
+                                'badge-danger': res.status == 'Rejected' || res.status == 'Deleted',
                                 'badge-success': res.status == 'Approved',
                                 'badge-warning': res.status == 'Pending' }">{{res.status}}</span><br>
-                            <span class="badge" :class="{ 
-                                'badge-success': res.run == 1, 
+                            <span class="badge" :class="{
+                                'badge-success': res.run == 1,
                                 'badge-warning': res.run == 2 || res.run == 3 }">{{res.run == 1 ? 'Running':res.run == 2 ? 'User Pause':'Machine Pause'}}</span>
                         </td>
-                        <td class="text-primary" style="cursor: pointer;" @click="getBanners(res.id)" data-toggle="modal" data-target="#bannersModal">Show</td>
+                        <td class="text-primary" style="cursor: pointer;" @click="getBanners(res._id)" data-toggle="modal" data-target="#bannersModal">Show</td>
                         <td>${{res.cpc}}</td>
                         <td><span>${{res.budget}}</span><br><span class="text-secondary">${{res.budget_rem}}</span></td>
                         <td><span>${{res.today_budget}}</span><br><span class="text-secondary">${{res.today_budget_rem}}</span></td>
@@ -104,9 +103,9 @@
                         <td>{{res.pops}}</td>
                         <td>${{res.spent}}</td>
                         <td>
-                            <span role="button" class="text-success" @click="changeStatus(res.id, 1)">Approve</span><br>
-                            <span role="button" class="text-warning" @click="changeStatus(res.id, 2)">Pending</span><br>
-                            <span role="button" class="text-danger" @click="changeStatus(res.id, 3)">Reject</span>
+                            <span role="button" class="text-success" @click="changeStatus(res._id, 1)">Approve</span><br>
+                            <span role="button" class="text-warning" @click="changeStatus(res._id, 2)">Pending</span><br>
+                            <span role="button" class="text-danger" @click="changeStatus(res._id, 3)">Reject</span>
                         </td>
                       </tr>
                   </tbody>
@@ -119,23 +118,23 @@
       <div class="modal fade" id="bannersModal">
         <div class="modal-dialog modal-xl">
           <div class="modal-content">
-      
+
             <div class="modal-header">
               <h4 class="modal-title">Banners</h4>
               <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-      
+
             <div class="modal-body">
               <div v-for="banner in banners" v-if="banners.length > 0">
                   <img :src="banner" style="max-width: 500px;max-height: 500px;" />
               </div>
               <div v-else>No Banners Found!</div>
             </div>
-      
+
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
-      
+
           </div>
         </div>
       </div>
@@ -178,7 +177,7 @@
                     this.result = res.data.result;
                     this.total = res.data.total;
                     // pages
-                    this.pages = Math.ceil(this.total / 50);                    
+                    this.pages = Math.ceil(this.total / 50);
                 } catch (err) {
                     this.loading = false;
                     alert(err);
@@ -225,7 +224,7 @@
       }
 
       Vue.createApp(campaignsApp).mount("#app");
-    
+
   </script>
 
 <%- include('includes/end.ejs') %>

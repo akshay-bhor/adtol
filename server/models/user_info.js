@@ -97,7 +97,7 @@ const User_Info = mongoose.model('user_info', new Schema({
     //     type: DataTypes.BIGINT(10),
     //     allowNull: true
     // }
-// }, 
+// },
 // {
 //     timestamps: true,
 //     indexes: [
@@ -110,3 +110,4 @@ const User_Info = mongoose.model('user_info', new Schema({
 // });
 
 module.exports = User_Info
+

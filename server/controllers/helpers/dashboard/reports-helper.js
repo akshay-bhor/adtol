@@ -1,6 +1,13 @@
 const { check, validationResult } = require("express-validator");
 const { executeAllQueries } = require('../../../common/util');
 const { App_Settings } = require('../../../common/settings');
+const Summary_device = require('../../../models/summary_device');
+const Summary_country = require('../../../models/summary_country');
+const Summary_os = require('../../../models/summary_os');
+const Summary_browser = require('../../../models/summary_browser');
+const Campaigns = require('../../../models/campaigns');
+const Pub_sites = require('../../../models/publisher_sites');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 exports.reportsHelper = async (req) => {
     if(!req.userInfo) {
@@ -38,8 +45,8 @@ exports.reportsHelper = async (req) => {
         if(reportType == 'advertiser')
             campId = req.body.campaign;
         if(reportType == 'publisher')
-            webId = req.body.website; 
-        const userid = req.userInfo.id;
+            webId = req.body.website;
+        const userid = req.userInfo._id;
 
         /**
          * durations
@@ -65,12 +72,15 @@ exports.reportsHelper = async (req) => {
 
         // Duartion
         let tunix;
-        // Today unix 
+        // Today unix
         let date = new Date().toISOString().slice(0, 10);
         let today_unix = Math.floor(new Date(date).getTime() / 1000);
 
+        let eleRes;
+        let elements;
+
         if(duration == 1) {
-            // Today unix 
+            // Today unix
             tunix = today_unix;
         }
         if(duration == 2) {
@@ -82,11 +92,11 @@ exports.reportsHelper = async (req) => {
             tunix = Math.floor(today_unix - (60*60*24*14));
         }
         if(duration == 4) {
-            // This month unix 
+            // This month unix
             tunix = Math.floor(today_unix - (60*60*24*30));
         }
         if(duration == 5) {
-            // Last 2 month unix 
+            // Last 2 month unix
             tunix = Math.floor(today_unix - (60*60*24*60));
         }
 
@@ -94,71 +104,163 @@ exports.reportsHelper = async (req) => {
         let cond;
         if(reportType == 'advertiser') {
             if(campId != 0)
-                cond = 'ad_uid = '+ userid +' AND day_unix >= '+ tunix +' AND campaign = '+ campId;
+              //cond = 'ad_uid = '+ userid +' AND day_unix >= '+ tunix +' AND campaign = '+ campId;
+                cond = {"$and":[{ad_uid: new ObjectId(userid)},{day_unix:{$gte:tunix}},{campaign: new ObjectId(campId)}]}
             else
-                cond = 'ad_uid = '+ userid +' AND day_unix >= '+ tunix;
+              // cond = 'ad_uid = '+ userid +' AND day_unix >= '+ tunix;
+                cond = {"$and":[{ad_uid: new ObjectId(userid)},{day_unix:{$gte:tunix}}]}
+
         }
         if(reportType == 'publisher') {
             if(webId != 0)
-                cond = 'pub_uid = '+ userid +' AND day_unix >= '+ tunix +' AND website = '+ webId;
+              // cond = 'pub_uid = '+ userid +' AND day_unix >= '+ tunix +' AND website = '+ webId;
+                cond = {"$and":[{pub_uid: new ObjectId(userid)},{day_unix:{$gte:tunix}},{website:new ObjectId(webId)}]}
+
             else
-                cond = 'pub_uid = '+ userid +' AND day_unix >= '+ tunix;
+              // cond = 'pub_uid = '+ userid +' AND day_unix >= '+ tunix;
+                cond = {"$and":[{pub_uid: new ObjectId(userid)},{day_unix:{$gte:tunix}}]}
         }
 
-        const queries = [
-            { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as cost, day_unix FROM summary_device WHERE "+ cond +" GROUP BY day_unix ORDER BY day_unix DESC" },
-
-            { "name": "countrystats", "query": "SELECT SUM(views) as cviews, SUM(clicks) as cclicks, SUM(pops) as cpops, SUM(cost) as ccost, country FROM summary_country WHERE "+ cond +" GROUP BY country" },
-
-            { "name": "devicestats", "query": "SELECT SUM(views) as dviews, SUM(clicks) as dclicks, SUM(pops) as dpops, SUM(cost) as dcost, device FROM summary_device WHERE "+ cond +" GROUP BY device" },
-
-            { "name": "osstats", "query": "SELECT SUM(views) as osviews, SUM(clicks) as osclicks, SUM(pops) as ospops, SUM(cost) as oscost, os FROM summary_os WHERE "+ cond +" GROUP BY os" },
-
-            { "name": "browserstats", "query": "SELECT SUM(views) as bviews, SUM(clicks) as bclicks, SUM(pops) as bpops, SUM(cost) as bcost, browser FROM summary_browser WHERE "+ cond +" GROUP BY browser" },
-        ];
+        // const queries = [
+        //     { "name": "stats", "query": "SELECT SUM(views) as views, SUM(clicks) as clicks, SUM(pops) as pops, SUM(cost) as cost, day_unix FROM summary_device WHERE "+ cond +" GROUP BY day_unix ORDER BY day_unix DESC" },
+        //
+        //     { "name": "countrystats", "query": "SELECT SUM(views) as cviews, SUM(clicks) as cclicks, SUM(pops) as cpops, SUM(cost) as ccost, country FROM summary_country WHERE "+ cond +" GROUP BY country" },
+        //
+        //     { "name": "devicestats", "query": "SELECT SUM(views) as dviews, SUM(clicks) as dclicks, SUM(pops) as dpops, SUM(cost) as dcost, device FROM summary_device WHERE "+ cond +" GROUP BY device" },
+        //
+        //     { "name": "osstats", "query": "SELECT SUM(views) as osviews, SUM(clicks) as osclicks, SUM(pops) as ospops, SUM(cost) as oscost, os FROM summary_os WHERE "+ cond +" GROUP BY os" },
+        //
+        //     { "name": "browserstats", "query": "SELECT SUM(views) as bviews, SUM(clicks) as bclicks, SUM(pops) as bpops, SUM(cost) as bcost, browser FROM summary_browser WHERE "+ cond +" GROUP BY browser" },
+        // ];
 
         // Append to query array according to report type
         if(reportType == 'advertiser') {
-            queries.push(
-                { "name": "campstats", "query": "SELECT SUM(views) as cmviews, SUM(pops) as cmpops, SUM(clicks) as cmclicks, SUM(cost) as cmcost, campaign as campaign_id from summary_device WHERE "+ cond +" GROUP BY campaign" },
-                { "name": "campaigns", "query": "SELECT id, campaign_title FROM campaigns WHERE uid = "+ userid +" AND status = 1" },
-            );
+            eleRes = await Summary_device.aggregate([{
+                $match: cond
+            },
+                {$group:{
+                        cmviews: {$sum:"$views"},
+                        cmclicks:{$sum:"$clicks"},
+                        cmpops:{$sum:"$pops"},
+                        cmcost:{$sum:"$cost"},
+                        _id:"$campaign"
+                    }}
+            ]);
+            elements = await Campaigns.find({_id:userid,status:1},{campaign_title:1});
+            // queries.push(
+            //     { "name": "campstats", "query": "SELECT SUM(views) as cmviews, SUM(pops) as cmpops, SUM(clicks) as cmclicks, SUM(cost) as cmcost, campaign as campaign_id from summary_device WHERE "+ cond +" GROUP BY campaign" },
+            //     { "name": "campaigns", "query": "SELECT id, campaign_title FROM campaigns WHERE uid = "+ userid +" AND status = 1" },
+            // );
         }
         if(reportType == 'publisher') {
-            queries.push(
-                { "name": "webstats", "query": "SELECT SUM(views) as wviews, SUM(pops) as wpops, SUM(clicks) as wclicks, SUM(cost) as wcost, website as site_id from summary_device WHERE "+ cond +" GROUP BY website" },
-                { "name": "websites", "query": "SELECT id, domain FROM pub_sites WHERE uid = "+ userid +" AND status = 1" }
-            );
+            // queries.push(
+            //     { "name": "webstats", "query": "SELECT SUM(views) as wviews, SUM(pops) as wpops, SUM(clicks) as wclicks, SUM(cost) as wcost, website as site_id from summary_device WHERE "+ cond +" GROUP BY website" },
+            //     { "name": "websites", "query": "SELECT id, domain FROM pub_sites WHERE uid = "+ userid +" AND status = 1" }
+            // );
+            eleRes = await Summary_device.aggregate([{
+                $match: cond
+            },
+                {$group:{
+                        wviews: {$sum:"$views"},
+                        wclicks:{$sum:"$clicks"},
+                        wpops:{$sum:"$pops"},
+                        wcost:{$sum:"$cost"},
+                        _id:"$website"
+                    }}
+            ]);
+            elements = await Pub_sites.find({uid:userid,status:1},{domain:1});
         }
 
+        const statRes = Summary_device.aggregate([{
+            $match: cond
+        },
+            {$group:{
+                    views: {$sum:"$views"},
+                    clicks:{$sum:"$clicks"},
+                    pops:{$sum:"$pops"},
+                    cost:{$sum:"$cost"},
+
+                    _id:"$day_unix"
+                }},
+            {$sort:{
+                    _id:-1
+                }
+            }
+        ]);
+        const countryRes = Summary_country.aggregate([{
+            $match: cond
+        },
+            {
+                $group: {
+                    cviews: {$sum: "$views"},
+                    cclicks: {$sum: "$clicks"},
+                    cpops: {$sum: "$pops"},
+                    cearn: {$sum: "$cost"},
+                    _id: "$country",
+                }
+            }
+        ]);
+        const deviceRes = Summary_device.aggregate([{
+            $match: cond
+        },
+            {$group:{
+                    dviews: {$sum:"$views"},
+                    dclicks:{$sum:"$clicks"},
+                    dpops:{$sum:"$pops"},
+                    dcost:{$sum:"$cost"},
+                    _id:"$device"
+                }},
+        ]);
+        const osRes = await Summary_os.aggregate([{
+            $match: cond
+        },
+            {$group:{
+                    osviews: {$sum:"$views"},
+                    oslicks:{$sum:"$clicks"},
+                    ospops:{$sum:"$pops"},
+                    oscost:{$sum:"$cost"},
+                    _id:"$os"
+                }},
+        ]);
+        const browserRes = await Summary_browser.aggregate([{
+            $match: cond
+        },
+            {$group:{
+                    bviews: {$sum:"$views"},
+                    bclicks:{$sum:"$clicks"},
+                    bpops:{$sum:"$pops"},
+                    bcost:{$sum:"$cost"},
+                    _id:"$browser"
+                }},
+        ]);
 
 
-        const result = await executeAllQueries(queries);
-        const statRes = result[0];
-        const countryRes = result[1];
-        const deviceRes = result[2];
-        const osRes = result[3];
-        const browserRes = result[4];
-        const eleRes = result[5];
-        const elements = result[6];
+        // const result = await executeAllQueries(queries);
+        //const statRes = result[0];
+        //const countryRes = result[1];
+        // const deviceRes = result[2];
+        // const osRes = result[3];
+        // const browserRes = result[4];
+        // const eleRes = result[5];
+        // const elements = result[6];
 
         // Views clicks
         const views_clicks = {};
         let day_duration = 1;
         if(duration == 2) {
-            // This week 
+            // This week
             day_duration = 7;
         }
         if(duration == 3) {
-            // Last 2 Week 
+            // Last 2 Week
             day_duration = 14;
         }
         if(duration == 4) {
-            // This month 
+            // This month
             day_duration = 30;
         }
         if(duration == 5) {
-            // Last 2 month 
+            // Last 2 month
             day_duration = 60;
         }
         let ci = 0;
@@ -167,13 +269,13 @@ exports.reportsHelper = async (req) => {
             let minus_unix = 0;
             if(i != 0) minus_unix = (60*60*24*i);
 
-            if(statRes[ci] && statRes[ci].day_unix == (today_unix - minus_unix)) {
-                let date = new Date((statRes[ci].day_unix * 1000)).toISOString();
-                date = date.slice(0, 10); 
+            if(statRes[ci] && statRes[ci]._id == (today_unix - minus_unix)) {
+                let date = new Date((statRes[ci]._id * 1000)).toISOString();
+                date = date.slice(0, 10);
 
                 if(!views_clicks[date]) views_clicks[date] = {};
 
-                views_clicks[date].clicks = statRes[ci].clicks || 0; 
+                views_clicks[date].clicks = statRes[ci].clicks || 0;
                 views_clicks[date].cost = statRes[ci].cost || 0;
                 views_clicks[date].views = statRes[ci].views || 0;
                 views_clicks[date].pops = statRes[ci].pops || 0;
@@ -181,24 +283,24 @@ exports.reportsHelper = async (req) => {
             }
             else {
                 let date = new Date((today_unix - minus_unix) * 1000).toISOString();
-                date = date.slice(0, 10); 
+                date = date.slice(0, 10);
 
                 if(!views_clicks[date]) views_clicks[date] = {};
 
-                views_clicks[date].clicks = 0; 
+                views_clicks[date].clicks = 0;
                 views_clicks[date].cost = 0;
                 views_clicks[date].views = 0;
                 views_clicks[date].pops = 0;
             }
         }
-        
+
         // Views pops and clicks by country
         i = 0;
         const byCountry = {};
         while(true) {
             if(!countryRes[i]) break;
-            
-            let code = countryRes[i].country;
+
+            let code = countryRes[i]._id;
             let cname = App_Settings.countries[code] ? App_Settings.countries[code][1]:'Unknown';
 
             if(!byCountry[cname]) byCountry[cname] = {};
@@ -210,14 +312,14 @@ exports.reportsHelper = async (req) => {
 
             i++;
         }
-        
+
         // By elements -> campaign for advertiser, websites for publishers
         const byElements = {};
         if(reportType == 'advertiser') {
             elements.forEach(data => {
-                let campaign_id = data.id;
+                let campaign_id = data._id;
 
-                let { cmviews, cmclicks, cmcost, cmpops } = findBy(eleRes, campaign_id, 'campaign_id');
+                let { cmviews, cmclicks, cmcost, cmpops } = findBy(eleRes, campaign_id, '_id');
 
                 let ctr = Math.round((cmclicks / cmviews) * 10000) / 100 || 0;
                 let tcost = cmcost.toFixed(2);
@@ -234,9 +336,9 @@ exports.reportsHelper = async (req) => {
         }
         if(reportType == 'publisher') {
             elements.forEach(data => {
-                let site_id = data.id;
+                let site_id = data._id;
 
-                let { wviews, wclicks, wcost, wpops } = findBy(eleRes, site_id, 'site_id');
+                let { wviews, wclicks, wcost, wpops } = findBy(eleRes, site_id, '_id');
 
                 let ctr = Math.round((wclicks / wviews) * 10000) / 100 || 0;
                 let tcost = wcost.toFixed(2);
@@ -258,8 +360,8 @@ exports.reportsHelper = async (req) => {
         const device_list = App_Settings.devices;
         for(key in device_list) {
             let device_name = device_list[key];
-            
-            let { dviews, dclicks, dcost, dpops } = findBy(deviceRes, key, 'device');
+
+            let { dviews, dclicks, dcost, dpops } = findBy(deviceRes, key, '_id');
 
             let ctr = Math.round((dclicks / dviews) * 10000) / 100 || 0;
             let tcost = dcost.toFixed(2);
@@ -280,8 +382,8 @@ exports.reportsHelper = async (req) => {
             const oName = os_list[key][0];
             const oVer = os_list[key][1] != 0 ? os_list[key][1]:'';
             const os_name = `${oName} ${oVer}`;
-            
-            const { osviews, osclicks, oscost, ospops } = findBy(osRes, key, 'os');
+
+            const { osviews, osclicks, oscost, ospops } = findBy(osRes, key, '_id');
 
             const ctr = Math.round((osclicks / osviews) * 10000) / 100 || 0;
             const tcost = oscost.toFixed(2);
@@ -297,11 +399,11 @@ exports.reportsHelper = async (req) => {
 
         // By Browser
         const byBrowser = {};
-        const browser_list = App_Settings.browsers; 
+        const browser_list = App_Settings.browsers;
         for(let key in browser_list) {
             let browser_name = browser_list[key];
-            
-            let { bviews, bclicks, bcost, bpops } = findBy(browserRes, key, 'browser');
+
+            let { bviews, bclicks, bcost, bpops } = findBy(browserRes, key, '_id');
 
             let ctr = Math.round((bclicks / bviews) * 10000) / 100 || 0;
             let tcost = bcost.toFixed(2);

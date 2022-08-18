@@ -1,11 +1,15 @@
 const { check, validationResult } = require("express-validator");
 const { razorPay } = require("../../../common/razorpay");
 const { createUniquePaymentId } = require("../../../common/util");
+// const Payments = require('../../../models/payments');
 const Payments = require('../../../models/payments');
 const { createHmac } = require('crypto');
 const { App_Settings } = require('../../../common/settings');
 const sequelize = require("../../../utils/db");
+// const User = require("../../../models/users");
 const User = require("../../../models/users");
+const Settings = require('../../../models/settings')
+
 const { QueryTypes } = require("sequelize");
 const { sendPaymentSuccessMail } = require("../../../common/sendMails");
 
@@ -17,7 +21,7 @@ exports.createOrderHelper = async (req) => {
     }
 
     await check('amt').exists().withMessage('Amount Not Specified!').trim().escape().isFloat().withMessage('Invalid Deposit Amount!')
-    .custom(customMinDepositAmtValidation).run(req);
+      .custom(customMinDepositAmtValidation).run(req);
 
     try {
         const errs = validationResult(req);
@@ -44,10 +48,10 @@ exports.createOrderHelper = async (req) => {
             currency: currency,
             receipt: mtx
         }
-        
+
         // Create razorpay order
         const order = await razorPay.orders.create(orderObject);
-        
+
         // Store order in db
         const rzr_order_id = order.id;
         const order_amount = (order.amount / 100);
@@ -100,8 +104,8 @@ exports.verifyPaymentHelper = async (req) => {
         const rzr_signature  = req.body.razorpay_signature;
 
         // Fetch Order from db
-        const order = await Payments.findOne({ where: { rzr_order_id: rzr_order_id, uid: userid } });
-        
+        const order = await Payments.findOne({ rzr_order_id: rzr_order_id, uid: userid });
+
         if(!order) {
             const err = new Error('Order Not Found!');
             err.statusCode = 404;
@@ -126,23 +130,36 @@ exports.verifyPaymentHelper = async (req) => {
         const ts = await sequelize.transaction();
         try {
             // Store in db
-            const store = await Payments.update({
-                rzr_payment_id,
-                rzr_signature,
-                status: 'captured'
-            }, {
-                where: {
-                    rzr_order_id: rzr_order_id,
-                    uid: userid
-                }
-            }, { transaction: ts });
+            // const store = await Payments.update({
+            //     rzr_payment_id,
+            //     rzr_signature,
+            //     status: 'captured'
+            // }, {
+            //     where: {
+            //         rzr_order_id: rzr_order_id,
+            //         uid: userid
+            //     }
+            // }, { transaction: ts });
+            const store = await Payments.updateOne(
+              {
+                  rzr_order_id: rzr_order_id,
+                  uid: userid
+              },
+              {
+                  rzr_payment_id,
+                  rzr_signature,
+                  status: 'captured'
+              }, );
             // Deposit into user ad_balance
-            const deposit = await sequelize.query('UPDATE users SET `ad_balance` = `ad_balance` + ? WHERE id = ?', {
-                type: QueryTypes.UPDATE,
-                replacements: [amount, userid],
-                mapToModel: User,
-                transaction: ts
-            });
+            // const deposit = await sequelize.query('UPDATE users SET `ad_balance` = `ad_balance` + ? WHERE id = ?', {
+            //     type: QueryTypes.UPDATE,
+            //     replacements: [amount, userid],
+            //     mapToModel: User,
+            //     transaction: ts
+            // });
+            const user_init = await User.findOne({_id:userid});
+            user_init.ad_balance = user_init.ad_balance - amount;
+            user_init.save();
 
             await ts.commit();
         } catch (err) {
@@ -158,7 +175,7 @@ exports.verifyPaymentHelper = async (req) => {
             msg: 'success'
         };
 
-    } catch (err) { 
+    } catch (err) {
         if(!err.statusCode)
             err.statusCode = 500;
         throw err;
@@ -180,12 +197,14 @@ const capturePayment = async (id, amt, currency) => {
 
 const customMinDepositAmtValidation = async(amt, { req }) => {
     // Check Min Deposit Amount
-    const getMinDeposit = await sequelize.query('SELECT min_deposit FROM settings', {
-        type: QueryTypes.SELECT,
-    });
-    let minDeposit = getMinDeposit[0].min_deposit;
-    
-    if(amt < minDeposit) { 
+    // const getMinDeposit = await sequelize.query('SELECT min_deposit FROM settings', {
+    //     type: QueryTypes.SELECT,
+    // });
+    const getMinDeposit = await Settings.findOne({},{ min_deposit:1,_id:0 });
+
+    let minDeposit = getMinDeposit.min_deposit;
+
+    if(amt < minDeposit) {
         throw new Error(`Minumum Deposit Amount is ${minDeposit}`);
     }
 }

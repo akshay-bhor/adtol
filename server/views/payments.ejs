@@ -3,7 +3,7 @@
 <div class="jumbotron">
     <div class="container-md">
       <% if(error) { %> <%- include('includes/err.ejs') %> <% } %>
-   
+
         <div class="row" style="align-items: flex-end">
           <div class="col">
             <label for="pay_id">Payment id</label>
@@ -38,7 +38,7 @@
               required
             />
           </div>
-  
+
           <div class="col">
             <label for="sort">Filter</label>
             <select name="sort" id="sort" class="form-control">
@@ -48,7 +48,7 @@
               <option value="3">Refunded</option>
             </select>
           </div>
-  
+
           <div class="col">
             <input
               type="submit"
@@ -60,7 +60,7 @@
             />
           </div>
         </div>
-  
+
       <!-- Users List -->
       <div class="d-block mt-5" id="pay-list"></div>
     </div>
@@ -73,7 +73,7 @@
     let sdate = '2021-01-01';
     let edate = new Date().toISOString().slice(0, 10);
     let sort;
-  
+
   /**
    * ON Input Enter
    * */
@@ -82,38 +82,38 @@
           e.preventDefault();
           // Click Submit Btn
           $("#search").click();
-      } 
+      }
       });
-  
+
       function sForm() {
           pay_id = $("#pay_id").val();
           page = 1;
           getPayList();
       }
-  
+
       function goPage() {
           pay_id = $("#pay_id").val();
           page = $('#cpage').val();
           getPayList();
       }
-  
-  
+
+
     $(document).ready(() => {
         $('#sdate').val(sdate);
         $('#edate').val(edate);
         getPayList();
     });
-  
+
     const getPayList = () => {
       if (isloading) return;
-      
+
       sort = $("#sort").val();
       sdate = $('#sdate').val();
       edate = $('#edate').val();
-  
+
       isloading = true;
       $("#pay-list").html("Fetching...");
-  
+
       $.ajax({
         url: "/admin/payments",
         type: "post",
@@ -136,44 +136,44 @@
         },
       });
     };
-  
+
     function siteDataView(data, total) {
       let res;
-  
+
       //PAGINATION
       var pages = Math.ceil(total / 50);
-  
+
       res = `
           <div class="row justify-content-between" style="align-items: flex-end">
               <div class="col-md-3 font-weight-bold" style="align-self:flex-start">
                   ${total} Total
-              </div>    
+              </div>
               <div class="col-md-3 d-flex justify-content-end">
                   <select class="form-control" id="cpage">
       `;
-  
+
       for (let i = 1; i <= pages; i++) {
         if (i == page)
           res += '<option value="' + i + '" selected>' + i + "</option>";
         else res += '<option value="' + i + '">' + i + "</option>";
       }
-  
+
       res += `
                   </select>
-                  <button class="btn btn-primary" onclick="goPage()">Go</buttom>        
+                  <button class="btn btn-primary" onclick="goPage()">Go</buttom>
               </div>
           </div>
       `;
-  
+
       res += `<div class="pay-list-container mt-5">`;
-  
+
       $.each(data, (k, d) => {
         let adult = '';
-        if(d.adult == 'Adult') adult = `<span class="badge badge-danger">${d.adult}</span>`; 
+        if(d.adult == 'Adult') adult = `<span class="badge badge-danger">${d.adult}</span>`;
         else adult = `<span class="badge badge-info">${d.adult}</span>`;
 
           res += `
-              <div class="list-group-item d-block mb-4" style="overflow:hidden" id="pay-${d.id}">
+              <div class="list-group-item d-block mb-4" style="overflow:hidden" id="pay-${d._id}">
                   <div class="d-block" style="overflow:hidden">
                       <div class="font-weight-bold float-left mr-3">${d.user}<br>
                           <span class="font-weight-bold text-secondary">
@@ -186,7 +186,7 @@
                         <span class="text-secondary">${d.processor}</span>
                       </div>
           `;
-  
+
           let status = '<span class="badge badge-success">Captured</span>';
           if(d.status == 'Refunded') {
               status = '<span class="badge badge-danger">Refunded</span>';
@@ -206,16 +206,16 @@
                         <span class="font-weight-bold">Amount</span><br>$${d.amount}
                       </div>
                   </div>
-                  
+
               </div>
           `;
       });
-  
+
       res += `</div>`;
-  
+
       $("#pay-list").html(res);
     }
-  
+
     function jscriptErr(status, exception) {
       var msg = "";
       if (status === 0) {

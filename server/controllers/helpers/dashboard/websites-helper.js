@@ -1,6 +1,7 @@
 const { check, validationResult } = require("express-validator");
 const { App_Settings } = require("../../../common/settings");
-const Pub_Sites = require("../../../models/publisher_sites");
+// const Pub_Sites = require("../../../models/publisher_sites");
+const Pub_Sites = require('../../../models/publisher_sites')
 const psl = require('psl');
 const { tinify, extractHostname } = require("../../../common/util");
 const Banner_Sizes = require("../../../models/banner_sizes");
@@ -18,33 +19,33 @@ exports.websitesHelper = async (req) => {
     }
 
     try {
-        
-        // Userid
-        const userid = req.userInfo.id;
 
-        let sites = await Pub_Sites.findAll({ where: { uid: userid, [Op.not]: [{ status: 4 }] } });
+        // Userid
+        const userid = req.userInfo._id;
+
+        let sites = await Pub_Sites.find({ uid: userid, status: {$ne:4}  } );
 
         let sitesData = [];
         sites.forEach(data => {
             let tmp = {};
 
-            tmp.id = data.dataValues.id;
-            tmp.domain = data.dataValues.domain;
-            tmp.adult = data.dataValues.adult;
-            if(data.dataValues.status == 1)
+            tmp.id = data._id;
+            tmp.domain = data.domain;
+            tmp.adult = data.adult;
+            if(data.status == 1)
                 tmp.status = 'Active';
-            if(data.dataValues.status == 2)
+            if(data.status == 2)
                 tmp.status = 'Pending';
-            if(data.dataValues.status == 3)
+            if(data.status == 3)
                 tmp.status = 'Rejected';
-            tmp.views = +data.dataValues.views;
-            tmp.clicks = +data.dataValues.clicks;
-            tmp.pops = +data.dataValues.pops;
-            tmp.earned = parseFloat(data.dataValues.earned).toFixed(2);
-            tmp.category = App_Settings.categories[data.dataValues.category] || 'Unknown';
-            tmp.language = App_Settings.languages[data.dataValues.language] || 'English';
+            tmp.views = +data.views;
+            tmp.clicks = +data.clicks;
+            tmp.pops = +data.pops;
+            tmp.earned = parseFloat(data.earned).toFixed(2);
+            tmp.category = App_Settings.categories[data.category] || 'Unknown';
+            tmp.language = App_Settings.languages[data.language] || 'English';
             tmp.ctr = Math.floor((tmp.clicks / tmp.views) * 10000) / 100;
-            tmp.traffic = data.dataValues.traffic;
+            tmp.traffic = data.traffic;
 
             sitesData.push({...tmp});
         });
@@ -73,7 +74,7 @@ exports.addWebsiteHelper = async (req) => {
      */
 
     await check('domain').exists().withMessage('Domain not posted!').trim()
-    .custom(val => psl.isValid(extractHostname(val))).withMessage('Invalid Domain!').run(req); // Post without http or https
+      .custom(val => psl.isValid(extractHostname(val))).withMessage('Invalid Domain!').run(req); // Post without http or https
     await check('category').exists().withMessage('Please select a category!').trim().isString().withMessage('Invalid Category!').run(req);
     await check('language').exists().withMessage('Please select website\'s language!').trim().isString().withMessage('Invalid Language!').run(req);
     await check('traffic').exists().trim().isInt().withMessage('Invalid traffic value!').escape().toInt().run(req);
@@ -93,7 +94,7 @@ exports.addWebsiteHelper = async (req) => {
         let adult = 0;
 
         // Userid
-        const userid = req.userInfo.id;
+        const userid = req.userInfo._id;
 
         // Domain
         const parse = psl.parse(extractHostname(req.body.domain));
@@ -130,10 +131,10 @@ exports.addWebsiteHelper = async (req) => {
         }
 
         // Validate adult
-        if(req.body.category == 'Adult') adult = 1; 
+        if(req.body.category == 'Adult') adult = 1;
 
         // Check if domain already exist for that user
-        const exist = await Pub_Sites.findOne({ where: { hash: dHash, uid: userid } });
+        const exist = await Pub_Sites.findOne({ hash: dHash, uid: userid });
         if(exist) {
             const err = new Error('Domain already exist!');
             err.statusCode = 422;
@@ -154,7 +155,7 @@ exports.addWebsiteHelper = async (req) => {
             adult: adult,
             status: status
         });
-        
+
         // Send Mail
         // sendWebsitePendingMail(req.userInfo.mail, req.userInfo.user, domain);
         sendWebsiteApprovedMail(req.userInfo.mail, req.userInfo.user, domain);
@@ -162,7 +163,7 @@ exports.addWebsiteHelper = async (req) => {
         // Return
         return {
             msg: 'success',
-            id: insert.dataValues.id
+            id: insert._id
         };
 
     } catch(err) {
@@ -179,9 +180,9 @@ exports.editWebsiteHelper = async (req) => {
         throw err;
     }
 
-    await check('webid').exists().trim().isInt().withMessage('Invalid website ID!').run(req);
+    await check('webid').exists().trim().withMessage('Invalid website ID!').run(req);
     await check('domain').exists().withMessage('Domain not posted!').trim()
-    .custom(val => psl.isValid(extractHostname(val))).withMessage('Invalid Domain!').run(req);
+      .custom(val => psl.isValid(extractHostname(val))).withMessage('Invalid Domain!').run(req);
     await check('category').exists().withMessage('Please select a category!').trim().isString().withMessage('Invalid Category!').run(req);
     await check('language').exists().withMessage('Please select website\'s language!').trim().isString().withMessage('Invalid Language!').run(req);
     await check('traffic').exists().trim().isInt().withMessage('Invalid traffic value!').escape().toInt().run(req);
@@ -201,7 +202,7 @@ exports.editWebsiteHelper = async (req) => {
         let adult = 0;
 
         // Userid
-        const userid = req.userInfo.id;
+        const userid = req.userInfo._id;
 
         // Domain
         const parse = psl.parse(extractHostname(req.body.domain));
@@ -215,13 +216,13 @@ exports.editWebsiteHelper = async (req) => {
 
         // Website ID
         const website_id = req.params.webid;
-        
+
         // Verify categories
         const catId = Object.keys(App_Settings.categories).filter(key => {
             let cat = App_Settings.categories[key];
             if(cat == req.body.category) return true;
         })[0];
-        
+
         // Verify languages
         const langId = Object.keys(App_Settings.languages).filter(key => {
             let lang = App_Settings.languages[key];
@@ -240,27 +241,22 @@ exports.editWebsiteHelper = async (req) => {
             throw err;
         }
 
-        const getWebInfo = await Pub_Sites.findOne({ 
-            where: {
-                id: website_id,
-                uid: userid
-            }
-        });
-        
+        const getWebInfo = await Pub_Sites.findOne({ _id: website_id,uid: userid });
+
         // Check what values updated
-        let status = getWebInfo.dataValues.status;
-        const oldHash = getWebInfo.dataValues.hash;
-        const oldCat = getWebInfo.dataValues.category;
-        const oldLang = getWebInfo.dataValues.language;
+        let status = getWebInfo.status;
+        const oldHash = getWebInfo.hash;
+        const oldCat = getWebInfo.category;
+        const oldLang = getWebInfo.language;
         if(oldHash != dHash || oldCat != catId || oldLang != langId) {
             status = 2;
         }
 
         // Validate adult
-        if(req.body.category == "Adult") adult = 1; 
+        if(req.body.category == "Adult") adult = 1;
 
         // Update
-        const update = await Pub_Sites.update({
+        const update = await Pub_Sites.updateOne({ _id: website_id, uid: userid },{
             domain: domain,
             hash: dHash,
             category: catId,
@@ -268,13 +264,8 @@ exports.editWebsiteHelper = async (req) => {
             traffic: traffic,
             adult: adult,
             status: status
-        }, {
-            where: {
-                id: website_id,
-                uid: userid
-            }
         });
-        
+
         if(update[0] == 0) {
             const err = new Error('Something Went Wrong, try again!');
             err.statusCode = 422;
@@ -300,7 +291,7 @@ exports.deleteWebsiteHelper = async (req) => {
         throw err;
     }
 
-    await check('webid').exists().trim().isInt().withMessage('Invalid website ID!').run(req);
+    await check('webid').exists().trim().withMessage('Invalid website ID!').run(req);
 
     try {
 
@@ -312,9 +303,9 @@ exports.deleteWebsiteHelper = async (req) => {
             err.data = errs.array();
             throw err;
         }
-        
+
         // Userid
-        const userid = req.userInfo.id;
+        const userid = req.userInfo._id;
 
         // Website ID
         const website_id = req.params.webid;
@@ -323,15 +314,8 @@ exports.deleteWebsiteHelper = async (req) => {
         const status = 4;
 
         // Update
-        const update = await Pub_Sites.update({
-            status: status
-        }, {
-            where: {
-                id: website_id,
-                uid: userid
-            }
-        });
-        
+        const update = await Pub_Sites.updateOne({_id: website_id,uid: userid },{status: status});
+
         if(update[0] == 0) {
             const err = new Error('Something Went Wrong, try again!');
             err.statusCode = 422;
@@ -357,7 +341,7 @@ exports.getAdcodeHelper = async (req) => {
         throw err;
     }
 
-    await check('webid').exists().withMessage('Please select a website!').trim().escape().isInt().withMessage('Invalid Website ID!').run(req);
+    await check('webid').exists().withMessage('Please select a website!').trim().escape().withMessage('Invalid Website ID!').run(req);
     // Count for widget ad
     await check('count').trim().escape().isInt().withMessage('Count should be between 3 and 12!').run(req);
     if(req.body.rel !== undefined) await check('rel').exists().trim().escape().isInt().withMessage('Invalid Follow').notEmpty().withMessage('Invalid Follow').custom(val => {
@@ -395,21 +379,27 @@ exports.getAdcodeHelper = async (req) => {
         }
 
         // Userid
-        const userid = req.userInfo.id;
+        const userid = req.userInfo._id;
 
         // Get user input
         const webid = req.body.webid;
         let adult = req.body.adult ? 1:0;
         const webCats = req.body.category;
         const webRel = req.body.rel !== undefined ? req.body.rel:null;
-        
+
         // Script extension based on env
         let scriptEXT = 'js';
         if(process.env.NODE_ENV === 'development') scriptEXT = 'dev.js';
 
         // Check ownershipt and get data
-        const webInfo = await Pub_Sites.findOne({ where: { uid: userid, id: webid }, attributes: ['hash', 'category', 'language', 'adult', 'status'] });
-        
+        const webInfo = await Pub_Sites.findOne({ uid: userid, _id: webid }, {
+            'hash':1,
+            'category':1,
+            'language':1,
+            'adult':1,
+            'status':1
+        } );
+
         if(!webInfo) {
             const err = new Error('Not Allowed!');
             err.statusCode = 401;
@@ -422,7 +412,7 @@ exports.getAdcodeHelper = async (req) => {
         // }
 
         // Get banner info
-        const bInfo = await Banner_Sizes.findAll();
+        const bInfo = await Banner_Sizes.find();
         if(bInfo.length == 0) {
             throw new Error('No banner sizes available! Contact Admin.');
         }
@@ -430,29 +420,29 @@ exports.getAdcodeHelper = async (req) => {
         // WebInfo object
         let webInfoObj = {};
         // Check if website is adult
-        if(webInfo.dataValues.adult == 1) adult = 1;
+        if(webInfo.adult == 1) adult = 1;
         webInfoObj.ad_adult = adult;
         webInfoObj.web_id = webid;
-        webInfoObj.ad_hash = webInfo.dataValues.hash;
-        webInfoObj.ad_lang = webInfo.dataValues.language;
-        webInfoObj.ad_cat = webInfo.dataValues.category;
+        webInfoObj.ad_hash = webInfo.hash;
+        webInfoObj.ad_lang = webInfo.language;
+        webInfoObj.ad_cat = webInfo.category;
         webInfoObj.web_cat = webCats;
         if(webRel !== null) webInfoObj.web_rel = webRel;
         webInfoObj.ad_count = 1;
         webInfoObj.type = 'adcode';
-        
+
         // Create Ad Codes for banners
         let code = '';
         let bannerAdCodes = [];
         bInfo.forEach(b => {
-            
+
             // WebInfo object
             webInfoObj.ad_type = 2;
-            webInfoObj.ad_banner_size = b.id;
+            webInfoObj.ad_banner_size = b._id;
 
             // Create random id
             let randId = crypto.randomBytes(3).toString('hex');
-            
+
             // Create ad code
             code = encryptAES(JSON.stringify(webInfoObj));
             bannerAdCodes[b.size] = `<script type="text/javascript">
@@ -476,12 +466,12 @@ exports.getAdcodeHelper = async (req) => {
         // Create Ad Code for native ad
         webInfoObj.ad_type = 3;
         let native_ad_codes = [];
-        let bInfoObj = bInfo.find(d => d.dataValues.size == '336x280'); 
-        native_ad_codes.push(bInfoObj.dataValues.id);
-        bInfoObj = bInfo.find(d => d.dataValues.size == '300x150'); 
-        native_ad_codes.push(bInfoObj.dataValues.id);
-        bInfoObj = bInfo.find(d => d.dataValues.size == '300x250'); 
-        native_ad_codes.push(bInfoObj.dataValues.id);
+        let bInfoObj = bInfo.find(d => d.size == '336x280');
+        native_ad_codes.push(bInfoObj._id);
+        bInfoObj = bInfo.find(d => d.size == '300x150');
+        native_ad_codes.push(bInfoObj._id);
+        bInfoObj = bInfo.find(d => d.size == '300x250');
+        native_ad_codes.push(bInfoObj._id);
         webInfoObj.ad_banner_size = native_ad_codes;
         // Create random id
         randId = crypto.randomBytes(3).toString('hex');
@@ -504,7 +494,7 @@ exports.getAdcodeHelper = async (req) => {
 
         // Create Ad Code for feed ad
         webInfoObj.ad_type = 4;
-        webInfoObj.ad_banner_size = bInfoObj.dataValues.id; // 300x250
+        webInfoObj.ad_banner_size = bInfoObj._id; // 300x250
         webInfoObj.ad_count = adCount;
         // Create random id
         randId = crypto.randomBytes(3).toString('hex');
@@ -546,10 +536,6 @@ exports.getAdcodeHelper = async (req) => {
          * Pop ads => 5
          */
 
-        
-
-
-
     } catch (err) {
         if(!err.statusCode)
             err.statusCode = 500;
@@ -558,23 +544,23 @@ exports.getAdcodeHelper = async (req) => {
 }
 
 exports.formdataHelper = async (req) => {
-    
+
     // Get categories from global settings
     const cats = App_Settings.categories;
 
     // Get languages from global settings
     const lang = App_Settings.languages;
 
-    // Return 
+    // Return
     return {
-        categories: Object.keys(cats).map(key => ({ id: +key, name: cats[key] })),
-        languages: Object.keys(lang).map(key => ({ id: +key, name: lang[key] })),
+        categories: Object.keys(cats).map(key => ({ id: key, name: cats[key] })),
+        languages: Object.keys(lang).map(key => ({ id: key, name: lang[key] })),
     };
 }
 
 const categoryValidation = (value) => {
     if(value == 0) return true; // 0 is all values
-        
+
     const data = App_Settings.categories;
 
     const values = value.split(',');

@@ -1,10 +1,10 @@
 const { check, validationResult } = require("express-validator");
-const { default: mongoose } = require("mongoose");
 const { QueryTypes } = require("sequelize");
 const { App_Settings } = require("../../common/settings");
+//const User = require("../../models/users");
+//const User_Info = require("../../models/user_info");
+//const sequelize = require("../../utils/db");
 const User = require("../../models/users");
-const User_Info = require("../../models/user_info");
-const sequelize = require("../../utils/db");
 
 exports.accountInfoHelper = async (req) => {
     if(!req.userInfo) {
@@ -16,29 +16,34 @@ exports.accountInfoHelper = async (req) => {
     try {
 
         // Userid
-        const userid = req.userInfo.id;
-        
+        const userid = req.userInfo._id;
+
         // Get user data
         // const udata = await sequelize.query('SELECT u.name, u.surname, u.mobile, u.country, u.status, ui.paypal, ui.ac_no as acno, ui.bank, ui.ifsc, ui.branch, ui.upi, ui.payoneer FROM users u INNER JOIN user_info ui ON u.id = ui.uid WHERE u.id = ? LIMIT 1', {
         //     type: QueryTypes.SELECT,
         //     replacements: [userid]
         // });
-        const udata = await User.aggregate([{ $match: { '_id': mongoose.Types.ObjectId(userid) } }, {
-            $lookup: {
-                from: 'user_infos',
-                localField: '_id',
-                foreignField: 'uid',
-                as: 'info'
-            }
-        }]);
+        const udata = await User.findOne({_id:userid},{
+            name:1,
+            surname:1,
+            country:1,
+            status:1,
+            "user_info.paypal":1,
+            "user_info.ac_no":1,
+            "user_info.bank":1,
+            "user_info.ifcs":1,
+            "user_info.branch":1,
+            "user_info.upi":1,
+            "user_info.payoneer":1
+        });
 
         // Get country
-        const ccode = udata[0].country;
+        const ccode = udata.country;
         const country = App_Settings.countries[ccode][1];
 
         // Return
         return {
-            ...udata[0],
+            ...udata,
             country
         };
 
@@ -72,7 +77,7 @@ exports.editAccountDetailsHelper = async (req) => {
         }
 
         // Userid
-        const userid = req.userInfo.id;
+        const userid = req.userInfo._id;
 
         // Request data
         const name = req.body.name || null;
@@ -80,14 +85,18 @@ exports.editAccountDetailsHelper = async (req) => {
         const mobile = req.body.mobile;
 
         // Update
-        const update = await User.update({
-            name: name,
-            surname: surname,
-            mobile: mobile
-        }, {
-            where: {
-                id: userid
-            }
+        // const update = await User.update({
+        //     name: name,
+        //     surname: surname,
+        //     mobile: mobile
+        // }, {
+        //     where: {
+        //         id: userid
+        //     }
+        // });
+
+        const update = await User.updateOne({_id: userid},{
+            $set:{mobile:mobile, name:name, surname:surname}
         });
 
         // Return
@@ -132,7 +141,7 @@ exports.editPaymentHelper = async (req) => {
         }
 
         // Userid
-        const userid = req.userInfo.id;
+        const userid = req.userInfo._id;
 
         // Req params
         const paypal = req.body.paypal || null;
@@ -144,17 +153,15 @@ exports.editPaymentHelper = async (req) => {
         const upi = req.body.upi || null;
 
         // Update
-        const update = await User_Info.update({
-            paypal: paypal,
-            payoneer: payoneer,
-            bank: bank,
-            ifsc: ifsc,
-            branch: branch,
-            ac_no: acno,
-            upi: upi
-        }, {
-            where: {
-                uid: userid
+        const update = await User.updateOne({_id: userid},{
+            $set: {
+                "user_info.paypal": paypal,
+                "user_info.payoneer": payoneer,
+                "user_info.bank": bank,
+                "user_info.ifsc": ifsc,
+                "user_info.branch": branch,
+                "user_info.ac_no": acno,
+                "user_info.upi": upi
             }
         });
 

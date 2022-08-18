@@ -1,8 +1,11 @@
 const { QueryTypes } = require("sequelize");
 const sequelize = require("../../../utils/db");
 const { tinify, extractHostname } = require('../../../common/util');
+// const Campaign_types = require("../../../models/campaign_types");
 const Campaign_types = require("../../../models/campaign_types");
 const User = require("../../../models/users");
+// const User = require("../../../models/users");
+const Banner_sizes = require('../../../models/banner_sizes')
 const { check, validationResult } = require("express-validator");
 const { uploadImageS3 } = require("../../../common/upload-s3");
 const { v4: uuidv4 } = require('uuid');
@@ -15,12 +18,14 @@ const Settings = require("../../../models/settings");
 const sizeOf = require('image-size');
 const { App_Settings } = require("../../../common/settings");
 const User_Banners = require("../../../models/user_banners");
-const Ads = require("../../../models/ads");
+const Ads = require('../../../models/ads')
 const Banner_Sizes = require("../../../models/banner_sizes");
 const Campaigns = require("../../../models/campaigns");
+const Pops = require('../../../models/pops')
 const Devices = require("../../../models/devices");
 const Os = require("../../../models/os");
 const Browsers = require("../../../models/browsers");
+const Views = require('../../../models/views');
 const { sendCampaignCreatedMail } = require("../../../common/sendMails");
 
 exports.campaignsHelper = async(req) => {
@@ -32,23 +37,41 @@ exports.campaignsHelper = async(req) => {
 
     try {
         // Userid
-        const userid = req.userInfo.id;
+        const userid = req.userInfo._id;
 
         // Get all user info
-        const userInfo = await User.findOne({ where: { id: userid } });
+        const userInfo = await User.findOne({ _id: userid });
 
         // Get campaign types
-        const campTypes = await Campaign_types.findAll();
+        const campTypes = await Campaign_types.find();
 
-        const campaigns = await sequelize.query('SELECT id, campaign_title, campaign_type, cpc, views, clicks, pops, budget, budget_rem, today_budget, today_budget_rem, spent, adult, run, status, pro FROM campaigns WHERE uid = ? AND status != 4',
-        {
-            type: QueryTypes.SELECT,
-            replacements: [userid]
+        // const campaigns = await sequelize.query('SELECT id, campaign_title, campaign_type, cpc, views, clicks, pops, budget, budget_rem, today_budget, today_budget_rem, spent, adult, run, status, pro FROM campaigns WHERE uid = ? AND status != 4',
+        // {
+        //     type: QueryTypes.SELECT,
+        //     replacements: [userid]
+        // });
+        const campaigns = await Campaigns.find({uid:userid,status:{$ne:4}},{
+            campaign_title:1,
+            campaign_type:1,
+            cpc:1,
+            views:1,
+            clicks:1,
+            pops:1,
+            budget:1,
+            budget_rem:1,
+            today_budget:1,
+            today_budget_rem:1,
+            spent:1,
+            adult:1,
+            run:1,
+            status:1,
+            pro:1
         });
+
         const tcampaigns = [];
         campaigns.forEach(data => {
             let campData = {};
-            campData.id = data.id;
+            campData.id = data._id;
             campData.name = he.decode(data.campaign_title);
             campData.cpc = data.cpc;
             campData.views = data.views;
@@ -61,7 +84,7 @@ exports.campaignsHelper = async(req) => {
             campData.cost = data.spent.toFixed(2);
             if(data.adult == 1)
                 campData.adult = true;
-            else    
+            else
                 campData.adult = false;
             campData.cstatus = data.run;
             campData.status = data.status;
@@ -69,11 +92,10 @@ exports.campaignsHelper = async(req) => {
             // Campaign type
             if(data.campaign_type == 0) {
                 campData.campaign_type = 'Pop';
-            }
-            else {
+            } else {
                 campTypes.forEach(c => {
-                    if(c.dataValues.id == data.campaign_type) {
-                        campData.campaign_type = c.dataValues.name;
+                    if(c._id.equals(data.campaign_type)) {
+                        campData.campaign_type = c.name;
                     }
                 })
             }
@@ -86,9 +108,9 @@ exports.campaignsHelper = async(req) => {
         // Return
         return {
             data: campaignData,
-            max_budget: userInfo.dataValues.ad_balance
+            max_budget: userInfo.ad_balance
         };
-        
+
     } catch(err) {
         if(!err.statusCode)
             err.statusCode = 500;
@@ -120,23 +142,24 @@ exports.changeStatusHelper = async (req) => {
         const userid = req.userInfo.id;
 
         // Get campaigns
-        const campaigns = await sequelize.query('SELECT c.id, a.id as adid, c.bot, c.status, a.type, c.adult, c.run, c.budget_rem, c.today_budget_rem FROM campaigns c INNER JOIN ads a ON c.id = a.campaign_id WHERE c.uid = ? AND c.id = ? AND c.status != 4', {
-            type: QueryTypes.SELECT,
-            replacements: [userid, campId]
-        });
+        // const campaigns = await sequelize.query('SELECT c.id, a.id as adid, c.bot, c.status, a.type, c.adult, c.run, c.budget_rem, c.today_budget_rem FROM campaigns c INNER JOIN ads a ON c.id = a.campaign_id WHERE c.uid = ? AND c.id = ? AND c.status != 4', {
+        //     type: QueryTypes.SELECT,
+        //     replacements: [userid, campId]
+        // });
+        const campaigns = await Campaigns.find({_id:campId,status:{$ne:4}}).populate('ads');
         if(campaigns.length == 0) {
             throw new Error('Not Allowed!');
         }
 
         let i = 0;
         for(let data of campaigns) {
-            let id = data.id;
+            let id = data._id;
             let bot = data.bot;
             let status = data.status;
             let type = data.type;
             let adult = data.adult;
             let run = data.run;
-            let ad_id = data.adid;
+            let ad_id = data.ads[0]._id;
             let budget_rem = data.budget_rem;
             let today_budget_rem = data.today_budget_rem;
             let nrun;
@@ -162,21 +185,30 @@ exports.changeStatusHelper = async (req) => {
             const str = `0|${+nstatus}|${+type}|${+adult}|${+nrun}`;
             const match_hash = tinify(str);
 
-            const ts = await sequelize.transaction();
+            // const ts = await sequelize.transaction();
             try {
                 // Update
-                const update = await sequelize.query('UPDATE ads a, campaigns c SET c.status = ?, c.run = ?, c.budget_rem = ?, c.today_budget_rem = ?, a.match_hash = ? WHERE c.id = ? AND a.id = ?', {
-                    type: QueryTypes.UPDATE,
-                    replacements: [nstatus, nrun, budget_rem, today_budget_rem, match_hash, id, ad_id],
-                    transaction: ts
+                // const update = await sequelize.query('UPDATE ads a, campaigns c SET c.status = ?, c.run = ?, c.budget_rem = ?, c.today_budget_rem = ?, a.match_hash = ? WHERE c.id = ? AND a.id = ?', {
+                //     type: QueryTypes.UPDATE,
+                //     replacements: [nstatus, nrun, budget_rem, today_budget_rem, match_hash, id, ad_id],
+                //     transaction: ts
+                // });
+                const update_camp = await  Campaigns.updateOne({_id:id},{
+                    status:nstatus,
+                    run:nrun,
+                    budget_rem:budget_rem,
+                    today_budget_rem:today_budget_rem
                 });
-
+                const update_ads = await Ads.updateOne({_id:id},{
+                    match_hash:match_hash
+                })
                 // If delete deposit amt back
                 if(action == 'delete' && i == 0) {
-                    const user_update = await sequelize.query('UPDATE users SET ad_balance = ad_balance + ? WHERE id = ?', {
-                        type: QueryTypes.UPDATE,
-                        replacements: [camp_budget_rem, userid]
-                    });
+                    // const user_update = await sequelize.query('UPDATE users SET ad_balance = ad_balance + ? WHERE id = ?', {
+                    //     type: QueryTypes.UPDATE,
+                    //     replacements: [camp_budget_rem, userid]
+                    // });
+                    const user_update = await User.updateOne({_id:userid},{ad_balance:camp_budget_rem});
                 }
 
                 i++;
@@ -210,7 +242,7 @@ exports.changeBudgetHelper = async (req) => {
     await check('budget').exists().isDecimal().withMessage('Invalid Budget!').escape().run(req);
 
     try {
-        const errs = validationResult(req); 
+        const errs = validationResult(req);
         if(!errs.isEmpty()) {
             const err = new Error('Validation Failed!');
             err.statusCode = 422;
@@ -219,22 +251,23 @@ exports.changeBudgetHelper = async (req) => {
         }
 
         // Userid
-        const userid = req.userInfo.id;
+        const userid = req.userInfo._id;
 
         // Budget
-        let budget = req.body.budget; 
-        // Campaign 
+        let budget = req.body.budget;
+        // Campaign
         const campId = req.params.campid;
 
         // Get user advertiser balance
-        const ad_bal_query = await sequelize.query('SELECT ad_balance FROM users WHERE id = ? LIMIT 1', {
-           type: QueryTypes.SELECT,
-           replacements: [userid]
-        });
-        const ad_bal = ad_bal_query[0].ad_balance;
+        // const ad_bal_query = await sequelize.query('SELECT ad_balance FROM users WHERE id = ? LIMIT 1', {
+        //    type: QueryTypes.SELECT,
+        //    replacements: [userid]
+        // });
+        const ad_bal_query = await User.findOne({_id:userid},{ad_balance:1,_id:0})
+        const ad_bal = ad_bal_query.ad_balance;
 
         // Round budget
-        budget = Math.round(budget * 100000) / 100000;   
+        budget = Math.round(budget * 100000) / 100000;
 
         // Validate
         if(budget < 1) {
@@ -244,16 +277,17 @@ exports.changeBudgetHelper = async (req) => {
         }
 
         // Get old remaining budget
-        const old_budget_query = await sequelize.query('SELECT budget_rem FROM campaigns WHERE id = ? AND uid = ? LIMIT 1', {
-            type: QueryTypes.SELECT,
-            replacements: [campId, userid]
-        });
-        if(old_budget_query.length != 1) {
+        // const old_budget_query = await sequelize.query('SELECT budget_rem FROM campaigns WHERE id = ? AND uid = ? LIMIT 1', {
+        //     type: QueryTypes.SELECT,
+        //     replacements: [campId, userid]
+        // });
+        const old_budget_query = await Campaigns.findOne({_id:campId,uid:userid}, {budget_rem: 1,_id:0, budget: 1})
+        if(!old_budget_query) {
             const err = new Error('Campaign does\'t exist!');
             err.statusCode = 422;
             throw err;
         }
-        const old_budget = old_budget_query[0].budget_rem;
+        const old_budget = old_budget_query.budget_rem;
 
         // Get additional
         const add = (old_budget - budget);
@@ -263,26 +297,15 @@ exports.changeBudgetHelper = async (req) => {
             throw new Error('New Budget exceeds available balance!');
         }
 
-        const ts = await sequelize.transaction();
-
         try {
-            // Update ad budget
-            const update_ad_budget = await sequelize.query('UPDATE campaigns SET budget_rem = ?, `budget` = `budget` - ? WHERE id = ? AND uid = ?', {
-                type: QueryTypes.UPDATE,
-                replacements: [budget, add, campId, userid],
-                transaction: ts
-            });
+            await Campaigns.findOneAndUpdate({_id:campId}, {$set: {
+                    budget_rem: budget,
+                    budget: old_budget_query.budget - add
+                }});
 
-            // Update user ad balance
-            const update_ad_bal = await sequelize.query('UPDATE users SET `ad_balance` = `ad_balance` + ? WHERE `id` = ?', {
-                type: QueryTypes.UPDATE,
-                replacements: [add, userid],
-                transaction: ts
-            });
+            await User.findOneAndUpdate({_id:userid}, {$set: {ad_balance: ad_bal_query.ad_balance + add}});
 
-            await ts.commit();
         } catch (err) {
-            await ts.rollback();
             throw new Error('Something went wrong, try again!');
         }
 
@@ -305,7 +328,7 @@ exports.manageCampaignHelper = async (req) => {
         throw err;
     }
 
-    try { 
+    try {
         // Get type => campaign or pop
         const reqType = req.query.type;
 
@@ -320,9 +343,7 @@ exports.manageCampaignHelper = async (req) => {
             // Get fields
             const campType = +req.body.campaign_type;
             const getFields = await Campaign_types.findOne({
-                where: {
-                    id: campType
-                }
+                id: campType
             });
 
             if(!getFields) {
@@ -338,7 +359,7 @@ exports.manageCampaignHelper = async (req) => {
         if(requiredFields.includes('desc')) await check('desc').exists().trim().escape().isString().notEmpty().withMessage('Description is required').isLength({ min:3, max:300 }).withMessage('Min and max allowed characters are 3 & 300').run(req);
         await check('url').exists().trim().notEmpty().withMessage('URL is required').isURL().withMessage('URL is invalid').run(req);
         if(requiredFields.includes('banner')) await check('banners').exists().withMessage('Please select atleast 1 banner').trim().escape().isString().notEmpty()
-        .withMessage('Please select atleast 1 banner').run(req);
+          .withMessage('Please select atleast 1 banner').run(req);
         await check('category').exists().trim().escape().isString().notEmpty().withMessage('Category is required').custom(adTargetingValidation).run(req);
         await check('country').exists().trim().escape().isString().notEmpty().withMessage('Country is required').custom(adTargetingValidation).run(req);
         await check('device').exists().trim().escape().isString().notEmpty().withMessage('Device is required').custom(adTargetingValidation).run(req);
@@ -354,20 +375,20 @@ exports.manageCampaignHelper = async (req) => {
         }).run(req);
         await check('cpc').exists().trim().escape().isFloat().notEmpty().withMessage('CPC is required').custom(adSettingsValidation).run(req);
         await check('adult').exists().trim().escape().isInt().notEmpty().withMessage('Adult is required')
-        .custom(val => {
-            if(+val == 0 || +val == 1) return true;
-            else throw new Error('Invalid selection for Adult');
-        }).run(req);
+          .custom(val => {
+              if(+val == 0 || +val == 1) return true;
+              else throw new Error('Invalid selection for Adult');
+          }).run(req);
         await check('budget').exists().trim().escape().isFloat().notEmpty().withMessage('Budget is required').custom(adSettingsValidation).run(req);
         await check('daily_budget').exists().trim().escape().isFloat().notEmpty().withMessage('Daily Budget is required').custom(adSettingsValidation).run(req);
         if(req.body.run) await check('run').exists().trim().escape().isInt().notEmpty().withMessage('Run is required')
-        .custom(val => {
-            if(val == 1 || val == 2) return true;
-            else throw new Error('Invalid selection for run');
-        }).run(req);
-    
+          .custom(val => {
+              if(val == 1 || val == 2) return true;
+              else throw new Error('Invalid selection for run');
+          }).run(req);
 
-        const errs = validationResult(req); 
+
+        const errs = validationResult(req);
         if(!errs.isEmpty()) {
             const err = new Error('Validation Failed!');
             err.statusCode = 422;
@@ -383,7 +404,7 @@ exports.manageCampaignHelper = async (req) => {
         // Validate if campaign exists
         let oldCampData = null;
         if(manage === 'edit') {
-            oldCampData = await Campaigns.findAll({ where: { id: campaign_id, uid: userid } });
+            oldCampData = await Campaigns.find({ id: campaign_id, uid: userid });
             if(oldCampData.length < 1) {
                 const err = new Error('Campaign not found!');
                 err.statusCode = 404;
@@ -398,7 +419,7 @@ exports.manageCampaignHelper = async (req) => {
         let banner_sizes;
         if(requiredFields.includes('banner')) {
             banner_ids = req.body.banners.split(',').map(d => +d);
-            user_banners = await User_Banners.findAll({ where: { uid: userid } });
+            user_banners = await User_Banners.find({  uid: userid });
             bannerValidation(banner_ids, user_banners);
             banner_sizes = await Banner_Sizes.findAll();
         }
@@ -407,7 +428,7 @@ exports.manageCampaignHelper = async (req) => {
         let bannersChanged = false;
         if(requiredFields.includes('banner') && manage === 'edit') {
             banner_ids = req.body.banners.split(',').map(d => +d);
-            let oldBanner_ids = await Banners.findAll({ where: { campaign_id: campaign_id } });
+            let oldBanner_ids = await Banners.find( { campaign_id: campaign_id } );
             oldBanner_ids = oldBanner_ids.map(data => +data.dataValues.banner_id);
             if(banner_ids.length === oldBanner_ids.length) {
                 for(let id of banner_ids) {
@@ -460,23 +481,26 @@ exports.manageCampaignHelper = async (req) => {
              * Edit
              */
             if(manage === 'edit' && reqType === 'campaign') {
-                // Delete banners 
-                await Banners.destroy({ where: { campaign_id: campaign_id }, transaction: ts });
+                // Delete banners
+                await Banners.deleteOne( { campaign_id: campaign_id });
                 // Delete ads
-                await Ads.destroy({ where: { campaign_id: campaign_id }, transaction: ts });
-            } 
+                await Ads.deleteOne({ campaign_id: campaign_id });
+            }
 
             if(manage === 'create') {
-                const res = await Campaigns.create(campaign_obj, { transaction: ts });
+                const res = await Campaigns.create(campaign_obj);
                 campaign_id = res.id;
 
                 // Update user ad balance
                 const deduct = req.body.budget;
-                const update_ad_bal = await sequelize.query('UPDATE users SET `ad_balance` = `ad_balance` - ? WHERE `id` = ?', {
-                    type: QueryTypes.UPDATE,
-                    replacements: [deduct, userid],
-                    transaction: ts
-                });
+                // const update_ad_bal = await sequelize.query('UPDATE users SET `ad_balance` = `ad_balance` - ? WHERE `id` = ?', {
+                //     type: QueryTypes.UPDATE,
+                //     replacements: [deduct, userid],
+                //     transaction: ts
+                // });
+                const update_ad_bal = await User.findOne({_id:userid});
+                update_ad_bal.ad_balance = update_ad_bal.ad_balance - deduct;
+                update_ad_bal.save();
             }
             if(manage === 'edit') {
                 // Delete fields fron object
@@ -494,10 +518,11 @@ exports.manageCampaignHelper = async (req) => {
                     campaign_obj.status = 2;
                 }
 
-                const oldData = await sequelize.query('SELECT u.ad_balance, c.budget_rem from users u INNER JOIN campaigns c ON u.id = c.uid WHERE u.id = ? AND c.id = ?', {
-                    type: QueryTypes.SELECT,
-                    replacements: [userid, campaign_id]
-                });
+                // const oldData = await sequelize.query('SELECT u.ad_balance, c.budget_rem from users u INNER JOIN campaigns c ON u.id = c.uid WHERE u.id = ? AND c.id = ?', {
+                //     type: QueryTypes.SELECT,
+                //     replacements: [userid, campaign_id]
+                // });
+                const oldData = await Campaigns.find({_id:campaign_id},{_id:0,budget_rem:1}).populate({path:"uid",select:'ad_balance'})
 
                 const old_budget_rem = oldData[0].budget_rem;
                 const ad_balance = oldData[0].ad_balance;
@@ -510,51 +535,58 @@ exports.manageCampaignHelper = async (req) => {
                     throw new Error('New Budget exceeds available balance!');
                 }
 
-                const res = await Campaigns.update(campaign_obj, { where: { id: campaign_id, uid: userid }, transaction: ts });
-
+                // const res = await Campaigns.update(campaign_obj, { where: { id: campaign_id, uid: userid }, transaction: ts });
+                const res = await Campaigns.updateOne({ id: campaign_id, uid: userid },campaign_obj);
                 // Update ad budget
-                const update_ad_budget = await sequelize.query('UPDATE campaigns SET budget_rem = ?, `budget` = `budget` - ? WHERE id = ? AND uid = ?', {
-                    type: QueryTypes.UPDATE,
-                    replacements: [new_budget, add, campaign_id, userid],
-                    transaction: ts
-                });
+                // const update_ad_budget = await sequelize.query('UPDATE campaigns SET budget_rem = ?, `budget` = `budget` - ? WHERE id = ? AND uid = ?', {
+                //     type: QueryTypes.UPDATE,
+                //     replacements: [new_budget, add, campaign_id, userid],
+                //     transaction: ts
+                // });
+
+                const update_ad_budget_init = await Campaigns.updateOne({_id:userid},{budget_rem:new_budget});
+                const update_ad_budget = await Campaigns.findOne({_id:campaign_id,uid:userid});
+                update_ad_budget.budget = update_ad_budget.budget - add;
+                update_ad_budget.save();
 
                 // Update user ad balance
-                const update_ad_bal = await sequelize.query('UPDATE users SET `ad_balance` = `ad_balance` + ? WHERE `id` = ?', {
-                    type: QueryTypes.UPDATE,
-                    replacements: [add, userid],
-                    transaction: ts
-                });
-
+                // const update_ad_bal = await sequelize.query('UPDATE users SET `ad_balance` = `ad_balance` + ? WHERE `id` = ?', {
+                //     type: QueryTypes.UPDATE,
+                //     replacements: [add, userid],
+                //     transaction: ts
+                // });
+                const update_ad_bal = await User.findOne({_id:userid});
+                update_ad_bal.ad_balance = update_ad_bal.ad_balance + add;
+                update_ad_bal.save();
             }
 
             // Create ad types
             if(reqType === 'campaign') {
                 // Insert ads
                 const adsArr = createAds(req, campaign_id, banner_ids, user_banners, banner_sizes, campaign_obj);
-                const res = await Ads.bulkCreate(adsArr, { transaction: ts });
+                const res = await Ads.create(adsArr[0]);
                 if(req.body.banners) {
                     // Filter banners
                     const bannersArr = user_banners.filter(banner => {
                         if(banner_ids.includes(banner.dataValues.id)) return true;
                         else return false;
                     })
-                    .map(banner => {
-                        return ({
-                            campaign_id: campaign_id,
-                            banner_id: banner.dataValues.id,
-                            size: banner.dataValues.size,
-                            src: banner.dataValues.src
-                        });
-                    });
+                      .map(banner => {
+                          return ({
+                              campaign_id: campaign_id,
+                              banner_id: banner.dataValues.id,
+                              size: banner.dataValues.size,
+                              src: banner.dataValues.src
+                          });
+                      });
                     // Insert Banners
-                    const bRes = await Banners.bulkCreate(bannersArr, { transaction: ts });
+                    const bRes = await Banners.create(bannersArr);
                 }
             }
 
             if(reqType === 'pop') {
                 const ad_type = 5;
-                const str = `0|${campaign_obj.status}|${ad_type}|${req.body.adult}|${req.body.run}`; 
+                const str = `0|${campaign_obj.status}|${ad_type}|${req.body.adult}|${req.body.run}`;
                 const match_hash = tinify(str);
 
                 if(manage === 'create') {
@@ -562,23 +594,22 @@ exports.manageCampaignHelper = async (req) => {
                         campaign_id: campaign_id,
                         type: ad_type,
                         match_hash: match_hash
-                    }, {
-                        transaction: ts
                     });
                 }
                 if(manage === 'edit') {
-                    const update = await Ads.update({
-                        match_hash: match_hash
-                    }, {
-                        where: {
-                            campaign_id: campaign_id,
-                            type: ad_type
-                        },
-                        transaction: ts
-                    });
+                    // const update = await Ads.update({
+                    //     match_hash: match_hash
+                    // }, {
+                    //     where: {
+                    //         campaign_id: campaign_id,
+                    //         type: ad_type
+                    //     },
+                    //     transaction: ts
+                    // });
+                    const update = await Ads.update({ campaign_id : campaign_id,type : ad_type }, {match_hash: match_hash} );
                 }
             }
-            
+
             await ts.commit();
         } catch (err) { console.log(err);
             await ts.rollback();
@@ -607,8 +638,8 @@ exports.getCampaignInfoHelper = async (req) => {
         err.statusCode = 401;
         throw err;
     }
-    
-    await check('campid').exists().trim().escape().notEmpty().isInt().withMessage('Campaign ID is required').run(req);
+
+    await check('campid').exists().trim().escape().notEmpty().withMessage('Campaign ID is required').run(req);
 
     try {
         const errs = validationResult(req);
@@ -622,45 +653,61 @@ exports.getCampaignInfoHelper = async (req) => {
 
         // Req data
         const campaign_id = req.params.campid;
-        const userid = req.userInfo.id;
-        
-        const data = await sequelize.query('SELECT b.banner_id as banner_id, a.type as ad_type, c.campaign_title as campaign_name, c.campaign_type, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.day, c.timezone, c.rel, c.btn, c.cpc, c.budget_rem as budget, c.today_budget as daily_budget, c.adult FROM campaigns c LEFT JOIN banners b ON c.id = b.campaign_id INNER JOIN ads a ON c.id = a.campaign_id WHERE c.id = ? AND c.uid = ? AND c.status != 4', {
-            type: QueryTypes.SELECT,
-            replacements: [campaign_id, userid]
-        });
-        if(data.length === 0) {
+        const userid = req.userInfo._id;
+
+        // const data = await sequelize.query('SELECT b.banner_id as banner_id, a.type as ad_type, c.campaign_title as campaign_name, c.campaign_type, c.title, c.desc, c.url, c.category, c.country, c.device, c.os, c.browser, c.language, c.day, c.timezone, c.rel, c.btn, c.cpc, c.budget_rem as budget, c.today_budget as daily_budget, c.adult FROM campaigns c LEFT JOIN banners b ON c.id = b.campaign_id INNER JOIN ads a ON c.id = a.campaign_id WHERE c.id = ? AND c.uid = ? AND c.status != 4', {
+        //     type: QueryTypes.SELECT,
+        //     replacements: [campaign_id, userid]
+        // });
+        // const data = await Banners.find({campaign_id:campaign_id}).populate([{
+        //     path:'campaign_id',
+        //     model:'Campaigns',
+        //     populate:{
+        //         path:'ads',
+        //         model:'Ads'
+        //     }
+        // }])
+
+        const data = await Campaigns.findOne({_id:campaign_id, uid: userid}).populate("ads");
+
+        const campaignData = {};
+
+        const banners = await Banners.find({campaign_id: campaign_id}, {banner_id: 1});
+
+        if(!data) {
             const err = new Error('Campaign not found!');
             err.statusCode = 404;
             throw err;
         }
-        
-        const campaignData = data[0];
-        
+
+        // const campaignData = data[0];
+
         // Get banner_ids
         let banner_ids = new Set();
-        for(let item of data) {
-            if(item.banner_id !== null)
-                banner_ids.add(+item.banner_id);
+        for(let item of banners) {
+            if(item.banner_id !== null) banner_ids.add(item.banner_id);
         }
         banner_ids = Array.from(banner_ids); // [...banner_ids]
 
         // Ad type
-        if(campaignData.ad_type === '5') campaignData.ad_type = 'pop';
+        if(data.ads[0].type === '5') campaignData.ad_type = 'pop';
         else campaignData.ad_type = 'campaign';
 
         // Modify resposne
-        delete campaignData.banner_id;
-        campaignData.title = campaignData.title ? he.decode(campaignData.title):'';
-        campaignData.campaign_name = he.decode(campaignData.campaign_name);
-        campaignData.desc = campaignData.desc ? he.decode(campaignData.desc):'';
+        // delete campaignData.banner_id;
+        campaignData.title = data.title ? he.decode(data.title):'';
+        campaignData.campaign_name = he.decode(data.campaign_title);
+        campaignData.desc = data.desc ? he.decode(data.desc):'';
         campaignData.banners = banner_ids;
-        campaignData.category = campaignData.category.split('|').map(d => +d);
-        campaignData.country = campaignData.country.split('|').map(d => +d);
-        campaignData.device = campaignData.device.split('|').map(d => +d);
-        campaignData.os = campaignData.os.split('|').map(d => +d);
-        campaignData.browser = campaignData.browser.split('|').map(d => +d);
-        campaignData.language = campaignData.language.split('|').map(d => +d);
-        campaignData.day = campaignData.day.split('|').map(d => +d);
+        campaignData.category = data.category.split('|').map(d => +d);
+        campaignData.country = data.country.split('|').map(d => +d);
+        campaignData.device = data.device.split('|').map(d => +d);
+        campaignData.os = data.os.split('|').map(d => +d);
+        campaignData.browser = data.browser.split('|').map(d => +d);
+        campaignData.language = data.language.split('|').map(d => +d);
+        campaignData.day = data.day.split('|').map(d => +d);
+
+        console.log(campaignData)
 
         return campaignData;
 
@@ -685,7 +732,7 @@ exports.uploadBannersHelper = async (req) => {
         // Images list
         const imageUploadList = [];
 
-        for (let image of req.files) { 
+        for (let image of req.files) {
             const uniqueImageName = uuidv4();
             const ext = image.originalname.split('.').pop();
             const finalImageName = uniqueImageName + '.' + ext;
@@ -704,7 +751,7 @@ exports.uploadBannersHelper = async (req) => {
             });
         }
 
-        await User_Banners.bulkCreate(imageUploadList);
+        await User_Banners.create(imageUploadList);
 
         // Return
         return {
@@ -732,8 +779,10 @@ exports.trafficEstimationHelper = async (req) => {
     await check('language').exists().trim().escape().isString().notEmpty().withMessage('Language is required').custom(adTargetingValidation).run(req);
     await check('adult').exists().trim().escape().isInt().notEmpty().withMessage('Adult is required')
 
+    console.log(req.body)
+
     try {
-        const errs = validationResult(req); 
+        const errs = validationResult(req);
         if(!errs.isEmpty()) {
             const err = new Error('Validation Failed!');
             err.statusCode = 422;
@@ -742,46 +791,80 @@ exports.trafficEstimationHelper = async (req) => {
         }
 
         // Get data
-        const categories = req.body.category;
-        const countries = req.body.country;
-        const devices = req.body.device;
-        const os = req.body.os;
-        const browsers = req.body.browser;
-        const languages = req.body.language;
+        const categories = req.body.category.split(',');
+        const countries = req.body.country.split(',');
+        const devices = req.body.device.split(',');
+        const os = req.body.os.split(',');
+        const browsers = req.body.browser.split(',');
+        const languages = req.body.language.split(',');
         const adult = +req.body.adult || 0;
-        const campaign_type = isNaN(+req.body.campaign_type) ? 0:+req.body.campaign_type;
+        // const campaign_type = isNaN(+req.body.campaign_type) ? 0:+req.body.campaign_type;
+        const campaign_type = req.body.campaign_type;
 
         // Previous 30 day unix date
         const today = new Date().toISOString().slice(0, 10);
         const today_unix = Math.floor(new Date(today).getTime() / 1000);
         const prevDate = Math.floor(today_unix - (60*60*24*30));
-        
+
         // Get impressions estimate
-        const campEst = await sequelize.query(`SELECT COUNT(id) as impressions, MAX(ad_cpc) as maxCpc, AVG(ad_cpc) as avgCpc FROM views 
-            WHERE adult = ${adult} AND 
-            campaign_type = ${campaign_type} AND 
-            category IN (${categories}) AND 
-            country IN (${countries}) AND 
-            device IN (${devices}) AND 
-            os IN (${os}) AND 
-            browser IN (${browsers}) AND 
-            language IN (${languages}) AND 
-            day_unix >= ${prevDate}`, {
-            type: QueryTypes.SELECT
-        });
+        // const campEst = await sequelize.query(`SELECT COUNT(id) as impressions, MAX(ad_cpc) as maxCpc, AVG(ad_cpc) as avgCpc FROM views
+        //     WHERE adult = ${adult} AND
+        //     campaign_type = ${campaign_type} AND
+        //     category IN (${categories}) AND
+        //     country IN (${countries}) AND
+        //     device IN (${devices}) AND
+        //     os IN (${os}) AND
+        //     browser IN (${browsers}) AND
+        //     language IN (${languages}) AND
+        //     day_unix >= ${prevDate}`, {
+        //     type: QueryTypes.SELECT
+        // });
+        const campEst = await Views.aggregate([
+            {
+                // $match: {"$and":[
+                //     {adult: adult},
+                //     // {campaign_type:campaign_type},
+                //     // {category: { "$in": categories }},
+                //     // {country: { "$in": countries }},
+                //     // {device:{ "$in": devices }},
+                //     // {os:{ "$in": os }},
+                //     // {browser:{ "$in": browsers }},
+                //     // {language:{ "$in": languages }},
+                //     // {day_unix:{$gte:prevDate}}
+                // ]}
+            },
+            {$group:{
+                    // impressions: {$sum:"$_id"},
+                    maxCpc:{$max:"$ad_cpc"},
+                    // avgCpc:{$avg:"$ad_cpc"},
+                    _id:"$ad_cpc"
+                }},
+        ]);
+
+        throw new Error(JSON.stringify(campEst));
 
         // Get popups estimate
-        const popEst = await sequelize.query(`SELECT COUNT(id) as pops, MAX(ad_cpc) as maxCpc, AVG(ad_cpc) as avgCpc FROM pops 
-            WHERE adult = ${adult} AND 
-            category IN (${categories}) AND 
-            country IN (${countries}) AND 
-            device IN (${devices}) AND 
-            os IN (${os}) AND 
-            browser IN (${browsers}) AND 
-            language IN (${languages}) AND 
-            day_unix >= ${prevDate}`, {
-            type: QueryTypes.SELECT,
-        });
+        // const popEst = await sequelize.query(`SELECT COUNT(id) as pops, MAX(ad_cpc) as maxCpc, AVG(ad_cpc) as avgCpc FROM pops
+        //     WHERE adult = ${adult} AND
+        //     category IN (${categories}) AND
+        //     country IN (${countries}) AND
+        //     device IN (${devices}) AND
+        //     os IN (${os}) AND
+        //     browser IN (${browsers}) AND
+        //     language IN (${languages}) AND
+        //     day_unix >= ${prevDate}`, {
+        //     type: QueryTypes.SELECT,
+        // });
+        const popEst = Pops.aggregate([{
+            $match: {"$and":[{adult: adult},{campaign_type:campaign_type},{category:categories},{country:countries},{device:devices},{os:os},{browser:browsers},{language:languages},{day_unix:{$gte:prevDate}}]}
+        },
+            {$group:{
+                    pops: {$sum:"$_id"},
+                    maxCpc:{$max:"$ad_cpc"},
+                    avgCpc:{$avg:"$ad_cpc"},
+                    _id:"$_id"
+                }},
+        ]);
 
         const impressions = Math.floor(campEst[0].impressions / 30);
         const maxCampCpc = campEst[0].maxCpc;
@@ -791,7 +874,7 @@ exports.trafficEstimationHelper = async (req) => {
         const avgPopCpc = popEst[0].avgCpc;
 
         const minClicks = Math.floor(impressions * 0.0025);
-        const maxClicks = Math.floor(impressions * 0.01); 
+        const maxClicks = Math.floor(impressions * 0.01);
 
         const campaign = {
             impressions: impressions,
@@ -827,17 +910,17 @@ exports.getCampaignTypesHelper = async (req) => {
     }
 
     try {
-        const res = await Campaign_types.findAll();
+        const res = await Campaign_types.find();
 
         const result = [];
 
         res.forEach(campaign => {
             result.push({
-                id: campaign.dataValues.id,
-                type: campaign.dataValues.name,
-                desc: campaign.dataValues.desc,
-                fields: campaign.dataValues.fields,
-                icon: campaign.dataValues.icon
+                id: campaign._id,
+                type: campaign.name,
+                desc: campaign.desc,
+                fields: campaign.fields,
+                icon: campaign.icon
             });
         });
 
@@ -867,7 +950,7 @@ exports.getTimezonesHelper = async (req) => {
         });
 
         result.sort();
-        
+
         return result;
 
     } catch(err) {
@@ -888,21 +971,23 @@ exports.getCampaignBannersHelper = async (req) => {
         const userid = req.userInfo.id;
 
         // Get All Banners
-        const user_banners = await sequelize.query('SELECT id, size, src FROM user_banners WHERE uid = ? ORDER BY id DESC', {
-            type: QueryTypes.SELECT,
-            replacements: [userid]
-        });
+        // const user_banners = await sequelize.query('SELECT id, size, src FROM user_banners WHERE uid = ? ORDER BY id DESC', {
+        //     type: QueryTypes.SELECT,
+        //     replacements: [userid]
+        // });
+        const user_banners = await User_Banners.find({_id:userid},{size:1})
 
         // Get All Banner Sizes
-        const banner_sizes = await sequelize.query('SELECT id, size from banner_sizes', {
-            type: QueryTypes.SELECT
-        });
+        // const banner_sizes = await sequelize.query('SELECT id, size from banner_sizes', {
+        //     type: QueryTypes.SELECT
+        // });
+        const banner_sizes = await Banner_sizes.find({},{size:1});
 
         const response = [];
-        
+
         user_banners.forEach(item => {
             const { size } = banner_sizes.filter(banner => banner.id === item.size)[0];
-            
+
             response.push({
                 id: item.id,
                 size,
@@ -928,12 +1013,12 @@ exports.getCampaignFormDataHelper = async (req) => {
 
     try {
         const res = await Promise.all([
-            Devices.findAll(),
-            Os.findAll(),
-            Browsers.findAll(),
-            Timezones.findAll(),
-            Btns.findAll(),
-            Settings.findAll()
+            Devices.find(),
+            Os.find(),
+            Browsers.find(),
+            Timezones.find(),
+            Btns.find(),
+            Settings.find()
         ]);
 
         const devices = [];
@@ -945,45 +1030,45 @@ exports.getCampaignFormDataHelper = async (req) => {
 
         res[0].forEach(item => {
             devices.push({
-                id: +item.dataValues.id,
-                name: item.dataValues.name
+                id: item._id,
+                name: item.name
             });
         });
 
         res[1].forEach(item => {
-            const version = item.dataValues.version;
-            let osName = `${item.dataValues.name} ${version} and up`;
-            if(!version || version == 0) osName = item.dataValues.name;
+            const version = item.version;
+            let osName = `${item.name} ${version} and up`;
+            if(!version || version == 0) osName = item.name;
             os.push({
-                id: +item.dataValues.id,
+                id: item._id,
                 name: osName
             });
         });
 
         res[2].forEach(item => {
             browsers.push({
-                id: +item.dataValues.id,
-                name: item.dataValues.name
+                id: item._id,
+                name: item.name
             });
         });
 
         res[3].forEach(timezone => {
-            timezones.push(timezone.dataValues.zone);
+            timezones.push(timezone.zone);
         });
         timezones.sort();
 
         res[4].forEach(item => {
             btns.push({
-                id: +item.dataValues.id,
-                name: item.dataValues.name
+                id: item._id,
+                name: item.name
             });
         });
 
         res[5].forEach(item => {
-            settings.min_cpc = item.dataValues.min_cpc;
-            settings.min_pop_cpc = item.dataValues.min_pop_cpc;
-            settings.min_budget = item.dataValues.min_budget;
-            settings.min_daily_budget = item.dataValues.min_daily_budget;
+            settings.min_cpc = item.min_cpc;
+            settings.min_pop_cpc = item.min_pop_cpc;
+            settings.min_budget = item.min_budget;
+            settings.min_daily_budget = item.min_daily_budget;
         });
 
         return {
@@ -1006,11 +1091,11 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, dat
     /**
      * Chekout website-helper for more info
      */
-    // Text ad
+      // Text ad
     const adsArr = [];
     if(req.body.title && req.body.desc) {
         const ad_type = 1;
-        const str = `0|${+data.status}|${+ad_type}|${+data.adult}|${+data.run}`; 
+        const str = `0|${+data.status}|${+ad_type}|${+data.adult}|${+data.run}`;
         let match_hash = tinify(str);
         adsArr.push({
             campaign_id: campaign_id,
@@ -1018,10 +1103,10 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, dat
             match_hash: match_hash
         });
     }
-    // Banners 
+    // Banners
     if(req.body.banners) {
         const ad_type = 2;
-        const str = `0|${+data.status}|${+ad_type}|${+data.adult}|${+data.run}`; 
+        const str = `0|${+data.status}|${+ad_type}|${+data.adult}|${+data.run}`;
         let match_hash = tinify(str);
         adsArr.push({
             campaign_id: campaign_id,
@@ -1043,7 +1128,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, dat
             }
         }
 
-        /** 
+        /**
          * cross check stored banner id with banner_sizes ids
          * */
         let has_native = false;
@@ -1056,7 +1141,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, dat
 
         if(has_native) {
             const ad_type = 3;
-            const str = `0|${+data.status}|${+ad_type}|${+data.adult}|${+data.run}`; 
+            const str = `0|${+data.status}|${+ad_type}|${+data.adult}|${+data.run}`;
             let match_hash = tinify(str);
             adsArr.push({
                 campaign_id: campaign_id,
@@ -1084,7 +1169,7 @@ const createAds = (req, campaign_id, banner_ids, user_banners, banner_sizes, dat
 
         if(has_widget) {
             const ad_type = 4;
-            const str = `0|${+data.status}|${+ad_type}|${+data.adult}|${+data.run}`; 
+            const str = `0|${+data.status}|${+ad_type}|${+data.adult}|${+data.run}`;
             let match_hash = tinify(str);
             adsArr.push({
                 campaign_id: campaign_id,
@@ -1121,7 +1206,7 @@ const adTargetingValidation = (value, { req, location, path }) => {
     }
     else {
         const values = value.split(',');
-        
+
         for(let val of values) {
             if(+val < 1 || +val > 7) {
                 throw new Error(`Invalid selection for days`);
@@ -1220,7 +1305,7 @@ const bannerValidation = (values, user_banners) => {
         for(let banner of user_banners) {
             banners.push(+banner.dataValues.id);
         }
-        
+
         for(let val of values) {
             if(!banners.includes(+val)) {
                 throw new Error("Selected banners doesn't exist");
@@ -1235,10 +1320,10 @@ const bannerValidation = (values, user_banners) => {
 
 const shouldUpdateStatus = (campData, oldData) => {
     if(
-        campData.title == oldData.title &&
-        campData.desc == oldData.desc &&
-        campData.url == oldData.url &&
-        campData.adult == oldData.adult
+      campData.title == oldData.title &&
+      campData.desc == oldData.desc &&
+      campData.url == oldData.url &&
+      campData.adult == oldData.adult
     ) {
         return false
     }

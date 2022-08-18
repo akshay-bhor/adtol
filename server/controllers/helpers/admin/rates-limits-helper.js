@@ -9,11 +9,7 @@ exports.getRatesLimitsHelper = async (req) => {
     }
 
     try {
-        const res = await Settings.findAll();
-
-        const settings = res.map(data => {
-            return data.dataValues;
-        })[0];
+        const settings = await Settings.findOne();
 
         return settings;
 
@@ -42,7 +38,7 @@ exports.postRatesLimitsHelper = async (req) => {
         const min_budget = req.body.min_budget;
         const min_daily_budget = req.body.min_daily_budget;
 
-        await Settings.update({
+        await Settings.updateMany({}, {
             min_deposit,
             max_deposit,
             min_withdraw,
@@ -52,12 +48,6 @@ exports.postRatesLimitsHelper = async (req) => {
             min_pop_cpc,
             min_budget,
             min_daily_budget
-        }, {
-            where: {
-                [Op.not]: {
-                    id: 0
-                }
-            }
         });
 
         return {

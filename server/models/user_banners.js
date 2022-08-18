@@ -50,3 +50,4 @@ const User_Banners = mongoose.model('user_banners', new Schema({
 // });
 
 module.exports = User_Banners;
+

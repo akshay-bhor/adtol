@@ -3,7 +3,7 @@
 <div class="jumbotron">
   <div class="container-md">
     <% if(error) { %> <%- include('includes/err.ejs') %> <% } %>
- 
+
       <div class="row" style="align-items: flex-end">
         <div class="col">
           <label for="username">Username</label>
@@ -84,12 +84,12 @@
 /**
  * ON Input Enter
  * */
-    $("#username").keyup(function(e) {
+$("#username").keyup(function(e) {
     if(e.keyCode === 13) {
         e.preventDefault();
         // Click Submit Btn
         $("#search").click();
-    } 
+    }
     });
 
     function sForm() {
@@ -114,9 +114,9 @@
       let amt;
       if(type == 'ad')
         amt = $('#adAmt').val();
-      else  
+      else
         amt = $('#wdAmt').val();
-      
+
       isloading = true;
       $.ajax({
         url: '/admin/users/adjust-balance/' + type + '/' + uid,
@@ -150,7 +150,7 @@
 
   const getUserList = () => {
     if (isloading) return;
-    
+
     sort = $("#sort").val();
 
     isloading = true;
@@ -187,7 +187,7 @@
         <div class="row justify-content-between" style="align-items: flex-end">
             <div class="col-md-3 font-weight-bold" style="align-self:flex-start">
                 ${total} Total
-            </div>    
+            </div>
             <div class="col-md-3 d-flex justify-content-end">
                 <select class="form-control" id="cpage">
     `;
@@ -200,7 +200,7 @@
 
     res += `
                 </select>
-                <button class="btn btn-primary" onclick="goPage()">Go</buttom>        
+                <button class="btn btn-primary" onclick="goPage()">Go</buttom>
             </div>
         </div>
     `;
@@ -209,25 +209,25 @@
 
     $.each(data, (k, d) => {
         res += `
-            <div class="list-group-item d-block mb-4" style="overflow:hidden" id="user-${d.id}">
-                <div class="d-block" style="overflow:hidden" role="button" data-toggle="collapse" data-target="#info-${d.id}">
+            <div class="list-group-item d-block mb-4" style="overflow:hidden" id="user-${d._id}">
+                <div class="d-block" style="overflow:hidden" role="button" data-toggle="collapse" data-target="#info-${d._id}">
                     <div class="font-weight-bold float-left mr-3">${d.user} <span class="badge badge-info">${d.country}</span><br>
                         <span class="small">${d.name} ${d.surname}</span>
                     </div>
                     <div class="float-left mr-3">
-                        <span class="badge badge-secondary">${d.ac_type}</span> <br>   
+                        <span class="badge badge-secondary">${d.ac_type}</span> <br>
                         <span class="badge badge-secondary">${d.company_name}</span>
                     </div>
                     <div class="float-left mr-3 text-center">
-                        <span class="font-weight-bold">Earned</span> <br>   
+                        <span class="font-weight-bold">Earned</span> <br>
                         <span class="">$${d.pub_earnings}</span>
                     </div>
                     <div class="float-left mr-3">
-                        <span class="font-weight-bold">Spent</span> <br>   
+                        <span class="font-weight-bold">Spent</span> <br>
                         <span class="">$${d.ad_spending}</span>
                     </div>
                     <div class="float-left mr-3">
-                        <span class="font-weight-bold">Ref Earnings</span> <br>   
+                        <span class="font-weight-bold">Ref Earnings</span> <br>
                         <span class="">$${d.ref_earnings}</span>
                     </div>
         `;
@@ -245,15 +245,15 @@
         }
         let cstatus;
         if(d.status == 'Active') {
-            cstatus = '<span role="button" class="badge badge-danger" onclick="cstatus('+ d.id +')">Ban</span>';
+            cstatus = '<span role="button" class="badge badge-danger" onclick="cstatus(`'+ d._id +'`)">Ban</span>';
         }
         if(d.status == 'Inactive') {
-            cstatus = '<span role="button" class="badge badge-success" onclick="cstatus('+ d.id +')">Unban</span>';
+            cstatus = '<span role="button" class="badge badge-success" onclick="cstatus(`'+ d._id +'`)">Unban</span>';
         }
 
         res += `
                     <div class="float-right ml-3">
-                        ${status} <br>   
+                        ${status} <br>
                         ${rank}
                     </div>
                     <div class="float-right ml-3">
@@ -263,7 +263,7 @@
                         <span class="font-weight-bold">Pub balance</span><br>$${d.pub_balance}
                     </div>
                 </div>
-                <div class="collapse" id="info-${d.id}">
+                <div class="collapse" id="info-${d._id}">
                     <hr>
                     <div class="block" style="overflow:hidden">
                         <span class="font-weight-bold d-block" style="overflow:hidden">Stats</span>
@@ -292,7 +292,7 @@
                             ${d.pub_views}
                         </div>
                         <div class="float-right ml-2 mr-2 text-primary">
-                            <span role="button" onclick="openModal('${d.id}')">Adjust Ad/Pub Balance</span><br>
+                            <span role="button" onclick="openModal('${d._id}')">Adjust Ad/Pub Balance</span><br>
                             <a href="/admin/notify?mail=${d.mail}">Notify: </a>${d.mail}<br>
                             <a href="tel:${d.dial_code}${d.mobile}">Call: </a>${d.dial_code} ${d.mobile}<br>
                             ${cstatus}

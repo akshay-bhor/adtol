@@ -3,10 +3,12 @@ const { QueryTypes } = require('sequelize');
 const { sendWdStatusMail, sendPaymentSuccessMail } = require('../../../common/sendMails');
 const { createUniquePaymentId } = require('../../../common/util');
 const Payments = require('../../../models/payments');
-const Settings = require('../../../models/settings');
+// const Settings = require('../../../models/settings');
 const User = require('../../../models/users');
+// const Withdraw = require('../../../models/withdraw');
 const Withdraw = require('../../../models/withdraw');
 const sequelize = require('../../../utils/db');
+const Settings = require('../../../models/settings')
 
 exports.payHistoryHelper = async(req) => {
     if(!req.userInfo) {
@@ -34,8 +36,8 @@ exports.payHistoryHelper = async(req) => {
          * send UTC unix time from server
          */
 
-        // Userid
-        const userid = req.userInfo.id;
+          // Userid
+        const userid = req.userInfo._id;
 
         // Page
         // let page = 1;
@@ -55,11 +57,12 @@ exports.payHistoryHelper = async(req) => {
         //     mapToModel: Payments
         // });
         const pay_status = 'captured';
-        const payments = await sequelize.query('SELECT mtx, rzr_order_id, amount, currency, status, processor, time_unix FROM payments WHERE uid = ? AND status = ? ORDER BY id DESC', {
-            type: QueryTypes.SELECT,
-            replacements: [userid, pay_status],
-            mapToModel: Payments
-        });
+        // const payments = await sequelize.query('SELECT mtx, rzr_order_id, amount, currency, status, processor, time_unix FROM payments WHERE uid = ? AND status = ? ORDER BY id DESC', {
+        //     type: QueryTypes.SELECT,
+        //     replacements: [userid, pay_status],
+        //     mapToModel: Payments
+        // });
+        const payments = await Payments.find({uid:userid,status:pay_status},{mtx:1, rzr_order_id:1, amount:1, currency:1, status:1, processor:1, time_unix:1}).sort({_id:-1});
 
         let payData = [];
         payments.forEach(data => {
@@ -112,7 +115,7 @@ exports.withdrawHistoryHelper = async (req) => {
         // }
 
         // Userid
-        const userid = req.userInfo.id;
+        const userid = req.userInfo._id;
 
         // Page
         // let page = 1;
@@ -131,12 +134,13 @@ exports.withdrawHistoryHelper = async (req) => {
         //     replacements: [userid, limit, offset],
         //     mapToModel: Withdraw
         // });
-        const withdraws = await sequelize.query('SELECT mtx, amount, currency, fee, status, processor, time_unix FROM withdraws WHERE uid = ? ORDER BY id DESC', {
-            type: QueryTypes.SELECT,
-            replacements: [userid],
-            mapToModel: Withdraw
-        });
-        
+        // const withdraws = await sequelize.query('SELECT mtx, amount, currency, fee, status, processor, time_unix FROM withdraws WHERE uid = ? ORDER BY id DESC', {
+        //     type: QueryTypes.SELECT,
+        //     replacements: [userid],
+        //     mapToModel: Withdraw
+        // });
+        const withdraws = await Withdraw.find({uid:userid},{mtx:1, amount:1, fee:1, currency:1, status:1, processor:1, time_unix:1}).sort({_id:-1});
+
         let wdData = [];
         withdraws.forEach(data => {
             let tmp = {};
@@ -160,7 +164,7 @@ exports.withdrawHistoryHelper = async (req) => {
                 tmp.processor = 'Payoneer';
             else if(data.processor == 4)
                 tmp.processor = 'System';
-            else    
+            else
                 tmp.processor = 'NA';
             tmp.time = data.time_unix;
 
@@ -187,22 +191,22 @@ exports.formDataHelper = async (req) => {
     }
 
     try {
-        
+
         // Userid
-        const userid = req.userInfo.id;
+        const userid = req.userInfo._id;
 
         // Fetch publisher balance
-        const bal = await User.findOne({ where: { id: userid }, attributes: ['pub_balance'] });
-        
-        const pub_bal = bal.dataValues.pub_balance;
+        const bal = await User.findOne({ _id: userid }, {'pub_balance':1 });
+
+        const pub_bal = bal.pub_balance;
 
         // Find settings
-        let web_settings = await Settings.findAll();
-        let tmp;
-        web_settings.forEach(data => {
-            tmp = {...data.dataValues}
-        });
-        web_settings = {...tmp};
+        let web_settings = await Settings.findOne();
+        // let tmp;
+        // web_settings.forEach(data => {
+        //     tmp = {...data}
+        // });
+        // web_settings = {...tmp};
 
         // Min deposit
         const min_deposit = web_settings.min_deposit;
@@ -240,9 +244,9 @@ exports.withdrawHelper = async (req) => {
     }
 
     await check('amt').exists().withMessage('Amount not specified!').trim().escape().isFloat().withMessage('Invalid amount format!')
-    .custom(customWithdrawAmtValidation).run(req);
+      .custom(customWithdrawAmtValidation).run(req);
     await check('processor').exists().withMessage('Processor not specified!').trim().escape().isInt().withMessage('Invalid peocessor!')
-    .custom(customProcessorValidation).run(req);
+      .custom(customProcessorValidation).run(req);
 
     try {
         const errs = validationResult(req);
@@ -254,16 +258,17 @@ exports.withdrawHelper = async (req) => {
         }
 
         // Userid
-        const userid = req.userInfo.id;
+        const userid = req.userInfo._id;
 
         // Request data
         const amt = req.body.amt;
         const processor = req.body.processor;
 
         // Get fee
-        const getFee = await sequelize.query('SELECT withdraw_fee FROM settings', {
-            type: QueryTypes.SELECT,
-        });
+        // const getFee = await sequelize.query('SELECT withdraw_fee FROM settings', {
+        //     type: QueryTypes.SELECT,
+        // });
+        const getFee = await Settings.find({},{ withdraw_fee:1,_id:0 })
         const fee = getFee[0].withdraw_fee;
 
         // Create Payment id
@@ -276,23 +281,27 @@ exports.withdrawHelper = async (req) => {
         const ts = await sequelize.transaction();
 
         try {
-        // Create Withdraw Request
+            // Create Withdraw Request
             const wdInsert = await Withdraw.create({
                 uid: userid,
                 mtx: wdId,
                 amount: amt,
                 processor: processor,
-                fee: fee, 
+                fee: fee,
                 time_unix: time_unix
-            }, { transaction: ts }); 
+            });
 
             // Deduct Publisher Balance
-            const ures = await sequelize.query('UPDATE users SET pub_balance = pub_balance - ? WHERE id = ? LIMIT 1', {
-                type: QueryTypes.UPDATE,
-                replacements: [amt, userid],
-                mapToModel: User,
-                transaction: ts
-            });
+            // const ures = await sequelize.query('UPDATE users SET pub_balance = pub_balance - ? WHERE id = ? LIMIT 1', {
+            //     type: QueryTypes.UPDATE,
+            //     replacements: [amt, userid],
+            //     mapToModel: User,
+            //     transaction: ts
+            // });
+
+            const user_init = await User.findOne({_id:userid});
+            user_init.pub_balance = user_init.pub_balance - amt;
+            user_init.save();
 
             await ts.commit();
 
@@ -305,12 +314,12 @@ exports.withdrawHelper = async (req) => {
         if(processor == 1)
             wProcessor = 'Bank';
         else if(processor == 2)
-             wProcessor = 'Paypal';
+            wProcessor = 'Paypal';
         else if(processor == 3)
             wProcessor = 'Payoneer';
         else if(processor == 4)
             wProcessor = 'System';
-        else    
+        else
             wProcessor = 'NA';
 
         // Send Mail
@@ -336,10 +345,9 @@ exports.convertPubBalHelper = async (req) => {
     }
 
     await check('amt').exists().withMessage('Amount not specified!').trim().escape().isFloat().withMessage('Invalid Amount!')
-    .custom(customDepositAmtValidation).run(req);
+      .custom(customDepositAmtValidation).run(req);
 
     try {
-
         const errs = validationResult(req);
         if(!errs.isEmpty()) {
             const err = new Error('Validation Failed!');
@@ -349,10 +357,10 @@ exports.convertPubBalHelper = async (req) => {
         }
 
         // Userid
-        const userid = req.userInfo.id;
+        const userid = req.userInfo._id;
 
         // Amount
-        const amount = req.body.amt;
+        const amount = Number(req.body.amt);
 
         // Create payment id
         const mtx = createUniquePaymentId('pay');
@@ -367,33 +375,36 @@ exports.convertPubBalHelper = async (req) => {
         const processor = 2;
 
         // Start Transaction
-        const ts = await sequelize.transaction();
+        // const ts = await sequelize.transaction();
         try {
             // Create Payment
             const pay = await Payments.create({
                 uid: userid,
                 mtx,
                 amount,
-                processor, 
+                processor,
                 status,
                 time_unix
-            }, { transaction: ts });
-
-            // Deduct Publisher Balance and deposit Ad Balance
-            const ures = await sequelize.query('UPDATE users SET pub_balance = pub_balance - ?, ad_balance = ad_balance + ? WHERE id = ? LIMIT 1', {
-                type: QueryTypes.UPDATE,
-                replacements: [amount, amount, userid],
-                mapToModel: User,
-                transaction: ts
             });
 
-            await ts.commit();
+            // Deduct Publisher Balance and deposit Ad Balance
+            // const ures = await sequelize.query('UPDATE users SET pub_balance = pub_balance - ?, ad_balance = ad_balance + ? WHERE id = ? LIMIT 1', {
+            //     type: QueryTypes.UPDATE,
+            //     replacements: [amount, amount, userid],
+            //     mapToModel: User,
+            //     transaction: ts
+            // });
+            const ures_init = await User.findOne({_id:userid});
+            ures_init.pub_balance = ures_init.pub_balance - amount;
+            ures_init.ad_balance = Number(ures_init.ad_balance) + amount;
+            ures_init.save();
+            // await ts.commit();
         } catch (err) {
-            await ts.rollback();
+            // await ts.rollback();
             throw new Error(err);
         }
 
-        // Send Payment Success Mail 
+        // Send Payment Success Mail
         sendPaymentSuccessMail(req.userInfo.mail, req.userInfo.user, amount, mtx, 'Publisher Balance');
 
         // Return
@@ -410,19 +421,21 @@ exports.convertPubBalHelper = async (req) => {
 
 const customWithdrawAmtValidation = async(amt, { req }) => {
     // Check Min Withdraw Amount
-    const getMinWd = await sequelize.query('SELECT min_withdraw FROM settings', {
-        type: QueryTypes.SELECT,
-    });
-    let minWithdraw = getMinWd[0].min_withdraw;
-    
-    if(amt < minWithdraw) { 
+    // const getMinWd = await sequelize.query('SELECT min_withdraw FROM settings', {
+    //     type: QueryTypes.SELECT,
+    // });
+    const getMinWd = await Settings.findOne({},{ min_withdraw:1,_id:0 });
+
+    let minWithdraw = getMinWd.min_withdraw;
+
+    if(amt < minWithdraw) {
         throw new Error(`Minumum Withdrawal Amount is ${minWithdraw}`);
     }
 
     // Check Max Withdraw Amount
-    let userInfo = await User.findOne({ where: { id: req.userInfo.id }, attributes: ['pub_balance'] });
+    let userInfo = await User.findOne({ _id: req.userInfo._id }, {'pub_balance':1 });
 
-    let userBal = userInfo.dataValues.pub_balance;
+    let userBal = userInfo.pub_balance;
 
     // Check
     if(userBal < amt) {
@@ -432,19 +445,21 @@ const customWithdrawAmtValidation = async(amt, { req }) => {
 
 const customDepositAmtValidation = async(amt, { req }) => {
     // Check Min Deposit Amount
-    const getMinDeposit = await sequelize.query('SELECT min_deposit FROM settings', {
-        type: QueryTypes.SELECT,
-    });
-    let minDeposit = getMinDeposit[0].min_deposit;
-    
-    if(amt < minDeposit) { 
+    // const getMinDeposit = await sequelize.query('SELECT min_deposit FROM settings', {
+    //     type: QueryTypes.SELECT,
+    // });
+    const getMinDeposit = await Settings.findOne({},{ min_deposit:1,_id:0 });
+
+    let minDeposit = getMinDeposit.min_deposit;
+
+    if(amt < minDeposit) {
         throw new Error(`Minumum Deposit Amount is ${minDeposit}`);
     }
 
     // Check Max Withdraw Amount
-    let userInfo = await User.findOne({ where: { id: req.userInfo.id }, attributes: ['pub_balance'] });
+    let userInfo = await User.findOne({ _id: req.userInfo._id },{'pub_balance':1 });
 
-    let userBal = userInfo.dataValues.pub_balance;
+    let userBal = userInfo.pub_balance;
 
     // Check
     if(userBal < amt) {

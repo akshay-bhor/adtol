@@ -1,25 +1,34 @@
-// const sequelize = require('../utils/db');
-// const { DataTypes } = require('sequelize');
-const mongoose = require('mongoose');
-const { Schema } = mongoose
-
-const Btns = mongoose.model('btns', new Schema({
-    name: {
-        type: String,
-        required: true
-    }
-}))
-// const Btns = sequelize.define('btns', {
-//     id: {
-//         type: DataTypes.INTEGER,
-//         primaryKey: true,
-//         allowNull: false,
-//         autoIncrement: true
-//     },
+// // const sequelize = require('../utils/db');
+// // const { DataTypes } = require('sequelize');
+// const mongoose = require('mongoose');
+// const { Schema } = mongoose
+//
+// const Btns = mongoose.model('btns', new Schema({
 //     name: {
-//         type: DataTypes.STRING(20),
-//         allowNull: false
+//         type: String,
+//         required: true
 //     }
-// });
+// }))
+// // const Btns = sequelize.define('btns', {
+// //     id: {
+// //         type: DataTypes.INTEGER,
+// //         primaryKey: true,
+// //         allowNull: false,
+// //         autoIncrement: true
+// //     },
+// //     name: {
+// //         type: DataTypes.STRING(20),
+// //         allowNull: false
+// //     }
+// // });
+//
+// module.exports = Btns;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-module.exports = Btns;
+const BtnsSchema = new Schema({
+    name: { type: String, required: true}
+});
+
+
+module.exports = mongoose.model('Btns', BtnsSchema);

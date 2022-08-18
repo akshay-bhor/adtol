@@ -31,13 +31,13 @@ exports.sendMessageHelper = async (req) => {
 
         // Send Email
         sendContactMail(email, name, subject, message);
-        
+
         // return object
         return {
             msg: 'Success'
         };
 
-    } catch(err) { 
+    } catch(err) {
         if(!err.statusCode)
             err.statusCode = 500;
         throw err;
