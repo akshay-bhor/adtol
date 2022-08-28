@@ -26,7 +26,7 @@ exports.registerHelper = async (req) => {
     await check('mail').exists().trim().isEmail().withMessage('Invalid Email!').normalizeEmail().run(req);
     if(!req.body.gid)
         await check('pass').exists().isLength({ min:8 }).withMessage('Minimum Password Length is 8!').run(req);
-    await check('country').exists().isInt().withMessage('Invalid Country').run(req);
+    await check('country').exists().isString().withMessage('Invalid Country').run(req);
     await check('mobile').exists().isInt().isLength({ min:4, max:10 }).withMessage('Min length 4, Max 10').withMessage('Invalid Phone no!').escape().run(req);
     await check('name').optional().isAlpha().withMessage('Only letters allowed in name').run(req);
     await check('surname').optional().isAlpha().withMessage('Only letters allowed in surname').run(req);
@@ -57,33 +57,35 @@ exports.registerHelper = async (req) => {
         }
     
         // Check if Username exists
-        const unameExist = await User.findOne({ where: { user: req.body.user } })
-        
+        // const unameExist = await User.findOne({ where: { user: req.body.user } })
+        const unameExist = await User.findOne({ user: req.body.user })
+
         if(unameExist) { 
             throw new Error('Username Already Exist!');
         }
         //Check if email exists
-        const emailExists = await User.findOne({ where: { mail: req.body.mail } });
+        const emailExists = await User.findOne({ mail: req.body.mail });
+
         if(emailExists) {
             throw new Error('Email Already Exist!');
         }
         // Check referrel
-        let ref_by = null;
+        let ref_by = undefined;
         if(req.body.ref_by) ref_by = base62.decode(req.body.ref_by);
-        const refExist = await User.findOne({ where: { id: ref_by } });
+        const refExist = await User.findOne({ id: ref_by });
         if(!refExist) {
-            ref_by = null;
+            ref_by = undefined;
         }
 
         // Name & surname
-        const name = req.body.name || null;
-        const surname = req.body.surname || null;
+        const name = req.body.name || undefined;
+        const surname = req.body.surname || undefined;
 
         // Google id
-        const gid = req.body.gid || null;
+        const gid = req.body.gid || undefined;
 
         //Create hash
-        const pw = req.body.pass?.toString() || null;
+        const pw = req.body.pass?.toString() || undefined;
         let hashPw = null;
         if(pw)
             hashPw = await bcrypt.hash(pw, 12);
@@ -104,10 +106,10 @@ exports.registerHelper = async (req) => {
             company_name: req.body.company_name,
             ref_by
         });
-
+        
         // UserInfo
         const cUserInfo = await User_Info.create({
-            uid: cUser.dataValues.id
+            uid: cUser._id
         });
 
         //Create token
@@ -159,19 +161,20 @@ exports.loginHelper = async (req) => {
         const pass = req.body.pass;
 
         // Search Username or email
-        const user = await User.findOne({ 
-            where: { 
-                [Op.or]: [
-                    { user: client },
-                    { mail: client }
-                ],
-                status: 1
-            } 
-        });
-
-        if(user && user.dataValues.pass !== null) {
+        // const user = await User.findOne({ 
+        //     where: { 
+        //         [Op.or]: [
+        //             { user: client },
+        //             { mail: client }
+        //         ],
+        //         status: 1
+        //     } 
+        // });
+        const user = await User.findOne({ $or: [{ user: client }, { mail: client }] });
+        
+        if(user && user.pass !== null) {
             // Check if pass correct
-            let storedPass = user.dataValues.pass;
+            let storedPass = user.pass;
             let passCorrect = await bcrypt.compare(pass, storedPass);
 
             if(passCorrect) {
@@ -229,14 +232,15 @@ exports.gLoginHelper = async (req) => {
         const mail = req.body.mail;
 
         // Get User Info
-        const user = await User.findOne({ 
-            where: { 
-                [Op.or] : [
-                    { gid: gid }, 
-                    { mail: mail }
-                ] 
-            }
-        });
+        // const user = await User.findOne({ 
+        //     where: { 
+        //         [Op.or] : [
+        //             { gid: gid }, 
+        //             { mail: mail }
+        //         ] 
+        //     }
+        // });
+        const user = await User.findOne({ $or: [{ gid: gid }, { mail: mail }] });
 
         if(user) {
             //Create token
@@ -295,46 +299,48 @@ exports.changePassHelper = async (req) => {
         const userid = userInfo.id;
 
         // Fetch old pass
-        const storedPass = await sequelize.query('SELECT pass FROM users WHERE id = ?',
-            {
-                replacements: [userid],
-                type: QueryTypes.SELECT,
-                mapToModel: User
-            }
-        );
-        if(storedPass.length == 0) {
+        // const storedPass = await sequelize.query('SELECT pass FROM users WHERE id = ?',
+        //     {
+        //         replacements: [userid],
+        //         type: QueryTypes.SELECT,
+        //         mapToModel: User
+        //     }
+        // );
+        const storedPass = await User.findById(userid, 'pass');
+        if(!storedPass) {
             const err = new Error('Unauthorized!');
             err.statusCode = 401;
             throw err;
         }
 
         // Compare old pass to req pass
-        const match = await bcrypt.compare(opass, storedPass[0]['pass']);
+        const match = await bcrypt.compare(opass, storedPass.pass);
          
         if(match) {
             // Create new hash
             const nHash = await bcrypt.hash(npass, 12);
 
             // Update new pass
-            const [op, affected] = await sequelize.query(
-                'UPDATE users SET pass = ? WHERE id = ?',
-                {
-                    replacements: [nHash, userid],
-                    type: QueryTypes.UPDATE,
-                    mapToModel: User
-                }
-            );
+            // const [op, affected] = await sequelize.query(
+            //     'UPDATE users SET pass = ? WHERE id = ?',
+            //     {
+            //         replacements: [nHash, userid],
+            //         type: QueryTypes.UPDATE,
+            //         mapToModel: User
+            //     }
+            // );
+            const updatePass = await User.findByIdAndUpdate(userid, { pass: nHash })
             
-            if(affected == 1) {
+            if(updatePass) {
                 // Get userInfo
-                const userObj = await User.findOne({ where: { id: userid } });
-                
-                // Create new token
+                const userObj = await User.findById(userid);
                 const tokenObj = new Token();
-                const token = await tokenObj.createAccessToken(userObj);
-
+                
                 // Add prev tokens to blacklist
-                tokenObj.addTokenBlacklist(userid).catch(e => { console.log(e); });
+                await tokenObj.addTokenBlacklist(userid).catch(e => { console.log(e); });
+
+                // Create new token
+                const token = await tokenObj.createAccessToken(userObj);
 
                 // Return object
                 return {
@@ -383,7 +389,7 @@ exports.forgetPassHelper = async (req) => {
         const mail = req.body.mail;
 
         // Check if email exists
-        const mailExist = await User.findOne({ where: { mail: mail, status: 1 } });
+        const mailExist = await User.findOne({ mail: mail, status: 1 });
         if(!mailExist) {
             const err = new Error('Email doesn\'t Exist!');
             err.statusCode = 422;
@@ -391,7 +397,7 @@ exports.forgetPassHelper = async (req) => {
         }
 
         // Get userid
-        const uid = mailExist.dataValues.id;
+        const uid = mailExist._id.toString();
 
         // Create random bytes
         const buffer = crypto.randomBytes(6);
@@ -401,15 +407,16 @@ exports.forgetPassHelper = async (req) => {
         const exp = Math.floor((new Date().getTime() / 1000) + 600);
 
         // Save 
-        const update = await sequelize.query('UPDATE user_info SET verify = ?, verify_exp = ? WHERE uid = ?',
-        {
-            replacements: [rand, exp, uid],
-            type: QueryTypes.UPDATE,
-            mapToModel: User_Info
-        });
+        // const update = await sequelize.query('UPDATE user_info SET verify = ?, verify_exp = ? WHERE uid = ?',
+        // {
+        //     replacements: [rand, exp, uid],
+        //     type: QueryTypes.UPDATE,
+        //     mapToModel: User_Info
+        // });
         // ^ will return two fileds in array [result metadata, no of affected rows]
+        const update = await User_Info.updateOne({ uid: uid }, { verify: rand, verify_exp: exp });
 
-        if(update[1] != 1) {
+        if(update.modifiedCount != 1) {
             // Insert
             await User_Info.create({
                 uid: uid,
@@ -462,24 +469,30 @@ exports.resetPassHelper = async(req) => {
         const hash = await bcrypt.hash(req.body.pass, 12);
 
         // Update
-        const update = await sequelize.query('UPDATE users AS u INNER JOIN user_info as ui ON u.id = ui.uid SET u.pass = ?, ui.verify_exp = ? WHERE ui.verify = ? AND ui.verify_exp > ? AND u.status = 1', {
-            replacements: [hash, currTime, verifyToken, currTime],
-            type: QueryTypes.UPDATE
-        });
+        // const update = await sequelize.query('UPDATE users AS u INNER JOIN user_info as ui ON u.id = ui.uid SET u.pass = ?, ui.verify_exp = ? WHERE ui.verify = ? AND ui.verify_exp > ? AND u.status = 1', {
+        //     replacements: [hash, currTime, verifyToken, currTime],
+        //     type: QueryTypes.UPDATE
+        // });
+        const uInfo = await User_Info.findOne({ verify: verifyToken, verify_exp: { $gt: currTime } });
+        
+        let update;
+        if(uInfo) {
+            update = await User.updateOne({ '_id': uInfo.uid, status: 1 }, { pass: hash });
+        }
 
-        if(update[1] != 2) {
+        if(update?.modifiedCount < 1) {
             const err = new Error('Oops! The reset link has expired, please request a fresh link!');
             err.statusCode = 422;
             throw err;
         }
 
         // Get userId
-        const user_info_obj = await User_Info.findOne({ where: { verify: verifyToken } });
-        const userid = user_info_obj.dataValues.uid;
+        const user_info_obj = await User_Info.findOne({ verify: verifyToken });
+        const userid = user_info_obj.uid.toString();
 
         // Add prev tokens to blacklist
         const tokenObj = new Token();
-        tokenObj.addTokenBlacklist(userid, 1).catch(e => { console.log(e); });
+        tokenObj.addTokenBlacklist(userid).catch(e => { console.log(e); });
 
         // return object
         return {
@@ -502,7 +515,7 @@ exports.formdataHelper = async (req) => {
 
     for(let c in countries) {
         let tmp = {};
-        tmp.id = +c;
+        tmp.id = c;
         tmp.code = countries[c][0];
         tmp.name = countries[c][1];
         tmp.tel = countries[c][2];

@@ -1,59 +1,101 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../utils/db");
+// const { DataTypes } = require("sequelize");
+// const sequelize = require("../utils/db");
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-
-const Withdraw = sequelize.define('withdraws', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false
-    },
+const Withdraw = mongoose.model('withdraws', new Schema({
     uid: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+        type: mongoose.Types.ObjectId,
+        required: true,
+        index: true
     },
     mtx: {
-        type: DataTypes.STRING(14),
+        type: String,
         unique: true,
-        allowNull: false
+        required: true
     },
     amount: {
-        type: DataTypes.FLOAT(10, 2),
-        allowNull: false
+        type: Number,
+        required: true
     },
     currency: {
-        type: DataTypes.STRING(3),
-        allowNull: false,
-        defaultValue: 'USD'
+        type: String,
+        required: true,
+        default: 'USD'
     },
     processor: { // 1 bank 2 paypal 3 payoneer 4 admin => abuse
-        type: DataTypes.TINYINT(1),
-        allowNull: false,
-        defaultValue: 2
+        type: Number,
+        required: true,
+        default: 2
     },
     fee: {
-        type: DataTypes.FLOAT(6, 2),
-        allowNull: false,
-        defaultValue: '0.00'
+        type: Number,
+        required: true,
+        default: '0.00'
     },
     status: { // 1 approved 2 pending 3 rejected
-        type: DataTypes.TINYINT(1),
-        allowNull: false,
-        defaultValue: 2
+        type: Number,
+        required: true,
+        default: 2
     },
     time_unix: {
-        type: DataTypes.BIGINT(10),
-        allowNull: false
+        type: Number,
+        required: true
     }
-}, {
-    indexes: [
-        {
-            name: 'uid',
-            using: 'BTREE',
-            fields: ['uid']
-        }
-    ]
-});
+}));
+
+// const Withdraw = sequelize.define('withdraws', {
+//     id: {
+//         type: DataTypes.INTEGER,
+//         primaryKey: true,
+//         autoIncrement: true,
+//         allowNull: false
+//     },
+    // uid: {
+    //     type: DataTypes.INTEGER,
+    //     allowNull: false
+    // },
+    // mtx: {
+    //     type: DataTypes.STRING(14),
+    //     unique: true,
+    //     allowNull: false
+    // },
+    // amount: {
+    //     type: DataTypes.FLOAT(10, 2),
+    //     allowNull: false
+    // },
+    // currency: {
+    //     type: DataTypes.STRING(3),
+    //     allowNull: false,
+    //     defaultValue: 'USD'
+    // },
+    // processor: { // 1 bank 2 paypal 3 payoneer 4 admin => abuse
+    //     type: DataTypes.TINYINT(1),
+    //     allowNull: false,
+    //     defaultValue: 2
+    // },
+    // fee: {
+    //     type: DataTypes.FLOAT(6, 2),
+    //     allowNull: false,
+    //     defaultValue: '0.00'
+    // },
+    // status: { // 1 approved 2 pending 3 rejected
+    //     type: DataTypes.TINYINT(1),
+    //     allowNull: false,
+    //     defaultValue: 2
+    // },
+    // time_unix: {
+    //     type: DataTypes.BIGINT(10),
+    //     allowNull: false
+    // }
+// }, {
+//     indexes: [
+//         {
+//             name: 'uid',
+//             using: 'BTREE',
+//             fields: ['uid']
+//         }
+//     ]
+// });
 
 module.exports = Withdraw;

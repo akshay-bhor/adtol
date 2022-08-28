@@ -1,22 +1,35 @@
-const sequelize = require('../utils/db');
-const { DataTypes } = require('sequelize');
+// const sequelize = require('../utils/db');
+// const { DataTypes } = require('sequelize');
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const Os = sequelize.define('os', {
-    id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false
-    },
+const Os = mongoose.model('os', new Schema({
     name: {
-        type: DataTypes.STRING(20),
-        allowNull: false
+        type: String,
+        required: true
     },
     version: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0
+        type: Number,
+        required: true,
+        default: 0
     }
-});
+}))
+// const Os = sequelize.define('os', {
+//     id: {
+//         type: DataTypes.INTEGER,
+//         primaryKey: true,
+//         autoIncrement: true,
+//         allowNull: false
+//     },
+//     name: {
+//         type: DataTypes.STRING(20),
+//         allowNull: false
+//     },
+//     version: {
+//         type: DataTypes.INTEGER,
+//         allowNull: false,
+//         defaultValue: 0
+//     }
+// });
 
 module.exports = Os;
