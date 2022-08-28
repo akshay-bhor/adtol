@@ -6,7 +6,7 @@ const AWS_SES_CREDENTIALS = new AWS.Credentials(process.env.AWS_SES_ACCESS_KEY, 
 const SES = new AWS.SES({
   apiVersion: "2010-12-01",
   credentials: AWS_SES_CREDENTIALS,
-  region: process.env.AWS_REGION,
+  region: process.env.AWS_SES_REGION,
 });
 
 const EmailTransporter = nodemailer.createTransport({

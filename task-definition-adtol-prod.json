@@ -109,6 +109,10 @@
           "name": "AWS_SES_SECRET_KEY"
         },
         {
+          "valueFrom": "arn:aws:ssm:us-east-2:205900288504:parameter/ADTOL_AWS_SES_REGION",
+          "name": "AWS_SES_REGION"
+        },
+        {
           "valueFrom": "arn:aws:ssm:us-east-2:205900288504:parameter/ADTOL_AWS_REGION",
           "name": "AWS_REGION"
         },
