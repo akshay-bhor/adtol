@@ -1,5 +1,4 @@
 const { check, validationResult } = require("express-validator");
-const { default: mongoose } = require("mongoose");
 const { QueryTypes } = require("sequelize");
 const { App_Settings } = require("../../common/settings");
 const User = require("../../models/users");
@@ -17,20 +16,12 @@ exports.accountInfoHelper = async (req) => {
 
         // Userid
         const userid = req.userInfo.id;
-        
+
         // Get user data
-        // const udata = await sequelize.query('SELECT u.name, u.surname, u.mobile, u.country, u.status, ui.paypal, ui.ac_no as acno, ui.bank, ui.ifsc, ui.branch, ui.upi, ui.payoneer FROM users u INNER JOIN user_info ui ON u.id = ui.uid WHERE u.id = ? LIMIT 1', {
-        //     type: QueryTypes.SELECT,
-        //     replacements: [userid]
-        // });
-        const udata = await User.aggregate([{ $match: { '_id': mongoose.Types.ObjectId(userid) } }, {
-            $lookup: {
-                from: 'user_infos',
-                localField: '_id',
-                foreignField: 'uid',
-                as: 'info'
-            }
-        }]);
+        const udata = await sequelize.query('SELECT u.name, u.surname, u.mobile, u.country, u.status, ui.paypal, ui.ac_no as acno, ui.bank, ui.ifsc, ui.branch, ui.upi, ui.payoneer FROM users u INNER JOIN user_info ui ON u.id = ui.uid WHERE u.id = ? LIMIT 1', {
+            type: QueryTypes.SELECT,
+            replacements: [userid]
+        });
 
         // Get country
         const ccode = udata[0].country;

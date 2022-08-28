@@ -27,7 +27,7 @@ module.exports = async (req, res, next) => {
         return next(err);
     }
     // Check if blacklisted
-    let check = await Token_Blacklist.findOne({ tid: decodedToken.tid })
+    let check = await Token_Blacklist.findOne({ where: { tid: decodedToken.tid } })
     if(check) {
         const err = new Error('This session is no longer active, login again!');
         err.statusCode = 401;

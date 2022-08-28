@@ -18,83 +18,71 @@ exports.loadSettings = async () => {
 
     let tmp = [];
     // Browsers
-    // let browsers = await Browsers.findAll({
-    //   order: [["id", "ASC"]],
-    //   attributes: ["id", "name"],
-    // });
-    let browsers = await Browsers.find({});
+    let browsers = await Browsers.findAll({
+      order: [["id", "ASC"]],
+      attributes: ["id", "name"],
+    });
     browsers.forEach((data) => {
-      const id = data._id.toString()
-      tmp[id] = data.name;
+      tmp[data.dataValues.id] = data.dataValues.name;
     });
     App_Settings.browsers = { ...tmp };
     tmp = [];
 
     // Country
-    // let countries = await Countries.findAll({
-    //   order: [["id", "ASC"]],
-    //   attributes: ["id", "code", "name", "dial_code"],
-    // });
-    let countries = await Countries.find({});
+    let countries = await Countries.findAll({
+      order: [["id", "ASC"]],
+      attributes: ["id", "code", "name", "dial_code"],
+    });
     countries.forEach((data) => {
-      const id = data._id.toString();
-      tmp[id] = [
-        data.code,
-        data.name,
-        data.dial_code,
+      tmp[data.dataValues.id] = [
+        data.dataValues.code,
+        data.dataValues.name,
+        data.dataValues.dial_code,
       ];
     });
     App_Settings.countries = { ...tmp };
     tmp = [];
 
     // Devices
-    // let devices = await Devices.findAll({
-    //   order: [["id", "ASC"]],
-    //   attributes: ["id", "name"],
-    // });
-    let devices = await Devices.find({});
+    let devices = await Devices.findAll({
+      order: [["id", "ASC"]],
+      attributes: ["id", "name"],
+    });
     devices.forEach((data) => {
-      const id = data._id.toString()
-      tmp[id] = data.name;
+      tmp[data.dataValues.id] = data.dataValues.name;
     });
     App_Settings.devices = { ...tmp };
     tmp = [];
 
     // Languages
-    // let languages = await Languages.findAll({
-    //   order: [["id", "ASC"]],
-    //   attributes: ["id", "name"],
-    // });
-    let languages = await Languages.find({});
+    let languages = await Languages.findAll({
+      order: [["id", "ASC"]],
+      attributes: ["id", "name"],
+    });
     languages.forEach((data) => {
-      const id = data._id.toString()
-      tmp[id] = data.name;
+      tmp[data.dataValues.id] = data.dataValues.name;
     });
     App_Settings.languages = { ...tmp };
     tmp = [];
 
     // Categories
-    // let categories = await Categories.findAll({
-    //   order: [["id", "ASC"]],
-    //   attributes: ["id", "name"],
-    // });
-    let categories = await Categories.find({});
+    let categories = await Categories.findAll({
+      order: [["id", "ASC"]],
+      attributes: ["id", "name"],
+    });
     categories.forEach((data) => {
-      const id = data._id.toString()
-      tmp[id] = data.name;
+      tmp[data.dataValues.id] = data.dataValues.name;
     });
     App_Settings.categories = { ...tmp };
     tmp = [];
 
     // Os
-    // let os = await Os.findAll({
-    //   order: [["id", "ASC"]],
-    //   attributes: ["id", "name", "version"],
-    // });
-    let os = await Os.find({});
+    let os = await Os.findAll({
+      order: [["id", "ASC"]],
+      attributes: ["id", "name", "version"],
+    });
     os.forEach((data) => {
-      const id = data._id.toString()
-      tmp[id] = [data.name, data.version];
+      tmp[data.dataValues.id] = [data.dataValues.name, data.dataValues.version];
     });
     App_Settings.os = { ...tmp };
     tmp = [];
@@ -102,7 +90,7 @@ exports.loadSettings = async () => {
     // Web settings
     // let web_settings = await Settings.findAll();
     // web_settings.forEach((data) => {
-    //   tmp = { ...data };
+    //   tmp = { ...data.dataValues };
     // });
     // App_Settings.web_settings = { ...tmp };
   } catch (err) {
