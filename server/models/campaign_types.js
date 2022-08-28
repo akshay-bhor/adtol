@@ -1,49 +1,29 @@
-// const sequelize = require('../utils/db');
-// const { DataTypes } = require('sequelize');
-const mongoose = require('mongoose');
-const { Schema } = mongoose
+const sequelize = require('../utils/db');
+const { DataTypes } = require('sequelize');
 
-const Campaign_types = mongoose.model('campaign_types', new Schema({
+const Campaign_types = sequelize.define('campaign_types', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+        autoIncrement: true
+    },
     name: {
-        type: String,
-        required: true,
+        type: DataTypes.STRING(30),
+        allowNull: false
     },
     desc: {
-        type: String,
-        required: false,
+        type: DataTypes.STRING(200),
+        allowNull: true
     },
     fields: { // title, desc, banner, btn, follow
-        type: String,
-        required: true,
+        type: DataTypes.STRING(100),
+        allowNull: false
     },
     icon: {
-        type: String,
-        required: false,
+        type: DataTypes.STRING(30),
+        allowNull: true
     }
-}))
-// const Campaign_types = sequelize.define('campaign_types', {
-    // id: {
-    //     type: DataTypes.INTEGER,
-    //     primaryKey: true,
-    //     allowNull: false,
-    //     autoIncrement: true
-    // },
-    // name: {
-    //     type: DataTypes.STRING(30),
-    //     allowNull: false
-    // },
-    // desc: {
-    //     type: DataTypes.STRING(200),
-    //     allowNull: true
-    // },
-    // fields: { // title, desc, banner, btn, follow
-    //     type: DataTypes.STRING(100),
-    //     allowNull: false
-    // },
-    // icon: {
-    //     type: DataTypes.STRING(30),
-    //     allowNull: true
-    // }
-// });
+});
 
 module.exports = Campaign_types;

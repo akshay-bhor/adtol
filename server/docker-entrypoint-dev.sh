@@ -1,5 +1,5 @@
 #!/bin/sh
 
-# sequelize db:migrate
+sequelize db:migrate
 
 npm run dev

@@ -1,26 +1,17 @@
-// const sequelize = require('../utils/db');
-// const { DataTypes } = require('sequelize');
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const sequelize = require('../utils/db');
+const { DataTypes } = require('sequelize');
 
-const Timezones = mongoose.model('timezones', new Schema({
+const Timezones = sequelize.define('timezones', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+        autoIncrement: true
+    },
     zone: {
-        type: String,
-        required: true
+        type: DataTypes.STRING,
+        allowNull: false
     }
-}));
-
-// const Timezones = sequelize.define('timezones', {
-//     id: {
-//         type: DataTypes.INTEGER,
-//         primaryKey: true,
-//         allowNull: false,
-//         autoIncrement: true
-//     },
-//     zone: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     }
-// });
+});
 
 module.exports = Timezones;

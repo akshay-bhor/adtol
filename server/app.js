@@ -6,7 +6,6 @@ const { loadSettings } = require('./common/settings');
 const app = express();
 const cluster = require('cluster');
 const helmet = require('helmet');
-const mongoose = require('mongoose');
 // const { verifyEmailTransport } = require('./common/emailTransporter');
 const { sendAlertMail } = require('./common/sendMails');
 let retryCount = 0;
@@ -87,12 +86,8 @@ else {
         });
     })
     // sequelize.sync();
-    mongoose.connect(process.env.MONGO_URI).then(() => {
-        app.listen(process.env.PORT || 3000, function() {
-            // loadSettings();
-            // verifyEmailTransport();
-        });
-    }).catch((err) => {
-        console.log(err);
-    })
+    app.listen(process.env.PORT || 3000, function() {
+        loadSettings();
+        // verifyEmailTransport();
+    });
 }

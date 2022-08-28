@@ -1,68 +1,42 @@
-// const sequelize = require('../utils/db');
-// const { DataTypes } = require('sequelize');
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const sequelize = require('../utils/db');
+const { DataTypes } = require('sequelize');
 
-const Banners = mongoose.model('banners', new Schema({
+const Banners = sequelize.define('banners', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+        autoIncrement: true
+    },
     campaign_id: {
-        type: mongoose.Types.ObjectId,
-        ref: 'campaigns',
-        required: true,
-        index: true
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     banner_id: {
-        type: mongoose.Types.ObjectId,
-        ref: 'user_banners',
-        required: true
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     size: {
-        type: mongoose.Types.ObjectId,
-        ref: 'banner_sizes',
-        required: true,
-        index: true
+        type: DataTypes.INTEGER(2),
+        allowNull: false
     },
     src: {
-        type: String,
-        required: true
+        type: DataTypes.STRING(50),
+        allowNull: false
     }
-}));
-
-// const Banners = sequelize.define('banners', {
-    // id: {
-    //     type: DataTypes.INTEGER,
-    //     primaryKey: true,
-    //     allowNull: false,
-    //     autoIncrement: true
-    // },
-    // campaign_id: {
-    //     type: DataTypes.INTEGER,
-    //     allowNull: false
-    // },
-    // banner_id: {
-    //     type: DataTypes.INTEGER,
-    //     allowNull: false
-    // },
-    // size: {
-    //     type: DataTypes.INTEGER(2),
-    //     allowNull: false
-    // },
-    // src: {
-    //     type: DataTypes.STRING(50),
-    //     allowNull: false
-    // }
-// }, {
-//     indexes: [
-//         {
-//             name: 'campaign_id',
-//             using: 'BTREE',
-//             fields: ['campaign_id']
-//         },
-//         {
-//             name: 'size',
-//             using: 'BTREE',
-//             fields: ['size']
-//         }
-//     ]
-// });
+}, {
+    indexes: [
+        {
+            name: 'campaign_id',
+            using: 'BTREE',
+            fields: ['campaign_id']
+        },
+        {
+            name: 'size',
+            using: 'BTREE',
+            fields: ['size']
+        }
+    ]
+});
 
 module.exports = Banners;

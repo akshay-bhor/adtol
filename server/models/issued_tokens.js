@@ -1,44 +1,26 @@
-// const { DataTypes } = require('sequelize');
-// const sequelize = require('../utils/db');
-const mongoose = require('mongoose');
-const { Schema } = mongoose
+const { DataTypes } = require('sequelize');
+const sequelize = require('../utils/db');
 
-const Issued_Tokens = mongoose.model('issued_tokens', new Schema({
+const Issued_Tokens = sequelize.define('issued_tokens', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false
+    },
     uid: {
-        type: mongoose.Types.ObjectId,
-        ref: 'users',
-        required: true
+        type: DataTypes.INTEGER,
+        allowNull: false
     },
     exp: {
-        type: Number,
-        required: true
+        type: DataTypes.BIGINT(10),
+        allowNull: false
     },
     blacklisted: {
-        type: Number,
-        required: true,
-        default: 0
+        type: DataTypes.INTEGER(1),
+        allowNull: false,
+        defaultValue: 0
     }
-}))
-// const Issued_Tokens = sequelize.define('issued_tokens', {
-//     id: {
-//         type: DataTypes.INTEGER,
-//         primaryKey: true,
-//         autoIncrement: true,
-//         allowNull: false
-//     },
-    // uid: {
-    //     type: DataTypes.INTEGER,
-    //     allowNull: false
-    // },
-    // exp: {
-    //     type: DataTypes.BIGINT(10),
-    //     allowNull: false
-    // },
-    // blacklisted: {
-    //     type: DataTypes.INTEGER(1),
-    //     allowNull: false,
-    //     defaultValue: 0
-    // }
-// });
+});
 
 module.exports = Issued_Tokens;

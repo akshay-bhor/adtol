@@ -1,25 +1,17 @@
-// const sequelize = require('../utils/db');
-// const { DataTypes } = require('sequelize');
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const sequelize = require('../utils/db');
+const { DataTypes } = require('sequelize');
 
-const Categories = mongoose.model('categories', new Schema({
+const Categories = sequelize.define('categories', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+        autoIncrement: true
+    },
     name: {
-        type: String,
-        required: true
+        type: DataTypes.STRING(25),
+        allowNull: false
     }
-}))
-// const Categories = sequelize.define('categories', {
-//     id: {
-//         type: DataTypes.INTEGER,
-//         primaryKey: true,
-//         allowNull: false,
-//         autoIncrement: true
-//     },
-//     name: {
-//         type: DataTypes.STRING(25),
-//         allowNull: false
-//     }
-// });
+});
 
 module.exports = Categories;
