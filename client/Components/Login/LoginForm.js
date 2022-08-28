@@ -67,7 +67,11 @@ const LoginForm = () => {
   return (
     <Fragment>
       <Head>
-        <title>Login - AdTol</title>
+        <title>Login To Access Publisher & Advertiser Dashboard - Adtol</title>
+        <meta
+          name="description"
+          content="Publishers Add Websites, Get Ad Codes, Check Performance Reports & Withdraw Balance. Advertisers Deposit Campaign Budget, Manage Ads & Track ROI."
+        />
       </Head>
       <div className={styles.loginContainer}>
         <h2 className={`${styles.block} ${styles.center}`}>Login</h2>

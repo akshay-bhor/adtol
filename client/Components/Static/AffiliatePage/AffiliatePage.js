@@ -64,7 +64,11 @@ const AffiliatePage = () => {
     return (
         <Fragment>
             <Head>
-                <title>The Best Affiliate Network - AdTol</title>
+                <title>The Best Refer & Earn Affiliate Network for Publishers - Adtol</title>
+                <meta 
+                    name="description"
+                    content="Make Money Online by Sharing Referral Links on Websites, Blogs & Forums. Earn 10% Commission of Advertisers Spendings & Publishers Earnings Lifetime."
+                />
             </Head>
             <Heading
                 heading={heading}

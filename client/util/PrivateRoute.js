@@ -9,6 +9,8 @@ const PrivateRoute = WrappedComponent => props => {
 
     useEffect(() => {
         if(validAuthToken() === false) router.replace('/register');
+        // Remove Google One tap
+        if (window.google?.accounts) window.google.accounts.id.cancel();
     }, []);
 
     // Check localstorage token

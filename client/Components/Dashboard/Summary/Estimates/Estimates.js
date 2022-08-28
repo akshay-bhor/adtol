@@ -1,4 +1,4 @@
-import { Typography } from "@material-ui/core"
+import { Tooltip, Typography, Box } from "@material-ui/core"
 import PaperBlockPrimary from "../../Common/PaperBlockPrimary";
 
 const styles = {
@@ -18,7 +18,9 @@ const Estimates = (props) => {
                         Today so far
                     </Typography>
                     <Typography variant="h4" display="block">
-                        ${(+props.data.todaySum).toLocaleString()}
+                        <Tooltip title={+props.data.todaySum} arrow>
+                            <Box>${(parseFloat(props.data.todaySum).toFixed(2)).toLocaleString()}</Box>
+                        </Tooltip>
                     </Typography>
                 </div>
 
@@ -27,10 +29,14 @@ const Estimates = (props) => {
                         Yesterday
                     </Typography>
                     <Typography variant="h4" display="block">
-                        ${(+props.data.yesterdaySum).toLocaleString()}
+                        <Tooltip title={+props.data.yesterdaySum} arrow>
+                            <Box>${(parseFloat(props.data.yesterdaySum).toFixed(2)).toLocaleString()}</Box>
+                        </Tooltip>
                     </Typography>
                     <Typography variant="subtitle2" display="block">
-                        ${(+props.data.vssamedaylastweek).toLocaleString()}
+                        <Tooltip title={+props.data.vssamedaylastweek} arrow>
+                            <Box>${(parseFloat(props.data.vssamedaylastweek).toFixed(2)).toLocaleString()}</Box>
+                        </Tooltip>
                     </Typography>
                     <Typography variant="subtitle2" display="block">
                         vs same day last week
@@ -42,10 +48,14 @@ const Estimates = (props) => {
                         Last 7 days
                     </Typography>
                     <Typography variant="h4" display="block">
-                        ${(+props.data.sum7days).toLocaleString()}
+                        <Tooltip title={+props.data.sum7days} arrow>
+                            <Box>${(parseFloat(props.data.sum7days).toFixed(2)).toLocaleString()}</Box>
+                        </Tooltip>
                     </Typography>
                     <Typography variant="subtitle2" display="block">
-                        ${(+props.data.sumprev7days).toLocaleString()}
+                        <Tooltip title={+props.data.sumprev7days} arrow>
+                            <Box>${(parseFloat(props.data.sumprev7days).toFixed(2)).toLocaleString()}</Box>
+                        </Tooltip>
                     </Typography>
                     <Typography variant="subtitle2" display="block">
                         vs previous 7 days
@@ -57,10 +67,14 @@ const Estimates = (props) => {
                         This month
                     </Typography>
                     <Typography variant="h4" display="block">
-                        ${(+props.data.sum30days).toLocaleString()}
+                        <Tooltip title={+props.data.sum30days} arrow>
+                            <Box>${(parseFloat(props.data.sum30days).toFixed(2)).toLocaleString()}</Box>
+                        </Tooltip>
                     </Typography>
                     <Typography variant="subtitle2" display="block">
-                        ${(+props.data.sumprev30days).toLocaleString()}
+                        <Tooltip title={+props.data.sumprev30days} arrow>
+                            <Box>${(parseFloat(props.data.sumprev30days).toFixed(2)).toLocaleString()}</Box>
+                        </Tooltip>
                     </Typography>
                     <Typography variant="subtitle2" display="block">
                         vs last month
@@ -72,7 +86,9 @@ const Estimates = (props) => {
                         Balance
                     </Typography>
                     <Typography variant="h4" display="block">
-                        ${(+props.balance).toLocaleString()}
+                        <Tooltip title={+props.balance} arrow>
+                            <Box>${(parseFloat(props.balance).toFixed(2)).toLocaleString()}</Box>
+                        </Tooltip>
                     </Typography>
                 </div>
 

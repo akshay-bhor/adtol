@@ -10,9 +10,10 @@ import { useRouter } from "next/router";
 import FormContent from "./FormContent";
 import { RECAPTCHA_SITE_KEY } from "../../util/load-scripts";
 import Link from "next/link";
-import { makeStyles } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 import { createCookie, getCookie } from "../../util/common";
 import RegisterWrapper from "./RegisterWrapper";
+import RegisterRequirements from "./RegisterRequirements";
 
 const useStyles = makeStyles((theme) => ({
   block: {
@@ -23,7 +24,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   link: {
-    color: theme.palette.primary.main
+    color: theme.palette.primary.main,
+    float: 'left'
   }
 }));
 
@@ -79,32 +81,39 @@ const RegisterForm = () => {
     <RegisterWrapper>
       <LoadReCaptcha />
       <div className={styles.registerContainer}>
-        <h2 className={"block text-center"}>Register</h2>
-        <Formik
-          initialValues={{
-            user: "",
-            pass: "",
-            mail: "",
-            country: "",
-            mobile: "",
-            ac_type: "",
-            company_name: "",
-            ref_by: ref_by,
-            agreement: false
-          }}
-          validationSchema={registerValidationSchema}
-          onSubmit={(values, actions) => {
-            register(values, actions);
-          }}
-        >
-          {({ values }) => (
-            <FormContent
-              onSuccess={gSignInHandler}
-              formValues={values}
-            />
-          )}
-        </Formik>
-        <div className={`${muiStyles.block} ${muiStyles.link}`}><Link href="/login"><a>Already have an account?</a></Link></div>
+        <h1 className={"block text-center"}>Join The Best Ad Network For Publishers & Advertisers!</h1>
+        <Grid container spacing={2}>
+          <Grid item lg={5} md={12}>
+            <RegisterRequirements />
+          </Grid>
+          <Grid item lg={7} md={12}>
+            <Formik
+              initialValues={{
+                user: "",
+                pass: "",
+                mail: "",
+                country: "",
+                mobile: "",
+                ac_type: "",
+                company_name: "",
+                ref_by: ref_by,
+                agreement: false
+              }}
+              validationSchema={registerValidationSchema}
+              onSubmit={(values, actions) => {
+                register(values, actions);
+              }}
+            >
+              {({ values }) => (
+                <FormContent
+                  onSuccess={gSignInHandler}
+                  formValues={values}
+                />
+              )}
+            </Formik>
+            <div className={`${muiStyles.block} ${muiStyles.link}`}><Link href="/login"><a>Already have an account?</a></Link></div>
+          </Grid>
+        </Grid>
       </div>
     </RegisterWrapper>
   );

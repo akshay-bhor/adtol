@@ -130,7 +130,11 @@ const HomePage = () => {
     return (
         <Fragment>
             <Head>
-                <title>Adtol: The Best PPC/CPM Ad Agency for Publishers & Advertisers</title>
+                <title>The Best PPC Ad Agency for Publishers & Advertisers - Adtol</title>
+                <meta
+                    name="description"
+                    content="The Best Self-Serve CPC Ad Network with 100% Fill Rate & High PPC Ads. Get High ROI with Targeted Display Ads, Contextual Text Ads, SEO Ads & Pop Ads."
+                />
             </Head>
             <Heading
                 heading={heading}
@@ -143,7 +147,7 @@ const HomePage = () => {
             <MidContent class='mid_container' heading='Publisher' img={publisherImg.src} link='/publisher'>
                 {pub}
             </MidContent>
-            <MidContent class='mid_container' heading='Referral' img={referrelImg.src} link='/referrel'>
+            <MidContent class='mid_container' heading='Referral' img={referrelImg.src} link='/affiliate'>
                 {ref}
             </MidContent>
             <MidContent class='mid_container' 

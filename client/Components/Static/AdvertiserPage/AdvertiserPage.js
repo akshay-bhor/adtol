@@ -85,7 +85,11 @@ const AdvertiserPage = () => {
     return (
         <Fragment>
             <Head>
-                <title>Best AdWords Alternative Ad Network For Advertisers - AdTol</title>
+                <title>The Best CPC Ad Network for Advertisers | High ROI - Adtol</title>
+                <meta 
+                    name="description"
+                    content="The Best Self-Serve CPC Ad Network for Advertisers. Get High ROI with Targeted Display & Pop Ads. Start Advertising at $0.001 CPC, $0.1 CPM & $1 Budget."
+                />
             </Head>
             <Heading
                 heading={heading}

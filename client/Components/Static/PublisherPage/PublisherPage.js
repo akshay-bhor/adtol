@@ -82,7 +82,11 @@ const PublisherPage = () => {
     return (
         <Fragment>
             <Head>
-                <title>The Best AdSense Alternative PPC Ad Network - AdTol</title>
+                <title>The Best PPC Ad Network for Publishers | High CPM Ads - Adtol</title>
+                <meta 
+                    name="description"
+                    content="The Best AdSense Alternative PPC Ad Network for Publishers - High PPC, Rich Display & Pop Ads with 100% Fill Rate. All Websites Allowed & Fast Payments."
+                />
             </Head>
             <Heading
                 heading={heading}

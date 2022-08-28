@@ -11,7 +11,7 @@ exports.adminUserNotifyHelper = async (req) => {
     try {
 
         // Get params
-        let emails = req.body.to.split(',') || [];
+        let emails = req.body.to?.split(',') || [];
         const all = req.body.all || 0;
         const msg = req.body.msg;
         const subject = 'AdTol - ' + (req.body.subject || null);

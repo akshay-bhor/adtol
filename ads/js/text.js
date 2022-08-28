@@ -72,7 +72,7 @@ if (!isHidden(parent)) {
               text-align: left !important;
               display: inline-block;
             "
-            href="https://www.adtol.com"
+            href="https://adtol.com"
           >
             <span
               style="

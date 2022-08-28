@@ -37,14 +37,6 @@ exports.processClick = async (req, res, next) => {
         const day_unix = Math.floor(new Date(today).getTime() / 1000);
         const time_unix = Math.floor(new Date().getTime() / 1000);
 
-        // Check time validity
-        if(time_unix > tData.time_unix) {
-            // Redirect to adtol
-            res.redirect(process.env.ORIGIN);
-            res.end();
-            return next();
-        }
-
         // Unpack ad and user data
         const adData = tData.adData;
         const userData = tData.userData; 
@@ -83,6 +75,14 @@ exports.processClick = async (req, res, next) => {
         if(campData == null || pubData == null) {
             // Redirect to adtol
             res.redirect(process.env.ORIGIN);
+            res.end();
+            return next();
+        }
+
+        // Check time validity
+        if(time_unix > tData.time_unix) {
+            // Redirect to ad url for backlink
+            res.redirect(campData.dataValues.url);
             res.end();
             return next();
         }

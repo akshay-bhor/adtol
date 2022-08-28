@@ -41,7 +41,8 @@ exports.referralsHelper = async (req) => {
         const stats = await Ref_Stats.findAll({ where: { 
                 day_unix: {
                     [Op.gte]: two_month_before
-                } 
+                },
+                ref_uid: userid
             } 
         });
 
