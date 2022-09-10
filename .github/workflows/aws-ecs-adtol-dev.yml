@@ -24,9 +24,11 @@
 #    and best practices on handling the access key credentials.
 
 on:
-  push:
-    branches:
-      - 'develop' # push on develop branch 
+  # run manually
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - 'develop' # push on develop branch 
 
 name: Deploy Dev Version to Amazon ECS
 

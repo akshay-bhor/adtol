@@ -234,6 +234,7 @@ exports.adServe = async (req, res, next) => {
                         adult: ad_adult,
                         ad_cpc: ad_cpc,
                         ip: req.ip_addr,
+                        processed: 0,
                         day_unix: today_unix,
                         time_unix: time_unix
                     });

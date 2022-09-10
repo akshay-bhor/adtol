@@ -96,6 +96,11 @@ const Views = sequelize.define('views', {
         allowNull: false,
         defaultValue: 0
     },
+    processed: {
+        type: DataTypes.TINYINT(1),
+        allowNull: false,
+        defaultValue: 1
+    },
     day_unix: {
         type: DataTypes.BIGINT(10),
         allowNull: false,
@@ -112,6 +117,11 @@ const Views = sequelize.define('views', {
             name: 'estimation',
             using: 'BTREE',
             fields: ['campaign_type', 'category', 'device', 'os', 'browser', 'country', 'language', 'adult', 'day_unix']
+        },
+        {
+            name: 'processed',
+            using: 'BTREE',
+            fields: ['processed']
         }
     ]
 });

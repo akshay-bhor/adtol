@@ -65,6 +65,10 @@
           "name": "DB_HOST"
         },
         {
+          "valueFrom": "arn:aws:ssm:us-east-2:205900288504:parameter/ADTOL_DB_HOST_READER",
+          "name": "DB_HOST_READER"
+        },
+        {
           "valueFrom": "arn:aws:ssm:us-east-2:205900288504:parameter/ADTOL_DB_DIALECT",
           "name": "DB_DIALECT"
         },
@@ -150,7 +154,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "205900288504.dkr.ecr.us-east-2.amazonaws.com/adtol-node",
+      "image": "205900288504.dkr.ecr.us-east-2.amazonaws.com/adtol-node:0e88f4494454bdca50e23c784bea66f080f8cf91",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": null,
@@ -204,7 +208,7 @@
       "memoryReservation": null,
       "volumesFrom": [],
       "stopTimeout": null,
-      "image": "205900288504.dkr.ecr.us-east-2.amazonaws.com/adtol-nginx-spa",
+      "image": "205900288504.dkr.ecr.us-east-2.amazonaws.com/adtol-nginx-spa:0e88f4494454bdca50e23c784bea66f080f8cf91",
       "startTimeout": null,
       "firelensConfiguration": null,
       "dependsOn": [
@@ -230,13 +234,13 @@
     }
   ],
   "placementConstraints": [],
-  "memory": "1024",
+  "memory": "2048",
   "taskRoleArn": "arn:aws:iam::205900288504:role/ecsTaskExecutionRole",
   "compatibilities": [
     "EC2",
     "FARGATE"
   ],
-  "taskDefinitionArn": "arn:aws:ecs:us-east-2:205900288504:task-definition/adtol:1",
+  "taskDefinitionArn": "arn:aws:ecs:us-east-2:205900288504:task-definition/adtol:5",
   "family": "adtol",
   "requiresAttributes": [
     {
@@ -309,8 +313,8 @@
     "operatingSystemFamily": "LINUX",
     "cpuArchitecture": null
   },
-  "cpu": "512",
-  "revision": 1,
+  "cpu": "1024",
+  "revision": 5,
   "status": "ACTIVE",
   "inferenceAccelerators": null,
   "proxyConfiguration": null,
