@@ -8,7 +8,8 @@ const { cronLogWrite } = require("../cron-logger");
 
 
 exports.updateReferrelStats = async () => {
-    
+    cronLogWrite("Started Processing Refeerral Stats");
+
     /**
      * Get Todays payments check uid refs and update % 
      */
@@ -62,7 +63,7 @@ exports.updateReferrelStats = async () => {
             }
         }
        
-        cronLogWrite('Updated referrel stats');
+        cronLogWrite('Updated Referrel Stats');
     } catch (err) {
         const msg = `Error occured updating referrel stats [${err}]`;
         cronLogWrite(msg);

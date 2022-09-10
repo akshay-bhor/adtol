@@ -11,6 +11,7 @@ const Token_Blacklist = require("../../models/token_blacklist");
 const { cronLogWrite } = require('../cron-logger');
 
 exports.deleteOldData = async () => {
+    cronLogWrite("Started Deleting Old Data");
 
     // Get today date
     const tDate = new Date().toISOString().slice(0, 10);
@@ -96,7 +97,7 @@ exports.deleteOldData = async () => {
         //     } 
         // });
 
-        cronLogWrite('Deleted old data');
+        cronLogWrite('Deleted Old Data');
     } catch (err) {
         const msg = `Error Occured deleting old data [${err}]`;
         cronLogWrite(msg);

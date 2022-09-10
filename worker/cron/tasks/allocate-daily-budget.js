@@ -6,7 +6,7 @@ const sequelize = require("../../utils/db")
 const { cronLogWrite } = require("../cron-logger")
 
 exports.allocateDailyBudget = async () => {
-    
+    cronLogWrite("Started Allocating Daily Budget");
     /**
      * fetch all ads with approved and running or machine pause status
      * at 12 midnght check deficiet for todays budget and only add that amount and deduct it from 
@@ -51,7 +51,7 @@ exports.allocateDailyBudget = async () => {
             }
         }
 
-        cronLogWrite('Allocated daily budgets');
+        cronLogWrite('Allocated Daily Budgets');
     } catch (err) {
         const msg = `Error occured allocating daily budget [${err}]`;
         cronLogWrite(msg);

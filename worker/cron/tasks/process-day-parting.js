@@ -4,6 +4,7 @@ const { tinify } = require('../../common/util');
 const { cronLogWrite } = require("../cron-logger")
 
 exports.processDayParting = async () => {
+    cronLogWrite("Started Processing Day Parting");
     
     try {
         // Get all approved and !user paused ads , data => bot, status, type, adult, run
@@ -47,7 +48,7 @@ exports.processDayParting = async () => {
             }
         }
 
-        cronLogWrite('Processed day parting');
+        cronLogWrite('Processed Day Parting');
     } catch (err) {
         const msg = `Error occured processing day parting [${err}]`;
         cronLogWrite(msg);
