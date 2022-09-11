@@ -256,7 +256,7 @@ exports.processAdStats = async () => {
           )
         );
       });
-      await Promise.all(increaseViewsByCountryPromises);
+      await Promise.all(increaseViewsByBrowserPromises);
 
       // Increase View Count for Os
       const increaseViewsByOsPromises = [];
@@ -292,7 +292,7 @@ exports.processAdStats = async () => {
           )
         );
       });
-      await Promise.all(increaseViewsByCountryPromises);
+      await Promise.all(increaseViewsByOsPromises);
 
       /**
        * FINAL STEP:
