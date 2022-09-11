@@ -26,8 +26,7 @@
 on:
   push:
     branches:
-      - 'release/v-*' # push on release branch 
-      - 'release/hotfix/v-*' # push on hotfix hotfix branch
+      - 'master' # push on master branch
 
 name: Deploy Prod Version to Amazon ECS
 
