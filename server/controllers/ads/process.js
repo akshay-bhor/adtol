@@ -206,12 +206,14 @@ exports.processClick = async (req, res, next) => {
             try {
                 await sequelize.query('UPDATE pub_sites SET earned = earned + ?, clicks = clicks + 1 WHERE id = ?', {
                     type: QueryTypes.UPDATE,
-                    replacements: [pub_cpc, site_id]
+                    replacements: [pub_cpc, site_id],
+                    transaction: ts
                 });
 
                 await sequelize.query('UPDATE users SET pub_earnings = pub_earnings + ?, pub_balance = pub_balance + ?, pub_clicks = pub_clicks + 1 WHERE id = ?', {
                     type: QueryTypes.UPDATE,
-                    replacements: [pub_cpc, pub_cpc, pub_uid]
+                    replacements: [pub_cpc, pub_cpc, pub_uid],
+                    transaction: ts
                 });
 
                 /**
@@ -245,16 +247,50 @@ exports.processClick = async (req, res, next) => {
  */
 const executeAdUpdateQuery = async (table, day_unix, col, value, campaign, ad_uid, cpc) => {
     const incCount = 1;
-    return sequelize.query(`UPDATE ${table} SET clicks = clicks + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND campaign = ? AND ad_uid = ?`, {
+    const update = await sequelize.query(`UPDATE ${table} SET clicks = clicks + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND campaign = ? AND ad_uid = ?`, {
         type: QueryTypes.UPDATE,
         replacements: [cpc, day_unix, value, campaign, ad_uid]
     });
+    if (update[1] < 1) {
+        executeInsertQuery(table, day_unix, col, value, campaign, null, ad_uid, null, cpc);
+    }
+
+    return true;
 }
 
 const executePubUpdateQuery = async (table, day_unix, col, value, website, pub_uid, cpc) => {
     const incCount = 1;
-    return sequelize.query(`UPDATE ${table} SET clicks = clicks + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND website = ? AND pub_uid = ?`, {
+    const update = await sequelize.query(`UPDATE ${table} SET clicks = clicks + ${incCount}, cost = cost + ? WHERE day_unix = ? AND ${col} = ? AND website = ? AND pub_uid = ?`, {
         type: QueryTypes.UPDATE,
         replacements: [cpc, day_unix, value, website, pub_uid]
     });
+    if (update[1] < 1) {
+        executeInsertQuery(table, day_unix, col, value, null, website, null, pub_uid, cpc);
+    }
+
+    return true;
 }
+
+const executeInsertQuery = async (table, day_unix, col, value, campaign, website, ad_uid, pub_uid, cost, viewCount = 0, clicks = 1) => {
+    if (campaign) {
+      return sequelize.query(
+        `INSERT INTO ${table} (ad_uid, ${col}, campaign, views, day_unix, cost, clicks) VALUES(?, ?, ?, ?, ?, ?, ?)`,
+        {
+          type: QueryTypes.INSERT,
+          replacements: [ad_uid, value, campaign, viewCount, day_unix, cost, clicks]
+        }
+      );
+    }
+  
+    if (website) {
+      return sequelize.query(
+        `INSERT INTO ${table} (pub_uid, ${col}, website, views, day_unix, cost, clicks) VALUES(?, ?, ?, ?, ?, ?, ?)`,
+        {
+          type: QueryTypes.INSERT,
+          replacements: [pub_uid, value, website, viewCount, day_unix, cost, clicks]
+        }
+      );
+    }
+    return;
+  };
+  

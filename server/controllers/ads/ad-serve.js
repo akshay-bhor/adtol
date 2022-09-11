@@ -239,49 +239,53 @@ exports.adServe = async (req, res, next) => {
                         time_unix: time_unix
                     });
 
+                    /**
+                     * Code below is moved to cron job
+                     */
+
                     // Increase view count
-                    await sequelize.query('UPDATE users u SET u.ad_views = u.ad_views + 1 WHERE u.id = ?', {
-                        type: QueryTypes.UPDATE,
-                        replacements: [ad_uid]
-                    });
-                    await sequelize.query('UPDATE campaigns c SET c.views = c.views + 1 WHERE c.id = ?', {
-                        type: QueryTypes.UPDATE,
-                        replacements: [campaign_id]
-                    });
-                    await sequelize.query('UPDATE users u SET u.pub_views = u.pub_views + 1 WHERE u.id = ?', {
-                        type: QueryTypes.UPDATE,
-                        replacements: [pub_uid]
-                    });
-                    await sequelize.query('UPDATE pub_sites ps SET ps.views = ps.views + 1 WHERE ps.id = ?', {
-                        type: QueryTypes.UPDATE,
-                        replacements: [site_id]
-                    });
+                    // await sequelize.query('UPDATE users u SET u.ad_views = u.ad_views + 1 WHERE u.id = ?', {
+                    //     type: QueryTypes.UPDATE,
+                    //     replacements: [ad_uid]
+                    // });
+                    // await sequelize.query('UPDATE campaigns c SET c.views = c.views + 1 WHERE c.id = ?', {
+                    //     type: QueryTypes.UPDATE,
+                    //     replacements: [campaign_id]
+                    // });
+                    // await sequelize.query('UPDATE users u SET u.pub_views = u.pub_views + 1 WHERE u.id = ?', {
+                    //     type: QueryTypes.UPDATE,
+                    //     replacements: [pub_uid]
+                    // });
+                    // await sequelize.query('UPDATE pub_sites ps SET ps.views = ps.views + 1 WHERE ps.id = ?', {
+                    //     type: QueryTypes.UPDATE,
+                    //     replacements: [site_id]
+                    // });
 
                     /**
                      * Update stats
                      */
-                    const statRes = await Promise.all([
-                        executeUpdateQuery('summary_device', today_unix, 'device', dCode, campaign_id, site_id, ad_uid, pub_uid),
-                        executeUpdateQuery('summary_country', today_unix, 'country', cCode, campaign_id, site_id, ad_uid, pub_uid),
-                        executeUpdateQuery('summary_browser', today_unix, 'browser', bCode, campaign_id, site_id, ad_uid, pub_uid),
-                        executeUpdateQuery('summary_os', today_unix, 'os', oCode, campaign_id, site_id, ad_uid, pub_uid),
-                    ]);
+                    // const statRes = await Promise.all([
+                    //     executeUpdateQuery('summary_device', today_unix, 'device', dCode, campaign_id, site_id, ad_uid, pub_uid),
+                    //     executeUpdateQuery('summary_country', today_unix, 'country', cCode, campaign_id, site_id, ad_uid, pub_uid),
+                    //     executeUpdateQuery('summary_browser', today_unix, 'browser', bCode, campaign_id, site_id, ad_uid, pub_uid),
+                    //     executeUpdateQuery('summary_os', today_unix, 'os', oCode, campaign_id, site_id, ad_uid, pub_uid),
+                    // ]);
 
                     /**
                      * Check affected rows else create new record
                      */
-                    if(statRes[0][1] < 2) {
-                        executeInsertQuery('summary_device', today_unix, 'device', dCode, campaign_id, site_id, ad_uid, pub_uid);
-                    }
-                    if(statRes[1][1] < 2) {
-                        executeInsertQuery('summary_country', today_unix, 'country', cCode, campaign_id, site_id, ad_uid, pub_uid);
-                    }
-                    if(statRes[2][1] < 2) {
-                        executeInsertQuery('summary_browser', today_unix, 'browser', bCode, campaign_id, site_id, ad_uid, pub_uid);
-                    }
-                    if(statRes[3][1] < 2) {
-                        executeInsertQuery('summary_os', today_unix, 'os', oCode, campaign_id, site_id, ad_uid, pub_uid);
-                    }
+                    // if(statRes[0][1] < 2) {
+                    //     executeInsertQuery('summary_device', today_unix, 'device', dCode, campaign_id, site_id, ad_uid, pub_uid);
+                    // }
+                    // if(statRes[1][1] < 2) {
+                    //     executeInsertQuery('summary_country', today_unix, 'country', cCode, campaign_id, site_id, ad_uid, pub_uid);
+                    // }
+                    // if(statRes[2][1] < 2) {
+                    //     executeInsertQuery('summary_browser', today_unix, 'browser', bCode, campaign_id, site_id, ad_uid, pub_uid);
+                    // }
+                    // if(statRes[3][1] < 2) {
+                    //     executeInsertQuery('summary_os', today_unix, 'os', oCode, campaign_id, site_id, ad_uid, pub_uid);
+                    // }
                 }
             } catch(err) {
                 console.log(err);
