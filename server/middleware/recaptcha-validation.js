@@ -21,6 +21,7 @@ module.exports = async (req, res, next) => {
         }
         else {
             const err = new Error('Captcha Valiation Failed, Try Again!');
+            err.data = result.data;
             err.statusCode = 422;
             throw err;
         }
