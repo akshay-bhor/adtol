@@ -94,7 +94,7 @@
         },
         {
           "valueFrom": "arn:aws:ssm:us-east-2:205900288504:parameter/ADTOL_RECAPTCHA_SECRET",
-          "name": "RECAPTCHA_SECRET\t"
+          "name": "RECAPTCHA_SECRET"
         },
         {
           "valueFrom": "arn:aws:ssm:us-east-2:205900288504:parameter/ADTOL_GOOGLE_CLIENT_ID",
@@ -122,7 +122,7 @@
         },
         {
           "valueFrom": "arn:aws:ssm:us-east-2:205900288504:parameter/ADTOL_EMAIL_SENDING_RATE",
-          "name": "EMAIL_SENDING_RATE\t"
+          "name": "EMAIL_SENDING_RATE"
         },
         {
           "valueFrom": "arn:aws:ssm:us-east-2:205900288504:parameter/ADTOL_AWS_S3_BUCKET_NAME",
