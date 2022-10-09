@@ -226,13 +226,15 @@ const Payment = () => {
                 Amount
               </Grid>
               <Grid item xs={6} className={muiStyles.gridRight}>
-                ${payFormData.amt}
+                {paymentState.orderData.currency === "USD" ? "$" : "₹"}
+                {payFormData.amt}
               </Grid>
               <Grid item xs={6} className={muiStyles.gridLeft}>
                 Total
               </Grid>
               <Grid item xs={6} className={muiStyles.gridRight}>
-                ${payFormData.amt}
+                {paymentState.orderData.currency === "USD" ? "$" : "₹"}
+                {payFormData.amt}
               </Grid>
               <Grid item xs={12} className={muiStyles.btnContainer}>
                 <Button

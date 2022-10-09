@@ -49,6 +49,10 @@
           "name": "CLOUDFRONT_S3_ORIGIN"
         },
         {
+          "valueFrom": "arn:aws:ssm:us-east-2:205900288504:parameter/ADTOL_INR_TO_USD_EXCHANGE_RATE",
+          "name": "INR_TO_USD_EXCHANGE_RATE"
+        },
+        {
           "valueFrom": "arn:aws:ssm:us-east-2:205900288504:parameter/ADTOL_DB_NAME",
           "name": "DB_NAME"
         },

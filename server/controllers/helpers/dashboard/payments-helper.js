@@ -32,10 +32,17 @@ exports.createOrderHelper = async (req) => {
         // Userid
         const userid = req.userInfo.id;
 
+        // Fetch publisher country
+        const udata = await User.findOne({ where: { id: userid }, attributes: ['country'] });
+
+        // Get country
+        const ccode = udata.dataValues.country;
+        const country = App_Settings.countries[ccode][1];
+
         // Amount
         const amount = Math.floor(req.body.amt * 100);
 
-        const currency = 'USD';
+        const currency = country == "India" ? 'INR': 'USD';
         const mtx = createUniquePaymentId('pay');
 
         // Create Order Object
@@ -120,7 +127,15 @@ exports.verifyPaymentHelper = async (req) => {
         const payCapture = await capturePayment(rzr_payment_id, order.dataValues.amount, order.dataValues.currency);
 
         // Amount
-        const amount = order.dataValues.amount;
+        let amount = order.dataValues.amount;
+
+        // Exchange Rate
+        const inr_to_usd_exchange_rate = +(parseFloat(process.env.INR_TO_USD_EXCHANGE_RATE).toFixed(2));
+
+        // Convert to USD if INR
+        if(order.dataValues.currency === "INR") {
+            amount = +(parseFloat(amount / inr_to_usd_exchange_rate).toFixed(2));
+        }
 
         // Transaction
         const ts = await sequelize.transaction();

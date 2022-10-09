@@ -5,7 +5,7 @@ import Head from "next/head";
 import {
   abortBillingRequest,
   convertPubBalance,
-  fetchFormData
+  fetchFormData,
 } from "../../../../store/actions/billing.action";
 import { billingActions } from "../../../../store/reducers/billing.reducer";
 import Loading from "../../../UI/Loading";
@@ -14,7 +14,7 @@ import PaperBlock from "../../Common/PaperBlock";
 import styles from "../../Dashboard.module.css";
 import * as yup from "yup";
 import { MySelectField, MyTextField } from "../../../FormUtils/FormUtils";
-import { Button, makeStyles, MenuItem } from "@material-ui/core";
+import { Button, makeStyles, MenuItem, Box } from "@material-ui/core";
 import { useRouter } from "next/router";
 import BillingConfirmModal from "../BillingConfirmModal";
 
@@ -31,6 +31,9 @@ const useStyles = makeStyles({
     justifyContent: "flex-start",
     alignItems: "center",
     color: "#666",
+  },
+  marginTop0: {
+    marginTop: "0px!important",
   },
   btnContainer: {
     marginTop: "10px",
@@ -94,7 +97,36 @@ const Deposit = () => {
   };
 
   const submitForm = () => {
-    dispatch(convertPubBalance(payFormData));
+    const postValues = { ...payFormData };
+
+    if (formData.country == "India") {
+      postValues.amt = +(
+        parseFloat(postValues.amt) /
+        parseFloat(formData.inr_to_usd_exchange_rate)
+      ).toFixed(2);
+    }
+    dispatch(convertPubBalance(postValues));
+  };
+
+  const getMinDeposit = () => {
+    if (formData.country !== "India") return formData.min_deposit;
+    return +(
+      parseFloat(formData.min_deposit) *
+      parseFloat(formData.inr_to_usd_exchange_rate)
+    ).toFixed(2);
+  };
+
+  const getMaxDeposit = () => {
+    if (formData.country !== "India") return formData.max_deposit;
+    return +(
+      parseFloat(formData.max_deposit) *
+      parseFloat(formData.inr_to_usd_exchange_rate)
+    ).toFixed(2);
+  };
+
+  const getAmountLabel = () => {
+    if (formData.country !== "India") return "Amount (USD)";
+    return "Amount (INR)";
   };
 
   // Create validation schema
@@ -103,14 +135,8 @@ const Deposit = () => {
       amt: yup
         .number()
         .required("Amount is required")
-        .min(
-          formData.min_deposit,
-          `Min deposit amount is ${formData.min_deposit}`
-        )
-        .max(
-          formData.max_deposit,
-          `Max deposit amount is ${formData.max_deposit}`
-        ),
+        .min(getMinDeposit(), `Min deposit amount is ${getMinDeposit()}`)
+        .max(getMaxDeposit(), `Max deposit amount is ${getMaxDeposit()}`),
       processor: yup.string().required("Processor is required"),
     });
   }
@@ -129,7 +155,7 @@ const Deposit = () => {
         <PaperBlock heading={"Add Funds"} fullWidth={true} headingCenter={true}>
           <Formik
             initialValues={{
-              amt: formData.min_deposit,
+              amt: getMinDeposit(),
               processor: 1,
             }}
             validationSchema={validationSchema}
@@ -142,8 +168,20 @@ const Deposit = () => {
                 name="amt"
                 type="number"
                 className={muiStyles.block}
-                label="Amount"
+                label={getAmountLabel()}
               />
+              {formData.country == "India" && (
+                <Box
+                  component="div"
+                  className={[
+                    muiStyles.block,
+                    muiStyles.info,
+                    muiStyles.marginTop0,
+                  ].join(" ")}
+                >
+                  Exchange rate is ₹{formData.inr_to_usd_exchange_rate}.
+                </Box>
+              )}
 
               <MySelectField
                 name="processor"
@@ -177,6 +215,7 @@ const Deposit = () => {
           formData={payFormData}
           processors={processors}
           submitForm={submitForm}
+          convert={true}
           handleModalToggle={handleModalToggle}
           loading={loading}
         />

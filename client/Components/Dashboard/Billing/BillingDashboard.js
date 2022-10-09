@@ -175,7 +175,7 @@ const BillingDashboard = () => {
       // }
     }
     if (params.colDef.field == "amount") {
-      return "$" + (+params.value).toLocaleString();
+      return (+params.value).toLocaleString();
     }
     if (params.colDef.field == "fee") {
       return params.value + "%";

@@ -1,6 +1,7 @@
 const { check, validationResult } = require('express-validator');
 const { QueryTypes } = require('sequelize');
 const { sendWdStatusMail, sendPaymentSuccessMail } = require('../../../common/sendMails');
+const { App_Settings } = require('../../../common/settings');
 const { createUniquePaymentId } = require('../../../common/util');
 const Payments = require('../../../models/payments');
 const Settings = require('../../../models/settings');
@@ -192,9 +193,13 @@ exports.formDataHelper = async (req) => {
         const userid = req.userInfo.id;
 
         // Fetch publisher balance
-        const bal = await User.findOne({ where: { id: userid }, attributes: ['pub_balance'] });
+        const udata = await User.findOne({ where: { id: userid }, attributes: ['pub_balance', 'country'] });
         
-        const pub_bal = bal.dataValues.pub_balance;
+        const pub_bal = udata.dataValues.pub_balance;
+
+        // Get country
+        const ccode = udata.dataValues.country;
+        const country = App_Settings.countries[ccode][1];
 
         // Find settings
         let web_settings = await Settings.findAll();
@@ -216,13 +221,18 @@ exports.formDataHelper = async (req) => {
         // Withdraw fee
         const withdraw_fee = web_settings.withdraw_fee;
 
+        // Exchange Rate
+        const inr_to_usd_exchange_rate = +(parseFloat(process.env.INR_TO_USD_EXCHANGE_RATE).toFixed(2));
+
         // Return
         return {
             pub_bal,
             min_deposit,
             max_deposit,
             min_withdraw,
-            withdraw_fee
+            withdraw_fee,
+            country,
+            inr_to_usd_exchange_rate
         };
 
     } catch(err) {
@@ -448,7 +458,7 @@ const customDepositAmtValidation = async(amt, { req }) => {
 
     // Check
     if(userBal < amt) {
-        throw new Error(`Insufficient Balance, Maximum Conversion amount is ${userBal}`);
+        throw new Error(`Insufficient Balance, Maximum Conversion amount is $${userBal}`);
     }
 }
 
