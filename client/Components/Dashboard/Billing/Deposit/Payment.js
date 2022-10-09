@@ -131,7 +131,7 @@ const Payment = () => {
         currency: orderData.currency,
         name: orderData.name,
         description: "Deposit amount in your account",
-        image: "https://adtol.com/i/favicon-96x96.png",
+        image: "https://adtol.com/icons/android-icon-96x96.png",
         order_id: orderData.order_id,
         prefill: {
           email: userData.email,
