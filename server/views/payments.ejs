@@ -169,6 +169,7 @@
   
       $.each(data, (k, d) => {
         let adult = '';
+        const amount = getAmount(d.amount, d.exchange_rate);
         if(d.adult == 'Adult') adult = `<span class="badge badge-danger">${d.adult}</span>`; 
         else adult = `<span class="badge badge-info">${d.adult}</span>`;
 
@@ -203,7 +204,8 @@
                           ${status} <br>
                       </div>
                       <div class="float-right ml-3">
-                        <span class="font-weight-bold">Amount</span><br>$${d.amount}
+                        <span class="font-weight-bold">Amount</span><br />$${amount}<br />
+                        <span class="font-weight-bold">E.R.</span><br />${d.exchange_rate}<br />
                       </div>
                   </div>
                   
@@ -247,6 +249,10 @@
         var sec = a.getSeconds();
         var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
         return time;
+    }
+
+    function getAmount(amount, exchangeRate) {
+      return +((parseFloat(amount) / parseFloat(exchangeRate)).toFixed(2));
     }
 
   </script>

@@ -53,6 +53,11 @@ const Payments = sequelize.define('payments', {
     rzr_signature: { // SHA256
         type: DataTypes.STRING(64),
         allowNull: true
+    },
+    exchange_rate: {
+        type: DataTypes.FLOAT(10, 2),
+        allowNull: false,
+        defaultValue: 1
     }
 }, {
     indexes: [

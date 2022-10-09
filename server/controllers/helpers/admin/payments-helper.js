@@ -40,7 +40,7 @@ exports.adminPaymentsListHelper = async (req) => {
 
     // Build query
     let fields =
-      "p.id, p.uid, p.mtx, p.rzr_order_id, p.rzr_payment_id, p.amount, p.status, p.processor, p.time_unix, u.user";
+      "p.id, p.uid, p.mtx, p.rzr_order_id, p.rzr_payment_id, p.amount, p.currency, p.exchange_rate, p.status, p.processor, p.time_unix, u.user";
     let resquery;
     let cquery;
 

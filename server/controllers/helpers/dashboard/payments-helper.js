@@ -54,6 +54,9 @@ exports.createOrderHelper = async (req) => {
         
         // Create razorpay order
         const order = await razorPay.orders.create(orderObject);
+
+        // Exchange Rate
+        const inr_to_usd_exchange_rate = +(parseFloat(process.env.INR_TO_USD_EXCHANGE_RATE).toFixed(2));
         
         // Store order in db
         const rzr_order_id = order.id;
@@ -62,6 +65,7 @@ exports.createOrderHelper = async (req) => {
         const order_status = order.status;
         const processor = 1;
         const time_unix = order.created_at;
+        const exchange_rate = currency === "INR" ? inr_to_usd_exchange_rate : 1;
 
         const store = await Payments.create({
             uid: userid,
@@ -71,7 +75,8 @@ exports.createOrderHelper = async (req) => {
             currency: order_currency,
             status: order_status,
             processor,
-            time_unix
+            time_unix,
+            exchange_rate
         });
 
         // Return
@@ -130,11 +135,15 @@ exports.verifyPaymentHelper = async (req) => {
         let amount = order.dataValues.amount;
 
         // Exchange Rate
+        let exchange_rate = 1;
+
+        // Exchange Rate
         const inr_to_usd_exchange_rate = +(parseFloat(process.env.INR_TO_USD_EXCHANGE_RATE).toFixed(2));
 
         // Convert to USD if INR
         if(order.dataValues.currency === "INR") {
             amount = +(parseFloat(amount / inr_to_usd_exchange_rate).toFixed(2));
+            exchange_rate = inr_to_usd_exchange_rate;
         }
 
         // Transaction
@@ -144,6 +153,7 @@ exports.verifyPaymentHelper = async (req) => {
             const store = await Payments.update({
                 rzr_payment_id,
                 rzr_signature,
+                exchange_rate,
                 status: 'captured'
             }, {
                 where: {
