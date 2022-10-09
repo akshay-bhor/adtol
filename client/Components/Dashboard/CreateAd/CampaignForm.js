@@ -277,7 +277,7 @@ export const CampaignForm = ({
           />}
 
           <Grid container className={muiStyles.block} spacing={2}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={12}>
               <Button
                 variant="contained"
                 type="submit"
@@ -288,7 +288,7 @@ export const CampaignForm = ({
                 Submit
               </Button>
             </Grid>
-            <Grid item xs={12} md={6}>
+            {/* <Grid item xs={12} md={6}>
               <Button
                 variant="contained"
                 color="primary"
@@ -298,7 +298,7 @@ export const CampaignForm = ({
               >
                 Traffic Estimation
               </Button>
-            </Grid>
+            </Grid> */}
           </Grid>
         </PaperBlock>
       </Form>
