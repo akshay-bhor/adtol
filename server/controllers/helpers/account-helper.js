@@ -109,7 +109,7 @@ exports.editPaymentHelper = async (req) => {
     if(req.body.bank) {
         await check('bank').exists().notEmpty().withMessage('Bank is required!').trim().escape().isString().withMessage('Invalid Bank Name!').run(req);
         await check('acno').exists().notEmpty().withMessage('Account Number is required!').trim().escape().isNumeric().withMessage('Invalid Account Number!').run(req);
-        await check('branch').exists().notEmpty().withMessage('Branch is required!').trim().escape().isAlpha().withMessage('Invalid Branch Name!').run(req);
+        await check('branch').exists().notEmpty().withMessage('Branch is required!').trim().escape().isString().withMessage('Invalid Branch Name!').run(req);
         await check('ifsc').exists().notEmpty().withMessage('IFSC Code is required!').trim().escape().isAlphanumeric().withMessage('Invalid IFSC Number!').run(req);
     }
 
