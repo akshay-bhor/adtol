@@ -11,19 +11,49 @@ services:
             - ./client:/client
         ports: 
             - "3000:3000"
+    # server:
+    #     build: 
+    #         context: ./server
+    #         dockerfile: Dockerfile.dev
+    #     extra_hosts: 
+    #         - "host.docker.internal:host-gateway"
+    #     volumes: 
+    #         - /server/node_modules
+    #         - ./server:/server
+    #     ports: 
+    #         - "4000:4000"
+    #     env_file: 
+    #         - ./server/.env
+    #     depends_on:
+    #         db:
+    #             condition: service_healthy
     server:
         build: 
-            context: ./server
+            context: ./server-go
             dockerfile: Dockerfile.dev
-        extra_hosts: 
-            - "host.docker.internal:host-gateway"
         volumes: 
-            - /server/node_modules
-            - ./server:/server
+            - ./server-go:/server-go
         ports: 
             - "4000:4000"
         env_file: 
-            - ./server/.env
+            - ./server-go/.env
+        depends_on:
+            db:
+                condition: service_healthy
+    db:
+        image: mysql
+        restart: always
+        environment:
+            - "MYSQL_DATABASE=adtol"
+            - "MYSQL_USER=adtol"
+            - "MYSQL_PASSWORD=secret"
+            - "MYSQL_ROOT_PASSWORD=secret"
+        ports:
+            - "33061:3306"
+        healthcheck:
+            test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+            timeout: 2s
+            retries: 5
     nginx:
         build: 
             context: ./nginx
@@ -33,4 +63,4 @@ services:
             - server
         restart: always
         ports: 
-            - "5000:80"
+            - "5001:80"
