@@ -1,14 +1,23 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"server-go/db"
+	"server-go/migrations"
+	"server-go/routes"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/joho/godotenv/autoload" // Auto load env file
+)
+
+func init() {
+	db.InitDB()
+	migrations.Migrate()
+}
 
 func main() {
 	server := gin.Default()
-	server.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+
+	routes.RegisterAllRoutes(server)
 
 	server.Run(":4000")
 }
