@@ -7,5 +7,7 @@ import (
 )
 
 func RegisterAllRoutes(server *gin.Engine) {
-	authroutes.RegisterAuthRoutes(server)
+	apiRoutes := server.Group("/api")
+
+	authroutes.RegisterAuthRoutes(apiRoutes)
 }

@@ -1,19 +1,14 @@
 package authroutes
 
 import (
-	"net/http"
+	authController "server-go/controllers/auth"
 
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterAuthRoutes(server *gin.Engine) {
+func RegisterAuthRoutes(server *gin.RouterGroup) {
 	auth := server.Group("/auth")
 
-	auth.POST("/register", register)
-}
-
-func register(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"Hello": "World",
-	})
+	auth.POST("/register", authController.Register)
+	auth.GET("/get-countries", authController.GetCountries)
 }
