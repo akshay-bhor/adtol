@@ -2,7 +2,7 @@ package db
 
 import (
 	"os"
-	logger "server-go/utils"
+	logger "server-go/utils/logger"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
