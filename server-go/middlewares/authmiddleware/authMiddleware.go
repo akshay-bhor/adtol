@@ -1,10 +1,14 @@
 package authMiddleware
 
 import (
+	"fmt"
 	"net/http"
+	"os"
 	"server-go/utils/logger"
+	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type RegisterRequest struct {
@@ -24,9 +28,9 @@ func CheckRegistrationDetails(c *gin.Context) {
 	var reqBody RegisterRequest
 
 	err := c.Bind(&reqBody)
-	logger.Debug(reqBody)
+
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
 			"msg": "Validation Error!",
 			"err": err.Error(),
 		})
@@ -34,6 +38,66 @@ func CheckRegistrationDetails(c *gin.Context) {
 	}
 
 	c.Set("body", reqBody)
+
+	c.Next()
+}
+
+type LoginRequest struct {
+	Client string `json:"client" binding:"required"`
+	Pass   string `json:"pass" binding:"required"`
+}
+
+func CheckLogindetails(c *gin.Context) {
+	var requestBody LoginRequest
+
+	err := c.Bind(&requestBody)
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"msg": "Validtion Error",
+			"err": err.Error(),
+		})
+		return
+	}
+
+	c.Set("body", requestBody)
+
+	c.Next()
+}
+
+func IsLoggedIn(c *gin.Context) {
+	authHeader := c.Request.Header["Authorization"]
+	c.Set("isAuth", false)
+
+	if len(authHeader) > 0 {
+		tokenString := strings.Split(authHeader[0], " ")[1]
+
+		_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+			}
+
+			return []byte(os.Getenv("HMAC_SECRET")), nil
+		})
+		if err != nil {
+			logger.Error(err, "Invalid token")
+		} else {
+			c.Set("isAuth", true)
+		}
+	}
+
+	c.Next()
+}
+
+func RequireAuth(c *gin.Context) {
+	isAuth, exists := c.Get("isAuth")
+
+	if exists && !isAuth.(bool) {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"msg": "Unauthorized",
+		})
+		return
+	}
 
 	c.Next()
 }

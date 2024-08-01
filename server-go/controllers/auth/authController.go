@@ -8,6 +8,7 @@ import (
 	"server-go/utils/jwttoken"
 	"server-go/utils/logger"
 	"strconv"
+	"time"
 
 	"server-go/models"
 
@@ -19,7 +20,6 @@ import (
 
 func Register(c *gin.Context) {
 	requestBody, _ := c.Get("body")
-
 	username := requestBody.(authMiddleware.RegisterRequest).User
 	email := requestBody.(authMiddleware.RegisterRequest).Mail
 	name := requestBody.(authMiddleware.RegisterRequest).Name
@@ -107,6 +107,7 @@ func Register(c *gin.Context) {
 		"status": newUser.Status,
 		"rank":   newUser.Rank,
 		"role":   "access",
+		"exp":    time.Now().Unix() + (60 * 60 * 24 * 90),
 	})
 
 	if err != nil {
@@ -121,6 +122,62 @@ func Register(c *gin.Context) {
 		"token":     token,
 		"expiresIn": "90",
 	})
+}
+
+func Login(c *gin.Context) {
+	req, _ := c.Get("body")
+	client := req.(authMiddleware.LoginRequest).Client
+	pass := req.(authMiddleware.LoginRequest).Pass
+
+	// Search username or email
+	var user models.Users
+	result := db.DB.Where("user = ?", client).Or("mail = ?", client).First(&user)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		logger.Debug("User not found")
+		c.JSON(http.StatusBadRequest, gin.H{
+			"msg": "Username or password incorrect!",
+		})
+		return
+	}
+
+	// Check if password is correct
+	if user.Pass != nil {
+		storedPass := *user.Pass
+		err := bcrypt.CompareHashAndPassword([]byte(storedPass), []byte(pass))
+
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"msg": "Username or password incorrect!",
+			})
+			return
+		}
+
+		// Create token
+		token, err := jwttoken.GenerateJwtToken(jwt.MapClaims{
+			"id":     user.Id,
+			"user":   user.User,
+			"mail":   user.Mail,
+			"status": user.Status,
+			"rank":   user.Rank,
+			"role":   "access",
+			"exp":    time.Now().Unix() + (60 * 60 * 24 * 90),
+		})
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"msg": "Error creating token",
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"msg":       "success",
+			"token":     token,
+			"expiresIn": "90",
+		})
+	}
+
 }
 
 func GetCountries(c *gin.Context) {
