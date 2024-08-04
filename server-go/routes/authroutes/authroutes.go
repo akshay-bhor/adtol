@@ -11,6 +11,6 @@ func RegisterAuthRoutes(server *gin.RouterGroup) {
 	auth := server.Group("/auth")
 
 	auth.POST("/register", authMiddleware.CheckRegistrationDetails, authController.Register)
-	auth.GET("/get-countries", authMiddleware.IsLoggedIn, authMiddleware.RequireAuth, authController.GetCountries)
+	auth.GET("/get-countries", authMiddleware.IsLoggedIn, authController.GetCountries)
 	auth.POST("/login", authMiddleware.CheckLogindetails, authController.Login)
 }
